@@ -7,8 +7,6 @@ using System.Collections;
 /// </summary>
 public class PlayerParty : Party {
 
-    /*** UI ***/
-
     //Deactivates the command window on startup after calling base method
     protected override void Start()
     {

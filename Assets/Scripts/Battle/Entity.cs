@@ -362,7 +362,7 @@ public class Entity : MonoBehaviour {
             case "active": colorChange = active; break;
             case "normal": colorChange = normal; break;
             case "hover": colorChange = hover; break;
-            default: Debug.Log("Not a valid color: " + code); return;
+            default: Debug.Log("Not a valid color code: " + code); return;
         }
 
         render.color = colorChange;

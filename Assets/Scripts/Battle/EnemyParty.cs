@@ -48,11 +48,11 @@ public class EnemyParty : Party {
             if (e.Ready && bm.GetState() == "NORMAL")
             {
                 e.Behavior();
-                bm.SetProjectionInfo(e.Atk, 100, 0);
+                ui.SetProjectionInfo(e.Atk, 100, 0);
                 bm.SetState("ENEMY_PROJECTION");
 
                 e.ChangeColor("active");
-                target.ChangeColor("red");
+                target.ChangeColor("target");
             }
         }
     }

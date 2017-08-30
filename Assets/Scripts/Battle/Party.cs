@@ -7,6 +7,7 @@ using System.Collections.Generic;
 public abstract class Party : MonoBehaviour {
 
     protected BattleManager bm; //Set in the BattleManager class during battle setup
+    protected BattleUI ui; //Set in the Battlemanager
 
     /// <summary>The character which represents the entire party outside of battle in the overworld </summary>
     public GameObject avatar;
@@ -96,9 +97,10 @@ public abstract class Party : MonoBehaviour {
     /// Used by the BattleManager class to assign itself to the parties bm variable
     /// </summary>
     /// <param name="manager"></param>
-    public void SetBattleManager(BattleManager manager)
+    public void SetBattleManager(BattleManager manager, BattleUI bui)
     {
         bm = manager;
+        ui = bui;
     }
 
     /// <summary>
@@ -133,7 +135,7 @@ public abstract class Party : MonoBehaviour {
         switch (type)
         {
             case "ATTACK":
-                bm.SetProjectionInfo(activeMember.Atk, 100, 0);
+                ui.SetProjectionInfo(activeMember.Atk, 100, 0);
                 break;
             default: break;
         }
