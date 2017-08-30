@@ -63,6 +63,12 @@ public class Entity : MonoBehaviour {
     [HideInInspector]
     public STATUS status = STATUS.NORMAL;
 
+    //Target Color
+    protected Color target = Color.red;
+    protected Color active = Color.green;
+    protected Color normal = Color.white;
+    protected Color hover = Color.gray;
+
     //Speed
     protected float moveTimer = 0f; //Counts up to 100 over time, and then the entity can act
     protected bool ready = false; //True if moveTimer = 100, false otherwise
@@ -178,7 +184,7 @@ public class Entity : MonoBehaviour {
     protected void OnMouseOver()
     {
         hovering = true;
-        render.color = Color.gray;
+        ChangeColor("hover");
 
         //Show statscreen
         statView.enabled = true;
@@ -202,7 +208,7 @@ public class Entity : MonoBehaviour {
     protected void OnMouseExit()
     {
         hovering = false;
-        render.color = Color.white;
+        ChangeColor("normal");
 
         statView.enabled = false;
     }
@@ -346,18 +352,21 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Change the entity's color overlay
     /// </summary>
-    public void ChangeColor(Color color)
+    public void ChangeColor(string code)
     {
-        render.color = color;
-    }
+        Color colorChange;
 
-    /// <summary>
-    /// Restores the entity's default color
-    /// </summary>
-    public void RestoreColor()
-    {
-        render.color = Color.white;
-    }
+        switch (code)
+        {
+            case "target": colorChange = target; break;
+            case "active": colorChange = active; break;
+            case "normal": colorChange = normal; break;
+            case "hover": colorChange = hover; break;
+            default: Debug.Log("Not a valid color: " + code); return;
+        }
 
+        render.color = colorChange;
+
+    }
 
 }

@@ -40,7 +40,7 @@ public class PlayerParty : Party {
                     if (t != null)
                     {
                         target = t;
-                        activeMember.ChangeColor(Color.green);
+                        activeMember.ChangeColor("active");
 
                         CalculateAction("ATTACK"); //Battle Projection calculation
                         bm.SetState("PLAYER_PROJECTION");
@@ -52,7 +52,7 @@ public class PlayerParty : Party {
                 case "PLAYER_PROJECTION":
                     if (target.IsHovering()) //Double click to perform action immediately
                     {
-                        bm.OkayButton();
+                        bm.SetState("NORMAL");
                     }
                     break;
 
@@ -64,22 +64,18 @@ public class PlayerParty : Party {
         switch (bm.GetState())
         {
             case "COMMANDING":
-                activeMember.ChangeColor(Color.green);
+                activeMember.ChangeColor("active");
                 break;
 
             case "SELECTION":
-                activeMember.ChangeColor(Color.green);
+                activeMember.ChangeColor("active");
                 break;
 
             case "PLAYER_PROJECTION":
-                activeMember.ChangeColor(Color.green);
-                target.ChangeColor(Color.red);
+                activeMember.ChangeColor("active");
+                target.ChangeColor("target");
                 break;
         }
-
-        //Hotkeys
-        if (bm.GetState() != "ENEMY_PROJECTION") CancellationKeyDown();
-        Okay();
     }
 
     /// <summary>
@@ -118,70 +114,5 @@ public class PlayerParty : Party {
         }
     }
 
-    //Performs some kind of cancellation depnding on the state
-    private void Cancel()
-    {
-        switch (bm.GetState())
-        {
-            case "COMMANDS":
-                bm.SetState("NORMAL");
-                ResumeBattle();
-                break;
-
-            case "SELECTION":
-                bm.SetState("COMMANDS");
-                break;
-
-            case "PLAYER_PROJECTION":
-                bm.SetState("COMMANDING");
-                bm.Cancel();
-                target.RestoreColor();
-                break;
-
-            default: break;
-        }
-    }
-
-    //Supplementary method to cancel; calls cancel after checking if any of the cancelling hotkeys are pressed
-    private void CancellationKeyDown()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape) ||
-            Input.GetKeyDown(KeyCode.Backspace) ||
-            Input.GetMouseButtonDown(1))
-        {
-            Cancel();
-        }
-    }
-
-    //Performs affirmative actions if any of the postive hotkeys are pressed
-    private void Okay()
-    {
-        if (Input.GetKeyDown(KeyCode.Return)) {
-            bm.OkayButton();
-        }
-    }
-
-    /// <summary>
-    /// Deactive command window and cancel Order
-    /// </summary>
-    public void ResumeBattle()
-    {
-        if (target != null) target.RestoreColor();
-        if (activeMember != null) activeMember.RestoreColor();
-
-        SetCommand("NONE");
-        activeMember = null; //Nullify any accidental actions with selected party member
-        target = null;
-        bm.SetState("NORMAL"); //Set back to viewing mode
-    }
-
     /***MISCELLANEOUS***/
-
-    /// <summary>
-    /// Changes state to ENEMY_PROJECTION, usually to bring up the enemy's Battle Projection window
-    /// </summary>
-    public void EnemyMove()
-    {
-        bm.SetState("ENEMY_PROJECTION");
-    }
 }

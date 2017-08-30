@@ -138,4 +138,28 @@ public abstract class Party : MonoBehaviour {
             default: break;
         }
     }
+
+    /***COMMANDS***/
+
+    /// <summary>
+    /// Quick way to nullify and restore color to the target and active entities
+    /// </summary>
+    public void ResetState()
+    {
+        if (activeMember != null) activeMember.ChangeColor("normal");
+        activeMember = null;
+
+        if (target != null) target.ChangeColor("normal");
+        target = null;
+    }
+
+    /// <summary>
+    /// Similar to ResetState(), but only used to nullify and remove color from a target entity
+    /// </summary>
+    public void CancelTarget()
+    {
+        if (target != null) target.ChangeColor("normal");
+        target = null;
+    }
+
 }

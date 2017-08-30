@@ -37,7 +37,7 @@ public class BattleManager : MonoBehaviour {
     /***BATTLE SATE ***/
     private enum STATE
     {
-        NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED
+        NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
     private STATE state = STATE.NORMAL;
 
@@ -95,8 +95,6 @@ public class BattleManager : MonoBehaviour {
                 e.UpdateTime();
             }
         }
-
-        if ((state == STATE.NORMAL || state == STATE.PAUSED) && Input.GetKeyDown(KeyCode.Space)) TogglePause(); //Use spacebar toggle pause
     }
 
     /***ACTIONS***/
@@ -196,44 +194,11 @@ public class BattleManager : MonoBehaviour {
     /***BUTTON METHODS***/
 
     /// <summary>
-    /// Switch between pause and unpaused; also makes use of the pause screen
+    /// Cancels the player's queued action
     /// </summary>
-    public void TogglePause()
+    public void CancelAction()
     {
-        if (state == STATE.NORMAL)
-        {
-            state = STATE.PAUSED;
-            pauseScreen.enabled = true;
-        }
-
-        else if (state == STATE.PAUSED)
-        {
-            state = STATE.NORMAL;
-            pauseScreen.enabled = false;
-        }
-    }
-
-    /// <summary>
-    /// Continues battle after BP window appears; used manually by player
-    /// </summary>
-    public void OkayButton()
-    {
-        SetProjection(false);
-        SetState("NORMAL");
-        pParty.ResumeBattle();
-        eParty.ResetState();
-    }
-
-    /// <summary>
-    /// Cancels the player's action or backs out of the BP window
-    /// </summary>
-    public void Cancel()
-    {
-        if (state == STATE.ENEMY_PROJECTION) return; //cancel button nonfunctional during enemy move
-
         actions.Dequeue();
-        SetProjection(false);
-        SetState("SELECTION");
     }
 
     /// <summary>
@@ -248,6 +213,10 @@ public class BattleManager : MonoBehaviour {
                 state = STATE.NORMAL;
                 pauseScreen.enabled = false;
                 commandsList.SetActive(false);
+                SetProjection(false);
+                eParty.ResetState();
+                pParty.ResetState();
+                cancelButton.gameObject.SetActive(true);
                 break;
 
             case "ANIMATING": state = STATE.ANIMATING;
@@ -275,6 +244,7 @@ public class BattleManager : MonoBehaviour {
 
             case "ENEMY_PROJECTION": state = STATE.ENEMY_PROJECTION;
                 SetProjection(true);
+                cancelButton.gameObject.SetActive(false);
                 break;
 
             default: Debug.Log("Not an existing state: " + newState); break;

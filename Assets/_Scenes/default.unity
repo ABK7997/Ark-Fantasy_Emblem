@@ -528,15 +528,15 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1083597054}
-        m_MethodName: OkayButton
+      - m_Target: {fileID: 1083597056}
+        m_MethodName: confirmation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: NORMAL
           m_BoolArgument: 0
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
@@ -858,7 +858,7 @@ Prefab:
     - target: {fileID: 114000012155039110, guid: 4bd917307972a7448aea04c878882af0,
         type: 2}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: resumeBattle
+      value: cancellation
       objectReference: {fileID: 0}
     - target: {fileID: 223000011483157786, guid: 4bd917307972a7448aea04c878882af0,
         type: 2}
@@ -878,6 +878,31 @@ Prefab:
     - target: {fileID: 1000011600229386, guid: 4bd917307972a7448aea04c878882af0, type: 2}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000013024296496, guid: 4bd917307972a7448aea04c878882af0,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: SetCommand
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012155039110, guid: 4bd917307972a7448aea04c878882af0,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1083597056}
+    - target: {fileID: 114000013024296496, guid: 4bd917307972a7448aea04c878882af0,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1811452820}
+    - target: {fileID: 114000012155039110, guid: 4bd917307972a7448aea04c878882af0,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114000012155039110, guid: 4bd917307972a7448aea04c878882af0,
+        type: 2}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
+      value: NORMAL
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4bd917307972a7448aea04c878882af0, type: 2}
@@ -1183,8 +1208,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1023469155}
   - component: {fileID: 1023469158}
-  - component: {fileID: 1023469157}
   - component: {fileID: 1023469156}
+  - component: {fileID: 1023469157}
   m_Layer: 5
   m_Name: Cancel Move
   m_TagString: Untagged
@@ -1250,8 +1275,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1083597054}
-        m_MethodName: Cancel
+      - m_Target: {fileID: 1083597056}
+        m_MethodName: cancellation
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1352,6 +1377,7 @@ GameObject:
   - component: {fileID: 1083597053}
   - component: {fileID: 1083597054}
   - component: {fileID: 1083597055}
+  - component: {fileID: 1083597056}
   m_Layer: 0
   m_Name: Battle Manager
   m_TagString: Untagged
@@ -1387,6 +1413,8 @@ MonoBehaviour:
   eParty: {fileID: 1449681136}
   commands: {fileID: 919402728}
   pauseScreen: {fileID: 344572135}
+  commandsList: {fileID: 1266410190}
+  targetingText: {fileID: 940760452}
   battleProjection: {fileID: 1195677713}
   projectionInfoSender: {fileID: 598605258}
   projectionInfoRecipient: {fileID: 947789918}
@@ -1407,6 +1435,19 @@ MonoBehaviour:
   rows: 3
   tiles:
   - {fileID: 1000011534043434, guid: 0214fc627a90cec4caf8eb5c756190bc, type: 2}
+--- !u!114 &1083597056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1083597052}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36ecef9866f68294f845a702fae86222, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bm: {fileID: 1083597054}
+  pParty: {fileID: 1811452820}
 --- !u!1 &1195677711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1479,6 +1520,11 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1195677711}
+--- !u!1 &1266410190 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 1000011600229386, guid: 4bd917307972a7448aea04c878882af0,
+    type: 2}
+  m_PrefabInternal: {fileID: 859348092}
 --- !u!114 &1449681136 stripped
 MonoBehaviour:
   m_PrefabParentObject: {fileID: 114186942948500658, guid: ccd377038bae4ce48954c7c65ac6efd9,

@@ -37,8 +37,8 @@ public class EnemyParty : Party {
         {
             case "ENEMY_PROJECTION":
 
-                target.ChangeColor(Color.red);
-                activeMember.ChangeColor(Color.green);
+                target.ChangeColor("target");
+                activeMember.ChangeColor("active");
 
                 break;
         }
@@ -50,26 +50,10 @@ public class EnemyParty : Party {
                 e.Behavior();
                 bm.SetProjectionInfo(e.Atk, 100, 0);
                 bm.SetState("ENEMY_PROJECTION");
-                e.ChangeColor(Color.green);
 
-                pParty.EnemyMove();
-
-                target.ChangeColor(Color.red);
+                e.ChangeColor("active");
+                target.ChangeColor("red");
             }
         }
-    }
-
-    /// <summary>
-    /// Set enemy party's state back to IDLE
-    /// </summary>
-    public void ResetState()
-    {
-        bm.SetState("NORMAL");
-
-        if (activeMember != null) activeMember.ChangeColor(Color.white);
-        activeMember = null;
-
-        if (target != null) target.ChangeColor(Color.white);
-        target = null;
     }
 }
