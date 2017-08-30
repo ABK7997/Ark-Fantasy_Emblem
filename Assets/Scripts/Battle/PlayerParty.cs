@@ -8,7 +8,10 @@ using System.Collections;
 public class PlayerParty : Party {
 
     /*** UI ***/
-    /// <summary>The canvas containing all the buttons for issuing player Orders</summary>
+
+    /// <summary>
+    /// The canvas containing all the buttons for issuing player Orders
+    /// </summary>
     public GameObject commandsList;
 
     /// <summary>
@@ -42,7 +45,7 @@ public class PlayerParty : Party {
                 //Activate Commands Menu
                 case STATE.IDLE:
                     Entity e = getPartyMember();
-                    if (e != null && e.Ready)
+                    if (e != null && e.Ready && !bm.isAnimating())
                     {
                         activeMember = e;
                         setCommandsDisplay(true); //Look at command UI
@@ -63,6 +66,13 @@ public class PlayerParty : Party {
                         state = STATE.PROJECTION;
 
                         executeAction();
+                    }
+                    break;
+
+                case STATE.PROJECTION:
+                    if (target.isHovering()) //Double click to perform action immediately
+                    {
+                        bm.okayButton();
                     }
                     break;
 
@@ -88,7 +98,7 @@ public class PlayerParty : Party {
         }
 
         //Hotkeys
-        cancellationKeyDown();
+        if (state != STATE.ENEMY_PROJECTION) cancellationKeyDown();
         okay();
     }
 
@@ -209,7 +219,7 @@ public class PlayerParty : Party {
         setCommandsDisplay(false); //Disable display
         targetingText.enabled = false;
         if (target != null) target.restoreColor();
-        activeMember.restoreColor();
+        if (activeMember != null) activeMember.restoreColor();
 
         setCommand("NONE");
         activeMember = null; //Nullify any accidental actions with selected party member

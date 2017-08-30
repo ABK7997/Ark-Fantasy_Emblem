@@ -118,6 +118,8 @@ public abstract class Party : MonoBehaviour {
     public void executeAction(string cmd, Entity user, Entity trgt)
     {
         bm.issueOrder(cmd, user, trgt);
+        target = trgt;
+        activeMember = user;
     }
 
     /***BATTLE CALCULATIONS***/

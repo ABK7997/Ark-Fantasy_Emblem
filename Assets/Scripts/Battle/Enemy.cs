@@ -21,21 +21,18 @@ public class Enemy : Entity {
     public override void UpdateTime()
     {
         base.UpdateTime();
-
-        if (ready)
-        {
-            behavior();
-            resetTimer();
-        }
     }
 
-    //Method describing how enemies will behave when it's their turn
-    protected virtual void behavior()
+    /// <summary>
+    /// Method describing how enemies will behave when it's their turn
+    /// </summary>
+    public virtual void behavior()
     {
         string command = "ATTACK";
         Entity target = getRandomPlayer();
 
         party.executeAction(command, this, target);
+        resetTimer();
     }
 
     //Get a random player from the opposite party to target

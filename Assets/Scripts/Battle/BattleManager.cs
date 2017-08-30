@@ -105,6 +105,7 @@ public class BattleManager : MonoBehaviour {
         actions.Enqueue(order);
     }
     
+    //Start queued actions
     private IEnumerator animate()
     {
         while (actions.Count != 0)
@@ -115,6 +116,15 @@ public class BattleManager : MonoBehaviour {
         }
 
         animating = false;
+    }
+
+    /// <summary>
+    /// Access the animating variable from other classes
+    /// </summary>
+    /// <returns>animating - if an animation is occuring or not</returns>
+    public bool isAnimating()
+    {
+        return animating;
     }
 
     /// <summary>
@@ -171,6 +181,7 @@ public class BattleManager : MonoBehaviour {
     /// </summary>
     public void togglePause()
     {
+        if (animating) return; //ignore method if an animation is occurring
         paused = !paused;
         pauseScreen.enabled = !pauseScreen.enabled;
     }
@@ -181,6 +192,7 @@ public class BattleManager : MonoBehaviour {
     /// <param name="b"></param>
     public void setPause(bool b)
     {
+        if (animating) return; //ignore method if an animation is occurring
         paused = b;
     }
 
@@ -192,6 +204,7 @@ public class BattleManager : MonoBehaviour {
         setProjection(false);
         setPause(false);
         pParty.resumeBattle();
+        eParty.resetState();
     }
 
     /// <summary>
@@ -199,6 +212,8 @@ public class BattleManager : MonoBehaviour {
     /// </summary>
     public void cancel()
     {
+        if (pParty.getState() == "ENEMY_PROJECTION") return; //cancel button nonfunctional during enemy move
+
         actions.Dequeue();
         setProjection(false);
         pParty.startSelection();
