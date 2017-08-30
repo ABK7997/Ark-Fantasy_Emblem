@@ -11,13 +11,6 @@ public class EnemyParty : Party {
     /// </summary>
     public PlayerParty pParty;
 
-    //The status of the enemy's actions
-    private enum STATE
-    {
-        IDLE, ENEMY_PROJECTION
-    }
-    private STATE state = STATE.IDLE;
-
     /// <summary>
     /// Behaves very similary to the quivalent method of the PlayerParty class
     /// </summary>
@@ -33,36 +26,35 @@ public class EnemyParty : Party {
         for (int i = 0; i < party.Count; i++)
         {
             party[i] = members[i];
-            party[i].setParty(this);
+            party[i].SetParty(this);
         }
     }
 
     //TODO - HANDLE ENEMIES//
     void Update()
     {
-        switch (state)
+        switch (bm.GetState())
         {
-            case STATE.ENEMY_PROJECTION:
+            case "ENEMY_PROJECTION":
 
-                target.changeColor(Color.red);
-                activeMember.changeColor(Color.green);
+                target.ChangeColor(Color.red);
+                activeMember.ChangeColor(Color.green);
 
                 break;
         }
 
         foreach (Enemy e in party)
         {
-            if (e.Ready)
+            if (e.Ready && bm.GetState() == "NORMAL")
             {
-                e.behavior();
-                bm.setProjectionInfo(e.atk, 100, 0);
-                e.changeColor(Color.green);
+                e.Behavior();
+                bm.SetProjectionInfo(e.Atk, 100, 0);
+                bm.SetState("ENEMY_PROJECTION");
+                e.ChangeColor(Color.green);
 
-                pParty.enemyMove();
+                pParty.EnemyMove();
 
-                target.changeColor(Color.red);
-
-                state = STATE.ENEMY_PROJECTION;
+                target.ChangeColor(Color.red);
             }
         }
     }
@@ -70,14 +62,14 @@ public class EnemyParty : Party {
     /// <summary>
     /// Set enemy party's state back to IDLE
     /// </summary>
-    public void resetState()
+    public void ResetState()
     {
-        state = STATE.IDLE;
+        bm.SetState("NORMAL");
 
-        if (activeMember != null) activeMember.changeColor(Color.white);
+        if (activeMember != null) activeMember.ChangeColor(Color.white);
         activeMember = null;
 
-        if (target != null) target.changeColor(Color.white);
+        if (target != null) target.ChangeColor(Color.white);
         target = null;
     }
 }

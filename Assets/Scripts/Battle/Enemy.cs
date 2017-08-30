@@ -26,17 +26,17 @@ public class Enemy : Entity {
     /// <summary>
     /// Method describing how enemies will behave when it's their turn
     /// </summary>
-    public virtual void behavior()
+    public virtual void Behavior()
     {
         string command = "ATTACK";
-        Entity target = getRandomPlayer();
+        Entity target = GetRandomPlayer();
 
-        party.executeAction(command, this, target);
-        resetTimer();
+        party.ExecuteAction(command, this, target);
+        ResetTimer();
     }
 
     //Get a random player from the opposite party to target
-    protected Entity getRandomPlayer()
+    protected Entity GetRandomPlayer()
     {
         int selection = Random.Range(0, party.oppositeParty.Count);
 
@@ -44,7 +44,7 @@ public class Enemy : Entity {
     }
 
     //Get a random ally from this one's enemy party to target
-    protected Entity getRandomAlly()
+    protected Entity GetRandomAlly()
     {
         int selection = Random.Range(0, party.party.Count);
 

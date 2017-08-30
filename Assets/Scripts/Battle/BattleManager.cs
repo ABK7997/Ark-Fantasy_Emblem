@@ -15,18 +15,35 @@ public class BattleManager : MonoBehaviour {
     ///<summary>A party containing the enemies the player is fighting</summary>
     public EnemyParty eParty;
 
-    /***FLOW OF BATTLE***/
+    /***FLOW OF BATTLE and UI***/
     ///<summary>The UI which contains elements set apart from party control</summary> 
     public Canvas commands;
 
     /// <summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
     public Image pauseScreen;
 
+    /// <summary>
+    /// The canvas containing all the buttons for issuing player Orders
+    /// </summary>
+    public GameObject commandsList;
+
+    /// <summary>
+    /// Text which appears when the player is choosing a target
+    /// </summary>
+    public Text targetingText;
+
     private Queue<Order> actions = new Queue<Order>(); //Stores actions for all entities and performs them in order
 
-    private bool animating = false; //If true, speed gauges are halted for all entites as an action is performed
-    private bool paused = false; //Similar to animating, but dictated by player manually pausing and unpausing
+    /***BATTLE SATE ***/
+    private enum STATE
+    {
+        NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED
+    }
+    private STATE state = STATE.NORMAL;
 
+    //private bool animating = false; //If true, speed gauges are halted for all entites as an action is performed
+    //private bool paused = false; //Similar to animating, but dictated by player manually pausing and unpausing
+    
     /***BATTLE PROJECTION***/
     /// <summary>A box which is used to display the battle projection stats</summary>
     public Image battleProjection;
@@ -34,6 +51,10 @@ public class BattleManager : MonoBehaviour {
     public Text projectionInfoSender;
     /// <summary>Text within the Battle Projection canvas regarding the recipient</summary>
     public Text projectionInfoRecipient;
+    /// <summary>
+    /// The cancel button in the BP window; unavailable if it is an Enemy Projection
+    /// </summary>
+    public Button cancelButton;
 
     /***MAIN METHODS***/
 
@@ -41,27 +62,29 @@ public class BattleManager : MonoBehaviour {
     void Start()
     {
         pauseScreen.enabled = false; //Disable pause overlay
-        setProjection(false); //Disable battle projection
+        SetProjection(false); //Disable battle projection
+        commandsList.SetActive(false);
+        targetingText.enabled = false;
 
         //Organize parties
         pParty.OrganizeParty();
         eParty.OrganizeParty();
 
         //Assign opposite parties
-        pParty.constructOppositeParty(eParty.party);
-        eParty.constructOppositeParty(pParty.party);
+        pParty.ConstructOppositeParty(eParty.party);
+        eParty.ConstructOppositeParty(pParty.party);
 
         //Assign manager
-        pParty.setBattleManager(this);
-        eParty.setBattleManager(this);
+        pParty.SetBattleManager(this);
+        eParty.SetBattleManager(this);
     }
 	
     //Controls the flow of battle with Order Queue
 	void Update () {
 
-        if (free()) //Check if both not animating and not paused by player7
+        if (state == STATE.NORMAL) //Check if both not animating and not paused by player7
         {
-            StartCoroutine(animate());
+            StartCoroutine(Animate());
 
             foreach (Entity e in pParty.party)
             {
@@ -73,7 +96,7 @@ public class BattleManager : MonoBehaviour {
             }
         }
 
-        if (!animating && Input.GetKeyDown(KeyCode.Space)) togglePause(); //Use spacebar toggle pause
+        if ((state == STATE.NORMAL || state == STATE.PAUSED) && Input.GetKeyDown(KeyCode.Space)) TogglePause(); //Use spacebar toggle pause
     }
 
     /***ACTIONS***/
@@ -98,7 +121,7 @@ public class BattleManager : MonoBehaviour {
     /// <param name="type">Command type: ATTACK, DEFEND, etc. </param>
     /// <param name="user">Entity from which the command was generated</param>
     /// <param name="target">Entity which is being attacked/affected by the user</param>
-    public void issueOrder(string type, Entity user, Entity target)
+    public void IssueOrder(string type, Entity user, Entity target)
     {
         Order order = new Order(type, user, target);
 
@@ -106,31 +129,27 @@ public class BattleManager : MonoBehaviour {
     }
     
     //Start queued actions
-    private IEnumerator animate()
+    private IEnumerator Animate()
     {
         while (actions.Count != 0)
         {
-            animating = true;
-            enactOrder();
+            state = STATE.ANIMATING;
+            EnactOrder();
             yield return new WaitForSeconds(1);
         }
 
-        animating = false;
+        state = STATE.NORMAL;
     }
 
-    /// <summary>
-    /// Access the animating variable from other classes
-    /// </summary>
-    /// <returns>animating - if an animation is occuring or not</returns>
-    public bool isAnimating()
+    public bool IsAnimating()
     {
-        return animating;
+        return state == STATE.ANIMATING;
     }
 
     /// <summary>
     /// Executes the first order on the Order Queue
     /// </summary>
-    public void enactOrder()
+    public void EnactOrder()
     {
         //Get next order
         Order currentOrder = actions.Dequeue();
@@ -141,35 +160,35 @@ public class BattleManager : MonoBehaviour {
         //Perform action
         switch (type)
         {
-            case "ATTACK": user.attack(target); break;
+            case "ATTACK": user.Attack(target); break;
         }
     }
 
     //Returns true if the game is neither animating an action nor paused by the player
-    private bool free()
+    /*
+    private bool Free()
     {
         return !animating && !paused;
     }
+    */
 
     /***BATTLE PROJECTION METHODS***/
     
     /// <summary>
     /// Recieve info from active entity to update the Battle Projection texts; also pauses game and displays BP window
     /// </summary>
-    public void setProjectionInfo(int atk, int hit, int crit)
+    public void SetProjectionInfo(int atk, int hit, int crit)
     {
-        setProjection(true);
+        SetProjection(true);
 
         projectionInfoSender.text =
             "ATK: " + atk + "\n" +
             "HIT: " + hit + "%\n" +
             "CRIT: " + crit + "%\n";
-
-        setPause(true);
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object
-    private void setProjection(bool b)
+    private void SetProjection(bool b)
     {
         battleProjection.gameObject.SetActive(b);
     }
@@ -179,43 +198,91 @@ public class BattleManager : MonoBehaviour {
     /// <summary>
     /// Switch between pause and unpaused; also makes use of the pause screen
     /// </summary>
-    public void togglePause()
+    public void TogglePause()
     {
-        if (animating) return; //ignore method if an animation is occurring
-        paused = !paused;
-        pauseScreen.enabled = !pauseScreen.enabled;
-    }
+        if (state == STATE.NORMAL)
+        {
+            state = STATE.PAUSED;
+            pauseScreen.enabled = true;
+        }
 
-    /// <summary>
-    /// Used to pause the game for reasons outside of manual pausing - such as when the player is choosing an entity command
-    /// </summary>
-    /// <param name="b"></param>
-    public void setPause(bool b)
-    {
-        if (animating) return; //ignore method if an animation is occurring
-        paused = b;
+        else if (state == STATE.PAUSED)
+        {
+            state = STATE.NORMAL;
+            pauseScreen.enabled = false;
+        }
     }
 
     /// <summary>
     /// Continues battle after BP window appears; used manually by player
     /// </summary>
-    public void okayButton()
+    public void OkayButton()
     {
-        setProjection(false);
-        setPause(false);
-        pParty.resumeBattle();
-        eParty.resetState();
+        SetProjection(false);
+        SetState("NORMAL");
+        pParty.ResumeBattle();
+        eParty.ResetState();
     }
 
     /// <summary>
     /// Cancels the player's action or backs out of the BP window
     /// </summary>
-    public void cancel()
+    public void Cancel()
     {
-        if (pParty.getState() == "ENEMY_PROJECTION") return; //cancel button nonfunctional during enemy move
+        if (state == STATE.ENEMY_PROJECTION) return; //cancel button nonfunctional during enemy move
 
         actions.Dequeue();
-        setProjection(false);
-        pParty.startSelection();
+        SetProjection(false);
+        SetState("SELECTION");
+    }
+
+    /// <summary>
+    /// Alter the game's state, such as to pause game or show BP window
+    /// </summary>
+    /// <param name="state"></param>
+    public void SetState(string newState)
+    {
+        switch (newState)
+        {
+            case "NORMAL":
+                state = STATE.NORMAL;
+                pauseScreen.enabled = false;
+                commandsList.SetActive(false);
+                break;
+
+            case "ANIMATING": state = STATE.ANIMATING;
+                break;
+
+            case "COMMANDING": state = STATE.COMMANDING;
+                targetingText.enabled = false;
+                commandsList.SetActive(true);
+                break;
+
+            case "SELECTION": state = STATE.SELECTION;
+                targetingText.enabled = true;
+                commandsList.SetActive(false);
+                SetProjection(false);
+                break;
+
+            case "PAUSED": state = STATE.PAUSED;
+                pauseScreen.enabled = true;
+                break;
+
+            case "PLAYER_PROJECTION": state = STATE.PLAYER_PROJECTION;
+                targetingText.enabled = false;
+                SetProjection(true);
+                break;
+
+            case "ENEMY_PROJECTION": state = STATE.ENEMY_PROJECTION;
+                SetProjection(true);
+                break;
+
+            default: Debug.Log("Not an existing state: " + newState); break;
+        }
+    }
+
+    public string GetState()
+    {
+        return state + "";
     }
 }

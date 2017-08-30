@@ -36,11 +36,11 @@ public abstract class Party : MonoBehaviour {
     public abstract void OrganizeParty();
 
     //Party Management
-    public void add(Entity e)
+    public void Add(Entity e)
     {
         party.Add(e);
     }
-    public void remove(Entity e)
+    public void Remove(Entity e)
     {
         party.Remove(e);
     }
@@ -49,44 +49,44 @@ public abstract class Party : MonoBehaviour {
     /// Assigns the opposing party list
     /// </summary>
     /// <param name="otherParty"></param>
-    public void constructOppositeParty(List<Entity> otherParty)
+    public void ConstructOppositeParty(List<Entity> otherParty)
     {
         oppositeParty = otherParty;
     }
 
     //Iterates through every member to find if any of them are being hovered over
-    protected Entity getPartyMember()
+    protected Entity GetPartyMember()
     {
         foreach (Entity e in party)
         {
-            if (e.isHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
         }
 
         return null;
     }
 
     //Iterates through every enemy to find if any of them are being hovered over
-    protected Entity getOppositeMember()
+    protected Entity GetOppositeMember()
     {
         foreach (Entity e in oppositeParty)
         {
-            if (e.isHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
         }
 
         return null;
     }
 
     //Iterates through every member of BOTH parties to find if any of them are being hovered over
-    protected Entity getAnyMember()
+    protected Entity GetAnyMember()
     {
         foreach (Entity e in party)
         {
-            if (e.isHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
         }
 
         foreach (Entity e in oppositeParty)
         {
-            if (e.isHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
         }
 
         return null;
@@ -96,7 +96,7 @@ public abstract class Party : MonoBehaviour {
     /// Used by the BattleManager class to assign itself to the parties bm variable
     /// </summary>
     /// <param name="manager"></param>
-    public void setBattleManager(BattleManager manager)
+    public void SetBattleManager(BattleManager manager)
     {
         bm = manager;
     }
@@ -104,9 +104,9 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Adds a new Order to the BattleManager class queue 
     /// </summary>
-    public void executeAction()
+    public void ExecuteAction()
     {
-        bm.issueOrder(command + "", activeMember, target);
+        bm.IssueOrder(command + "", activeMember, target);
     }
 
     /// <summary>
@@ -115,9 +115,9 @@ public abstract class Party : MonoBehaviour {
     /// <param name="cmd"></param>
     /// <param name="user"></param>
     /// <param name="trgt"></param>
-    public void executeAction(string cmd, Entity user, Entity trgt)
+    public void ExecuteAction(string cmd, Entity user, Entity trgt)
     {
-        bm.issueOrder(cmd, user, trgt);
+        bm.IssueOrder(cmd, user, trgt);
         target = trgt;
         activeMember = user;
     }
@@ -128,11 +128,13 @@ public abstract class Party : MonoBehaviour {
     /// Calculate information needed for the BattleManger's battle calculation window (Atk, hit, critical)
     /// </summary>
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
-    protected void calculateAction(string type)
+    protected void CalculateAction(string type)
     {
         switch (type)
         {
-            case "ATTACK": bm.setProjectionInfo(activeMember.atk, 100, 0); break;
+            case "ATTACK":
+                bm.SetProjectionInfo(activeMember.Atk, 100, 0);
+                break;
             default: break;
         }
     }

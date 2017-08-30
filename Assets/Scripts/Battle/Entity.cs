@@ -93,8 +93,8 @@ public class Entity : MonoBehaviour {
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
 
-        resetStats();
-        updateDisplay();
+        ResetStats();
+        UpdateDisplay();
     }
 
     /// <summary>
@@ -103,7 +103,7 @@ public class Entity : MonoBehaviour {
     public virtual void UpdateTime() {
         if (status == STATUS.DEAD) return; //Do nothing if dead
 
-        if (moveTimer < 100) moveTimer += Time.deltaTime * speedMultiplier * spd;
+        if (moveTimer < 100) moveTimer += Time.deltaTime * speedMultiplier * Spd;
         else ready = true;
     }
 
@@ -112,21 +112,21 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set all active stats back to their base stats; refill hp
     /// </summary>
-    public void resetStats()
+    public void ResetStats()
     {
-        hp = maxHP;
+        Hp = maxHP;
 
-        atk = baseAtk;
-        mag = baseMag;
-        vlt = baseVlt;
+        Atk = baseAtk;
+        Mag = baseMag;
+        Vlt = baseVlt;
 
-        def = baseDef;
-        res = baseRes;
-        stb = baseStb;
+        Def = baseDef;
+        Res = baseRes;
+        Stb = baseStb;
 
-        skl = baseSkl;
-        lck = baseLck;
-        spd = baseSpd;
+        Skl = baseSkl;
+        Lck = baseLck;
+        Spd = baseSpd;
 
         ready = false;
     }
@@ -135,19 +135,19 @@ public class Entity : MonoBehaviour {
     /// Primary Command; uses physical attack based on ATK stat to harm one other entity
     /// </summary>
     /// <param name="e">Entity to attack - can be friendly</param>
-    public void attack(Entity e)
+    public void Attack(Entity e)
     {
-        e.hp += -atk;
+        e.Hp += -Atk;
         anim.SetTrigger("ATTACK");
-        resetTimer();
+        ResetTimer();
     }
 
     /// <summary>
     /// Updates the stats canvas on display in battle
     /// </summary>
-    public void updateDisplay()
+    public void UpdateDisplay()
     {
-        float hpPercentage = hp / (float)maxHP;
+        float hpPercentage = Hp / (float)maxHP;
 
         hpBar.rectTransform.sizeDelta = new Vector2(barsLength * hpPercentage, barsHeight);
     }
@@ -155,19 +155,19 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Used after Order is carried out to reset the speed bar
     /// </summary>
-    public void resetTimer()
+    public void ResetTimer()
     {
         moveTimer = 0;
         ready = false;
 
-        updateDisplay();
+        UpdateDisplay();
     }
 
     /// <summary>
     /// Used by Party classes to indicate which party the Entity belongs to
     /// </summary>
     /// <param name="belongsTo">The party this entity is a part of</param>
-    public void setParty(Party belongsTo)
+    public void SetParty(Party belongsTo)
     {
         party = belongsTo;
     }
@@ -186,17 +186,17 @@ public class Entity : MonoBehaviour {
         //Update stats
         statText.text =
             Name + "\n" +
-            "HP: " + hp + "\n" +
+            "HP: " + Hp + "\n" +
             "Type: " + type + "\n\n" +
-            "ATK: " + atk + "\n" +
-            "MAG: " + mag + "\n" +
-            "VLT: " + vlt + "\n\n" +
-            "DEF: " + def + "\n" +
-            "RES: " + res + "\n" +
-            "STB: " + stb + "\n\n" +
-            "SKL: " + skl + "\n" +
-            "LCK: " + lck + "\n" +
-            "SPD: " + spd + "\n";
+            "ATK: " + Atk + "\n" +
+            "MAG: " + Mag + "\n" +
+            "VLT: " + Vlt + "\n\n" +
+            "DEF: " + Def + "\n" +
+            "RES: " + Res + "\n" +
+            "STB: " + Stb + "\n\n" +
+            "SKL: " + Skl + "\n" +
+            "LCK: " + Lck + "\n" +
+            "SPD: " + Spd + "\n";
     }
 
     protected void OnMouseExit()
@@ -212,16 +212,16 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for HP value
     /// </summary>
-    public int hp
+    public int Hp
     {
         get { return _hp; }
         set {
             _hp = value; //change
 
-            if (hp > maxHP) _hp = maxHP;
+            if (Hp > maxHP) _hp = maxHP;
 
             //Death
-            else if (hp < 0)
+            else if (Hp < 0)
             {
                 _hp = 0;
                 status = STATUS.DEAD;
@@ -229,14 +229,14 @@ public class Entity : MonoBehaviour {
                 ready = false;
             }
 
-            updateDisplay();
+            UpdateDisplay();
         }
     }
 
     /// <summary>
     /// Set and get for ATK value
     /// </summary>
-    public int atk
+    public int Atk
     {
         get { return _atk; }
         set { _atk = value; }
@@ -245,7 +245,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for MAG value
     /// </summary>
-    public int mag
+    public int Mag
     {
         get { return _mag; }
         set { _mag = value; }
@@ -254,7 +254,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for VLT value
     /// </summary>
-    public int vlt
+    public int Vlt
     {
         get { return _vlt; }
         set { _vlt = value; }
@@ -263,7 +263,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for DEF value
     /// </summary>
-    public int def
+    public int Def
     {
         get { return _def; }
         set { _def = value; }
@@ -272,7 +272,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for RES value
     /// </summary>
-    public int res
+    public int Res
     {
         get { return _res; }
         set { _res = value; }
@@ -281,7 +281,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for STB value
     /// </summary>
-    public int stb
+    public int Stb
     {
         get { return _stb; }
         set { _stb = value; }
@@ -290,7 +290,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for SKL value
     /// </summary>
-    public int skl
+    public int Skl
     {
         get { return _skl; }
         set { _skl = value; }
@@ -299,7 +299,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for LCK value
     /// </summary>
-    public int lck
+    public int Lck
     {
         get { return _lck; }
         set { _lck = value; }
@@ -308,7 +308,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Set and get for SPD value
     /// </summary>
-    public int spd
+    public int Spd
     {
         get { return _spd; }
         set { _spd = value; }
@@ -318,7 +318,7 @@ public class Entity : MonoBehaviour {
     /// 
     /// </summary>
     /// <returns> hovering - if the mouse is over the entity or not </returns>
-    public bool isHovering() { return hovering; }
+    public bool IsHovering() { return hovering; }
 
     /// <summary>
     /// Set and get for the Ready value determining if the entity can use an action or not
@@ -346,7 +346,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Change the entity's color overlay
     /// </summary>
-    public void changeColor(Color color)
+    public void ChangeColor(Color color)
     {
         render.color = color;
     }
@@ -354,7 +354,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Restores the entity's default color
     /// </summary>
-    public void restoreColor()
+    public void RestoreColor()
     {
         render.color = Color.white;
     }
