@@ -17,6 +17,9 @@ public class BattleUI : MonoBehaviour {
     /// <summary>Text which appears when the player is choosing a target</summary>
     public Text targetingText;
 
+    /// <summary>On-screen button to cancel targetting if the player does not prefer using hotkeys</summary>
+    public Button targetCancelButton;
+
     /***BATTLE PROJECTION***/
     
     /// <summary>A box which is used to display the battle projection stats</summary>
@@ -46,12 +49,12 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "COMMANDING":
-                targetingText.enabled = false;
+                SetTargetting(false);
                 commandsList.SetActive(true);
                 break;
 
             case "SELECTION":
-                targetingText.enabled = true;
+                SetTargetting(true);
                 commandsList.SetActive(false);
                 SetProjection(false);
                 break;
@@ -61,7 +64,7 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "PLAYER_PROJECTION":
-                targetingText.enabled = false;
+                SetTargetting(true);
                 SetProjection(true);
                 break;
 
@@ -91,5 +94,12 @@ public class BattleUI : MonoBehaviour {
     private void SetProjection(bool b)
     {
         battleProjection.gameObject.SetActive(b);
+    }
+
+    //Shorthand to enable/disable targetting UI elements
+    private void SetTargetting(bool b)
+    {
+        targetingText.enabled = b;
+        targetCancelButton.gameObject.SetActive(b);
     }
 }

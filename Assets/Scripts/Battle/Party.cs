@@ -10,7 +10,7 @@ public abstract class Party : MonoBehaviour {
     protected BattleUI ui; //Set in the Battlemanager
 
     /// <summary>The character which represents the entire party outside of battle in the overworld </summary>
-    public GameObject avatar;
+    public SpriteRenderer avatarRender;
 
     /// <summary>List of playable party members</summary>
     public List<Entity> party; //
@@ -22,6 +22,7 @@ public abstract class Party : MonoBehaviour {
 
     //Organizes the party on startup
     protected virtual void Start () {
+        avatarRender.enabled = false;
 	}
 
     //The Different moves types an entity can perform

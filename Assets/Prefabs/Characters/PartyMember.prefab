@@ -36,9 +36,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4715278476901980}
+  - component: {fileID: 50932624261726826}
+  - component: {fileID: 61636825848010460}
   - component: {fileID: 95749105488544030}
   - component: {fileID: 212921081532394286}
-  - component: {fileID: 61636825848010460}
   - component: {fileID: 114863969687943290}
   m_Layer: 0
   m_Name: PartyMember
@@ -149,6 +150,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50932624261726826
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1319421905602470}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!61 &61636825848010460
 BoxCollider2D:
   m_ObjectHideFlags: 1

@@ -30,6 +30,10 @@ public class BattleManager : MonoBehaviour {
     /// </summary>
     public BattleUI ui;
 
+    //Active entity
+    private Entity activeEntity;
+    private string activeCommand;
+
     /***MAIN METHODS***/
 
     //Constructs both parties and attaches this battle manager to each of them
@@ -91,6 +95,8 @@ public class BattleManager : MonoBehaviour {
     public void IssueOrder(string type, Entity user, Entity target)
     {
         Order order = new Order(type, user, target);
+        activeEntity = user;
+        activeCommand = type;
 
         actions.Enqueue(order);
     }
@@ -102,7 +108,7 @@ public class BattleManager : MonoBehaviour {
         {
             state = STATE.ANIMATING;
             EnactOrder();
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(activeEntity.GetAnimationTime(activeCommand));
         }
 
         state = STATE.NORMAL;

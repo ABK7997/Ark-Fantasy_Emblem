@@ -27,7 +27,7 @@ public class Entity : MonoBehaviour {
     /// <summary> Hit Points </summary>
     public int maxHP; protected int _hp; //Health
 
-    //Offensive Stats
+    //OFFENSIVE STATS
     /// <summary> Physical strength </summary>
     public int baseAtk; protected int _atk;
     /// <summary> Magical strength </summary>
@@ -35,7 +35,7 @@ public class Entity : MonoBehaviour {
     /// <summary> Electrical strength </summary>
     public int baseVlt; protected int _vlt;
 
-    //Defensive Stats
+    //DEFENSIVE STATS
     /// <summary> Physical resistance </summary>
     public int baseDef; protected int _def;
     /// <summary> Magical resistance </summary>
@@ -43,7 +43,7 @@ public class Entity : MonoBehaviour {
     /// <summary> Electrical resistance </summary>
     public int baseStb; protected int _stb;
 
-    //Performance Stats
+    //PERFORMANCE STATS
     /// <summary> Determines critical hit rate </summary>
     public int baseSkl; protected int _skl;
     /// <summary> Lowers the chance of being hit by a critical </summary>
@@ -76,9 +76,9 @@ public class Entity : MonoBehaviour {
     //Components
     protected Animator anim; //The animator used for battle animations
     protected SpriteRenderer render; //Renders sprites
+    protected AnimationClip[] clips; //Animator clips
 
-    //Stat Display
-
+    //STAT DISPLAY
     /// <summary>The canvas containg relevant states, namely HP and speed progress bar</summary>
     public Canvas overhead;
     /// <summary>HP display</summary>
@@ -98,6 +98,7 @@ public class Entity : MonoBehaviour {
 
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
+        clips = anim.runtimeAnimatorController.animationClips;
 
         ResetStats();
         UpdateDisplay();
@@ -367,6 +368,30 @@ public class Entity : MonoBehaviour {
 
         render.color = colorChange;
 
+    }
+
+    /// <summary>
+    /// Method to find the length of the entity's current animation
+    /// 0 - IDLE
+    /// 1 - ATTACK
+    /// 2 - SKILL
+    /// 3 - MAGIC
+    /// 4 - TECH
+    /// 5 - ITEM
+    /// </summary>
+    /// <returns>length - length (in seconds) of the current animation clip</returns>
+    public float GetAnimationTime(string command)
+    {
+        foreach (AnimationClip c in clips)
+        {
+            //Debug.Log(c.name + ": " + c.length);
+        }
+
+        switch (command)
+        { 
+            case "ATTACK": return clips[1].length * 4;
+            default: return 1f;
+        }
     }
 
 }

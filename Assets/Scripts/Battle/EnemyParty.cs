@@ -7,11 +7,6 @@ using System.Collections;
 public class EnemyParty : Party {
 
     /// <summary>
-    /// The player's party
-    /// </summary>
-    public PlayerParty pParty;
-
-    /// <summary>
     /// Behaves very similary to the quivalent method of the PlayerParty class
     /// </summary>
     public override void OrganizeParty()
@@ -33,6 +28,8 @@ public class EnemyParty : Party {
     //TODO - HANDLE ENEMIES//
     void Update()
     {
+        base.Start();
+
         switch (bm.GetState())
         {
             case "ENEMY_PROJECTION":

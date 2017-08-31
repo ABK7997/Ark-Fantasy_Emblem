@@ -7,15 +7,10 @@ using System.Collections;
 /// </summary>
 public class PlayerParty : Party {
 
-    //Deactivates the command window on startup after calling base method
-    protected override void Start()
-    {
-        
-    }
-
     //Monitors the player's actions in battle
     void Update()
     {
+        base.Start();
 
         //Clicking Left Mouse
         if (Input.GetMouseButtonDown(0))

@@ -1,23 +1,15 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class Avatar : MonoBehaviour {
+public class PlayerAvatar : Avatar {
 
-    //Movement and Animation
-    public float movementSpeed;
-    private Animator anim;
-    private int direction = 0; private bool walking = false; //For animator
-
-	void Start () {
-        anim = GetComponent<Animator>();
-
-        movementSpeed *= Time.deltaTime;
-	}
-	
-	/// <summary>
+    /// <summary>
     /// Picks up keystrokes for freeroam movement
     /// </summary>
-	void Update () {
+    void Update()
+    {
         Vector3 newPos = new Vector3();
         walking = false;
 
@@ -52,15 +44,14 @@ public class Avatar : MonoBehaviour {
         }
 
         transform.position += newPos;
-        animate();
-	}
+        Animate();
+    }
 
-    /// <summary>
-    /// Controls animator state
-    /// </summary>
-    private void animate()
+    void OnTriggerEnter2D(Collider2D collide)
     {
-        anim.SetInteger("DIRECTION", direction);
-        anim.SetBool("WALKING", walking);
+        if (collide.gameObject.tag == "Enemy")
+        {
+            SceneManager.LoadScene(1);
+        }
     }
 }
