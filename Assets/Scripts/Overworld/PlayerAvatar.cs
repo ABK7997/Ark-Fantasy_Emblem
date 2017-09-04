@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+/// <summary>
+/// The avatar of the player, who wanders around the overworld but is unsuable in any other game state
+/// </summary>
 public class PlayerAvatar : Avatar {
 
     /// <summary>
@@ -51,7 +54,7 @@ public class PlayerAvatar : Avatar {
     {
         if (collide.gameObject.tag == "Enemy")
         {
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene("battle");
         }
     }
 }

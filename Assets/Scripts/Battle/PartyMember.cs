@@ -7,8 +7,6 @@ using UnityEngine.UI;
 /// </summary>
 public class PartyMember : Entity {
 
-    //Speed Bar
-
     /// <summary>The image on the character's stat canvas which shows his action bar charging</summary>
     public Image speedBar;
 

@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class EnemyAvatar : Avatar {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public List<Entity> party;
+
+    public List<Entity> getParty()
+    {
+        return party;
+    }
+
+    private void Awake()
+    {
+        DontDestroyOnLoad(this.gameObject);
+    }
 }

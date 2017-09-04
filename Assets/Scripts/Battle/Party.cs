@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 /// <summary>
@@ -9,21 +10,22 @@ public abstract class Party : MonoBehaviour {
     protected BattleManager bm; //Set in the BattleManager class during battle setup
     protected BattleUI ui; //Set in the Battlemanager
 
-    /// <summary>The character which represents the entire party outside of battle in the overworld </summary>
-    public SpriteRenderer avatarRender;
-
     /// <summary>List of playable party members</summary>
-    public List<Entity> party; //
+    public List<Entity> party; //For Enemies or PartyMembers
 
     /// <summary>List of enemies being fought</summary>
-    [HideInInspector] public List<Entity> oppositeParty;
+    [HideInInspector] public List<Entity> oppositeParty; //The others
 
     protected Entity activeMember, target; //The acting member and its target respectively
 
     //Organizes the party on startup
     protected virtual void Start () {
-        avatarRender.enabled = false;
 	}
+
+    protected virtual void Update()
+    {
+        
+    }
 
     //The Different moves types an entity can perform
     protected enum COMMAND
@@ -35,7 +37,7 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)
     /// </summary>
-    public abstract void OrganizeParty();
+    public abstract void OrganizeParty(Vector2[] coords);
 
     //Party Management
     public void Add(Entity e)

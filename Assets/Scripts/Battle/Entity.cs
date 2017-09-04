@@ -66,7 +66,7 @@ public class Entity : MonoBehaviour {
     //Target Color
     protected Color target = Color.red;
     protected Color active = Color.green;
-    protected Color normal = Color.white;
+    protected Color normal;
     protected Color hover = Color.gray;
 
     //Speed
@@ -89,7 +89,7 @@ public class Entity : MonoBehaviour {
     public float barsHeight;
 
     //Modifers
-    private float speedMultiplier = 5f; //Basic multiplier to speed up or slow down all combat
+    private float speedMultiplier = 3f; //Basic multiplier to speed up or slow down all combat
 
     //Sets base stats, components, and initial display
     protected virtual void Start()
@@ -102,6 +102,8 @@ public class Entity : MonoBehaviour {
 
         ResetStats();
         UpdateDisplay();
+
+        normal = render.color; //Set the normal color to the sprite's starting color
     }
 
     /// <summary>
@@ -228,7 +230,7 @@ public class Entity : MonoBehaviour {
             if (Hp > maxHP) _hp = maxHP;
 
             //Death
-            else if (Hp < 0)
+            else if (Hp <= 0)
             {
                 _hp = 0;
                 status = STATUS.DEAD;
@@ -387,11 +389,15 @@ public class Entity : MonoBehaviour {
             //Debug.Log(c.name + ": " + c.length);
         }
 
+        /*
         switch (command)
         { 
             case "ATTACK": return clips[1].length * 4;
             default: return 1f;
         }
+        */
+
+        return 0;
     }
 
 }

@@ -1,16 +1,23 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Subclass of Party which contains the Player's characters
 /// </summary>
 public class PlayerParty : Party {
 
-    //Monitors the player's actions in battle
-    void Update()
+    protected override void Start()
     {
         base.Start();
+    }
+
+    //Monitors the player's actions in battle
+    protected override void Update()
+    {
+        if (bm == null) return; //Battle Manager not set
+
+        base.Update();
 
         //Clicking Left Mouse
         if (Input.GetMouseButtonDown(0))
@@ -74,11 +81,22 @@ public class PlayerParty : Party {
     /// <summary>
     /// Called by BattleManager to setup party configuration on the board
     /// </summary>
-    public override void OrganizeParty()
+    public override void OrganizeParty(Vector2[] coords)
     {
+        List<PartyMember> fp = FindObjectOfType<FullParty>().getParty();
+
+        int j = 0;
+        foreach (PartyMember p in fp)
+        {
+            party.Add(p);
+
+            j++;
+            if (j == 3) break;
+        }
+
         for (int i = 0; i < party.Count; i++)
         {
-            Instantiate(party[i], new Vector3(0, 2-i), Quaternion.identity, transform);
+            Instantiate(party[i], coords[i], Quaternion.identity, transform);
         }
 
         PartyMember[] members = FindObjectsOfType<PartyMember>();

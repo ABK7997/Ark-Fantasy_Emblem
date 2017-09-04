@@ -66,6 +66,7 @@ public class BattleUI : MonoBehaviour {
             case "PLAYER_PROJECTION":
                 SetTargetting(true);
                 SetProjection(true);
+                SetTargetting(false);
                 break;
 
             case "ENEMY_PROJECTION":

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Contains both parties and manages the flow of battle
 /// </summary>
-public class BattleManager : MonoBehaviour {
+public class BattleManager : Manager {
 
     /***PLAYERS AND ENEMIES***/
     ///<summary>A party containing the player's own characters</summary> 
@@ -14,6 +14,9 @@ public class BattleManager : MonoBehaviour {
 
     ///<summary>A party containing the enemies the player is fighting</summary>
     public EnemyParty eParty;
+
+    ///<summary> Battle Board </summary>
+    public BoardManager board;
 
     /***FLOW OF BATTLE***/
     private Queue<Order> actions = new Queue<Order>(); //Stores actions for all entities and performs them in order
@@ -35,21 +38,25 @@ public class BattleManager : MonoBehaviour {
     private string activeCommand;
 
     /***MAIN METHODS***/
+    protected override void Awake()
+    {
+        base.Awake();
+    }
 
     //Constructs both parties and attaches this battle manager to each of them
     void Start()
     {
+        //Assign manager
+        pParty.SetBattleManager(this, ui);
+        eParty.SetBattleManager(this, ui);
+
         //Organize parties
-        pParty.OrganizeParty();
-        eParty.OrganizeParty();
+        pParty.OrganizeParty(board.playerCoordinates);
+        eParty.OrganizeParty(board.enemyCoordinates);
 
         //Assign opposite parties
         pParty.ConstructOppositeParty(eParty.party);
         eParty.ConstructOppositeParty(pParty.party);
-
-        //Assign manager
-        pParty.SetBattleManager(this, ui);
-        eParty.SetBattleManager(this, ui);
     }
 	
     //Controls the flow of battle with Order Queue
@@ -108,7 +115,7 @@ public class BattleManager : MonoBehaviour {
         {
             state = STATE.ANIMATING;
             EnactOrder();
-            yield return new WaitForSeconds(activeEntity.GetAnimationTime(activeCommand));
+            yield return new WaitForSeconds(1f);
         }
 
         state = STATE.NORMAL;

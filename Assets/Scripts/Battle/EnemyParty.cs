@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// The party containing the enemies the player's party is currently fighting
@@ -9,11 +9,13 @@ public class EnemyParty : Party {
     /// <summary>
     /// Behaves very similary to the quivalent method of the PlayerParty class
     /// </summary>
-    public override void OrganizeParty()
+    public override void OrganizeParty(Vector2[] coords)
     {
-        for (int i = 0; i < party.Count; i++)
+        party = FindObjectOfType<EnemyAvatar>().getParty();
+
+        for (int i = 0; i < party.Count; i ++)
         {
-            Instantiate(party[i], new Vector3(2, 2-i), Quaternion.identity, transform);
+            Instantiate(party[i], coords[i], Quaternion.identity, transform);
         }
 
         Enemy[] members = FindObjectsOfType<Enemy>();
@@ -26,9 +28,11 @@ public class EnemyParty : Party {
     }
 
     //TODO - HANDLE ENEMIES//
-    void Update()
+    protected override void Update()
     {
-        base.Start();
+        if (bm == null) return; //Battle Manager not set
+
+        base.Update();
 
         switch (bm.GetState())
         {
