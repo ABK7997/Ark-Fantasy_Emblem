@@ -271,7 +271,7 @@ MonoBehaviour:
   deathSprite: {fileID: 0}
   type: Organic
   maxHP: 10
-  baseAtk: 3
+  baseAtk: 10
   baseMag: 0
   baseVlt: 0
   baseDef: 0

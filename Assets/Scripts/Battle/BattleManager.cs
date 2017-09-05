@@ -37,6 +37,9 @@ public class BattleManager : Manager {
     private Entity activeEntity;
     private string activeCommand;
 
+    private int hitChance;
+    private int critChance;
+
     /***MAIN METHODS***/
     protected override void Awake()
     {
@@ -145,7 +148,7 @@ public class BattleManager : Manager {
         //Perform action
         switch (type)
         {
-            case "ATTACK": user.Attack(target); break;
+            case "ATTACK": user.Attack(type); break;
         }
     }
 

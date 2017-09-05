@@ -49,8 +49,8 @@ public class EnemyParty : Party {
             if (e.Ready && bm.GetState() == "NORMAL")
             {
                 e.Behavior();
-                ui.SetProjectionInfo(e.Atk, 100, 0);
                 bm.SetState("ENEMY_PROJECTION");
+                CalculateAction("ATTACK");
 
                 e.ChangeColor("active");
                 target.ChangeColor("target");

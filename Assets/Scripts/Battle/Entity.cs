@@ -61,6 +61,10 @@ public class Entity : MonoBehaviour {
     /// <summary> Determines how fast the speed gauge increases </summary>
     public int baseSpd; protected int _spd;
 
+    //Temporary stats
+    private int hitChance, critChance, physicalDmg, magicDmg, techDmg;
+    private Entity target;
+
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
     //Conditions and status effects
@@ -74,7 +78,7 @@ public class Entity : MonoBehaviour {
     public STATUS status = STATUS.NORMAL;
 
     //Target Color
-    protected Color target = Color.red;
+    protected Color targeted = Color.red;
     protected Color active = Color.green;
     protected Color normal;
     protected Color hover = Color.gray;
@@ -99,7 +103,7 @@ public class Entity : MonoBehaviour {
     public float barsHeight;
 
     //Modifers
-    private float speedMultiplier = 10f; //Basic multiplier to speed up or slow down all combat
+    private float speedMultiplier = 2f; //Basic multiplier to speed up or slow down all combat
 
     //Sets base stats, components, and initial display
     protected virtual void Start()
@@ -124,7 +128,7 @@ public class Entity : MonoBehaviour {
         {
             case STATUS.NORMAL: render.sprite = normalSprite; break;
             case STATUS.DEAD: render.sprite = deathSprite; break;
-            
+
             default: break;
         }
     }
@@ -135,7 +139,7 @@ public class Entity : MonoBehaviour {
     public virtual void UpdateTime() {
         if (status == STATUS.DEAD) return; //Do nothing if dead
 
-        if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier );
+        if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier);
         else ready = true;
     }
 
@@ -233,9 +237,29 @@ public class Entity : MonoBehaviour {
     /// Primary Command; uses physical attack based on ATK stat to harm one other entity
     /// </summary>
     /// <param name="e">Entity to attack - can be friendly</param>
-    public void Attack(Entity e)
+    public void Attack(string type)
     {
-        e.Hp += -Atk;
+        bool landedHit = false;
+        bool landedCrit = false;
+        int totalDamage = 0;
+
+        //Calculate hit or miss
+        if (Random.Range(0, 100) <= hitChance) landedHit = true;
+        if (Random.Range(0, 100) <= critChance) landedCrit = true;
+
+        switch (type)
+        {
+            case "ATTACK": totalDamage = physicalDmg; break;
+            case "MAGIC": totalDamage = magicDmg; break;
+            case "TECH": totalDamage = techDmg; break;
+
+            default: Debug.Log("Invalid attack type: " + type); break;
+        }
+
+        if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
+        if (landedHit) target.Hp -= totalDamage; //Hit
+
+        //Animate
         anim.enabled = true;
         anim.SetTrigger("ATTACK");
         ResetTimer();
@@ -386,7 +410,7 @@ public class Entity : MonoBehaviour {
 
         switch (code)
         {
-            case "target": colorChange = target; break;
+            case "target": colorChange = targeted; break;
             case "active": colorChange = active; break;
             case "normal": colorChange = normal; break;
             case "hover": colorChange = hover; break;
@@ -425,4 +449,132 @@ public class Entity : MonoBehaviour {
         return 0;
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="hit"></param>
+    /// <param name="crit"></param>
+    public void SetTemporaryStats(Entity t)
+    {
+        target = t;
+        hitChance = HitChance();
+        critChance = CritChance();
+
+        //Physical Attack Calculation
+        physicalDmg = Atk - t.Def;
+        if (physicalDmg < 0) physicalDmg = 0;
+
+        //Magic Attack Calculation
+        magicDmg = Mag - t.Res;
+        if (magicDmg < 0) magicDmg = 0;
+
+        //Tech Attack Calculation
+        techDmg = Vlt - t.Stb;
+        if (techDmg < 0) techDmg = 0;
+    }
+
+    //Accuracy
+    protected int AccuracyCalculation()
+    {
+        int accuracy = 70; //base acc = 70
+        accuracy += Skl * 2; // + SKL * 2
+        accuracy += Lck; // + LCK
+
+        return accuracy;
+    }
+
+    //Evasion
+    protected int EvasionCalculation()
+    {
+        int evade = 0; //base evd = 0
+        evade += target.Spd; // + SPD
+        evade += target.Lck / 2; // + LCK/2
+
+        return evade;
+    }
+
+    //Hit Chance
+    protected int HitChance()
+    {
+        int hit = AccuracyCalculation() - EvasionCalculation();
+
+        if (hit < 0) hit = 0;
+        if (hit > 99) hit = 99;
+
+        return hit;
+    }
+
+    //Crit Accuracy
+    protected int CritAccuracyCalculation()
+    {
+        int crit = 1;
+        crit += Skl / 2;
+
+        return crit;
+    }
+
+    //Crit Evasion
+    protected int CritEvasionCalcuation()
+    {
+        int evd = 0;
+        evd += target.Lck;
+
+        return evd;
+    }
+
+    //Crit Hit Chance
+    protected int CritChance()
+    {
+        int crit = CritAccuracyCalculation() - CritEvasionCalcuation();
+        if (crit > 99) crit = 99;
+        if (crit < 0) crit = 0;
+
+        return crit;
+    }
+
+    //Temporary Stats Getter/Setter
+
+    /// <summary>
+    /// Physical damage possible; based on ATK
+    /// </summary>
+    public int PhysicalDmg {
+         get { return physicalDmg; }
+         set { physicalDmg = value; }  
+    }
+
+    /// <summary>
+    /// Magical effectiveness possible; based on MAG
+    /// </summary>
+    public int MagicDmg
+    {
+        get { return magicDmg; }
+        set { magicDmg = value; }
+    }
+
+    /// <summary>
+    /// Technical effectivenes possibly; based on VLT
+    /// </summary>
+    public int TechDmg
+    {
+        get { return techDmg; }
+        set { techDmg = value; }
+    }
+
+    /// <summary>
+    /// Chance of hitting the intended target
+    /// </summary>
+    public int Hit
+    {
+        get { return hitChance; }
+        set { hitChance = value; }
+    }
+
+    /// <summary>
+    /// Chancing of landing a critical multiplier during an attack
+    /// </summary>
+    public int Crit
+    {
+        get { return critChance; }
+        set { critChance = value; }
+    }
 }

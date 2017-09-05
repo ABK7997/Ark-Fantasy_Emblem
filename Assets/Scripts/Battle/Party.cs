@@ -141,11 +141,22 @@ public abstract class Party : MonoBehaviour {
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
     protected void CalculateAction(string type)
     {
+        activeMember.SetTemporaryStats(target);
+
         switch (type)
         {
             case "ATTACK":
-                ui.SetProjectionInfo(activeMember.Atk, 100, 0);
+                ui.SetProjectionInfo(activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit);
                 break;
+
+            case "MAGIC":
+                ui.SetProjectionInfo(activeMember.MagicDmg, activeMember.Hit, activeMember.Crit);
+                break;
+
+            case "TECH":
+                ui.SetProjectionInfo(activeMember.TechDmg, activeMember.Hit, activeMember.Crit);
+                break;
+
             default: break;
         }
     }
