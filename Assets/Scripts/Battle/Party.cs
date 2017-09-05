@@ -24,7 +24,13 @@ public abstract class Party : MonoBehaviour {
 
     protected virtual void Update()
     {
-        
+        if (bm.GetState() == "NORMAL")
+        {
+            foreach (Entity e in party)
+            {
+                e.UpdateTime();
+            }
+        }
     }
 
     //The Different moves types an entity can perform
@@ -37,7 +43,7 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)
     /// </summary>
-    public abstract void OrganizeParty(Vector2[] coords);
+    public abstract void OrganizeParty(Vector2[] coords, int scaling);
 
     //Party Management
     public void Add(Entity e)
@@ -63,7 +69,7 @@ public abstract class Party : MonoBehaviour {
     {
         foreach (Entity e in party)
         {
-            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.GetStatus() != "DEAD") return e;
         }
 
         return null;
@@ -74,7 +80,7 @@ public abstract class Party : MonoBehaviour {
     {
         foreach (Entity e in oppositeParty)
         {
-            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.GetStatus() != "DEAD") return e;
         }
 
         return null;
@@ -85,12 +91,12 @@ public abstract class Party : MonoBehaviour {
     {
         foreach (Entity e in party)
         {
-            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.GetStatus() != "DEAD") return e;
         }
 
         foreach (Entity e in oppositeParty)
         {
-            if (e.IsHovering() && e.Status != Entity.STATUS.DEAD) return e;
+            if (e.IsHovering() && e.GetStatus() != "DEAD") return e;
         }
 
         return null;
@@ -167,4 +173,49 @@ public abstract class Party : MonoBehaviour {
         target = null;
     }
 
+    /***GET PARTY***/
+
+    /// <summary>
+    /// Sends the entire party to another class
+    /// </summary>
+    /// <returns>party - this particular party instance (either player or enemy)</returns>
+    public List<Entity> GetParty()
+    {
+        return party;
+    }
+
+    /// <summary>
+    /// Only get the party members still alive
+    /// </summary>
+    /// <returns>retParty - the members with HP above 0</returns>
+    public List<Entity> GetLivingParty()
+    {
+        List<Entity> retParty = party;
+
+        foreach (Entity e in retParty)
+        {
+            if (e.GetStatus() == "DEAD")
+            {
+                retParty.Remove(e);
+            }
+        }
+
+        return retParty;
+    }
+
+    /// <summary>
+    /// Get all members of the opposite party who are still alive
+    /// </summary>
+    /// <returns></returns>
+    public List<Entity> GetLivingEnemies()
+    {
+        List<Entity> enemies = oppositeParty;
+
+        foreach (Entity e in enemies)
+        {
+            if (e.GetStatus() == "DEAD") enemies.Remove(e);
+        }
+
+        return enemies;
+    }
 }

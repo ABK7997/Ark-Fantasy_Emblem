@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Contains both parties and manages the flow of battle
@@ -51,8 +51,8 @@ public class BattleManager : Manager {
         eParty.SetBattleManager(this, ui);
 
         //Organize parties
-        pParty.OrganizeParty(board.playerCoordinates);
-        eParty.OrganizeParty(board.enemyCoordinates);
+        pParty.OrganizeParty(board.playerCoordinates, board.scaling);
+        eParty.OrganizeParty(board.enemyCoordinates, board.scaling);
 
         //Assign opposite parties
         pParty.ConstructOppositeParty(eParty.party);
@@ -66,15 +66,20 @@ public class BattleManager : Manager {
         {
             StartCoroutine(Animate());
 
-            foreach (Entity e in pParty.party)
-            {
-                e.UpdateTime();
-            }
-            foreach (Entity e in eParty.party)
-            {
-                e.UpdateTime();
-            }
+            CheckDeath(); //player party KO
         }
+    }
+
+    /// <summary>
+    /// End battle and go to Game Over screen if all the player's party members are dead
+    /// </summary>
+    public void CheckDeath()
+    {
+        List<Entity> partyMembers = pParty.GetLivingParty();
+
+        if (partyMembers.Count == 0) SceneManager.LoadScene("game_over");
+
+        return;
     }
 
     /***ACTIONS***/
@@ -192,8 +197,14 @@ public class BattleManager : Manager {
         ui.ChangingState();
     }
 
+    /// <summary>
+    /// Get the current game state; used frequently by other classes
+    /// </summary>
+    /// <returns>state - the game state of the battle</returns>
     public string GetState()
     {
         return state + "";
     }
+
+
 }

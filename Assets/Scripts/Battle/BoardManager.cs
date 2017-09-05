@@ -35,16 +35,11 @@ public class BoardManager : MonoBehaviour {
     private List<Vector3> gridPositions = new List<Vector3>(); //A precise layout of coordinates set up in advance for placing tiles
     private Transform boardHolder; //Transform generated in BoardSetup() which holds all the tiles as children of one GameObject 
 
-    private void Awake()
-    {
-        StartingCoords();
-    }
-
     //Runs InitializeGrid() and BoardSetup() functions to set the stage for battle
     void Start()
     {
         cam.transform.position = new Vector3(2.5f * (columns - 1), 2.5f * (rows - 1), -1); //Center camera
-        cam.orthographicSize = scaling + (columns * 1.75f);
+        cam.orthographicSize = scaling + (rows * 1.75f);
 
         rows *= scaling;
         columns *= scaling;
@@ -76,19 +71,6 @@ public class BoardManager : MonoBehaviour {
                 GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
                 instance.transform.SetParent(boardHolder);
             }
-        }
-    }
-
-    void StartingCoords()
-    {
-        foreach (Vector2 v in playerCoordinates)
-        {
-            v.Set(v.x * scaling, v.y * scaling);
-        }
-
-        foreach (Vector2 v in enemyCoordinates)
-        {
-            v.Set(v.x * scaling, v.y * scaling);
         }
     }
 }

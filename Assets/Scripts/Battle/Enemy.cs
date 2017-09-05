@@ -38,9 +38,11 @@ public class Enemy : Entity {
     //Get a random player from the opposite party to target
     protected Entity GetRandomPlayer()
     {
-        int selection = Random.Range(0, party.oppositeParty.Count);
+        List<Entity> targets = party.GetLivingEnemies();
 
-        return party.oppositeParty[selection];
+        int selection = Random.Range(0, targets.Count);
+
+        return targets[selection];
     }
 
     //Get a random ally from this one's enemy party to target

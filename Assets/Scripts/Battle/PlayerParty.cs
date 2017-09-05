@@ -81,7 +81,7 @@ public class PlayerParty : Party {
     /// <summary>
     /// Called by BattleManager to setup party configuration on the board
     /// </summary>
-    public override void OrganizeParty(Vector2[] coords)
+    public override void OrganizeParty(Vector2[] coords, int scaling)
     {
         List<PartyMember> fp = FindObjectOfType<FullParty>().getParty();
 
@@ -96,7 +96,7 @@ public class PlayerParty : Party {
 
         for (int i = 0; i < party.Count; i++)
         {
-            Instantiate(party[i], coords[i], Quaternion.identity, transform);
+            Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
         }
 
         PartyMember[] members = FindObjectsOfType<PartyMember>();

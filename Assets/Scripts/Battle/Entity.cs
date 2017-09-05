@@ -21,6 +21,16 @@ public class Entity : MonoBehaviour {
     /// <summary> Inside of the statView, contains all momentary stat information for a character - constantly updated </summary>
     public Text statText;
 
+    /// <summary>
+    /// Typical side-facing sprite
+    /// </summary>
+    public Sprite normalSprite;
+
+    /// <summary>
+    /// The sprite used for when an entity is KO
+    /// </summary>
+    public Sprite deathSprite;
+
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
     public string type;
 
@@ -56,7 +66,7 @@ public class Entity : MonoBehaviour {
     //Conditions and status effects
     public enum STATUS
     {
-        NORMAL, DEAD
+        NORMAL, ILL, DEFENDING, DEAD
     }
 
     /// <summary> Status variable </summary>
@@ -89,7 +99,7 @@ public class Entity : MonoBehaviour {
     public float barsHeight;
 
     //Modifers
-    private float speedMultiplier = 3f; //Basic multiplier to speed up or slow down all combat
+    private float speedMultiplier = 10f; //Basic multiplier to speed up or slow down all combat
 
     //Sets base stats, components, and initial display
     protected virtual void Start()
@@ -104,6 +114,19 @@ public class Entity : MonoBehaviour {
         UpdateDisplay();
 
         normal = render.color; //Set the normal color to the sprite's starting color
+
+        anim.enabled = false;
+    }
+
+    void Update()
+    {
+        switch (status)
+        {
+            case STATUS.NORMAL: render.sprite = normalSprite; break;
+            case STATUS.DEAD: render.sprite = deathSprite; break;
+            
+            default: break;
+        }
     }
 
     /// <summary>
@@ -112,7 +135,7 @@ public class Entity : MonoBehaviour {
     public virtual void UpdateTime() {
         if (status == STATUS.DEAD) return; //Do nothing if dead
 
-        if (moveTimer < 100) moveTimer += Time.deltaTime * speedMultiplier * Spd;
+        if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier );
         else ready = true;
     }
 
@@ -138,17 +161,6 @@ public class Entity : MonoBehaviour {
         Spd = baseSpd;
 
         ready = false;
-    }
-
-    /// <summary>
-    /// Primary Command; uses physical attack based on ATK stat to harm one other entity
-    /// </summary>
-    /// <param name="e">Entity to attack - can be friendly</param>
-    public void Attack(Entity e)
-    {
-        e.Hp += -Atk;
-        anim.SetTrigger("ATTACK");
-        ResetTimer();
     }
 
     /// <summary>
@@ -216,6 +228,19 @@ public class Entity : MonoBehaviour {
         statView.enabled = false;
     }
 
+    /***BATTLE METHODS***/
+    /// <summary>
+    /// Primary Command; uses physical attack based on ATK stat to harm one other entity
+    /// </summary>
+    /// <param name="e">Entity to attack - can be friendly</param>
+    public void Attack(Entity e)
+    {
+        e.Hp += -Atk;
+        anim.enabled = true;
+        anim.SetTrigger("ATTACK");
+        ResetTimer();
+    }
+
     /***GETTER and SETTER METHODS***/
 
     /// <summary>
@@ -225,6 +250,8 @@ public class Entity : MonoBehaviour {
     {
         get { return _hp; }
         set {
+            anim.enabled = true;
+
             _hp = value; //change
 
             if (Hp > maxHP) _hp = maxHP;
@@ -236,6 +263,8 @@ public class Entity : MonoBehaviour {
                 status = STATUS.DEAD;
                 moveTimer = 0f;
                 ready = false;
+
+                anim.enabled = false;
             }
 
             UpdateDisplay();
@@ -341,13 +370,9 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// Getter and setter for STATUS enum
     /// </summary>
-    public STATUS Status
+    public string GetStatus()
     {
-        get { return status; }
-        set
-        {
-            status = value;
-        }
+        return status + "";
     }
 
     /***BATTLE PROJECTION INFO***/

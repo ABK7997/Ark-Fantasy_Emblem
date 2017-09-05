@@ -17,7 +17,7 @@ public class PartyMember : Entity {
 
         speedBar.rectTransform.sizeDelta = new Vector2(0, barsHeight);
 
-        moveTimer += Random.Range(0.000f, 50.000f);
+        //moveTimer += Random.Range(0.000f, 50.000f);
     }
 
     /// <summary>

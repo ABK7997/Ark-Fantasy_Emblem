@@ -67,11 +67,19 @@ public class BattleUI : MonoBehaviour {
                 SetTargetting(true);
                 SetProjection(true);
                 SetTargetting(false);
+
+                //battleProjection.rectTransform.anchorMin = new Vector2(0, 0);
+                //battleProjection.rectTransform.anchorMax = new Vector2(0, 0);
+
                 break;
 
             case "ENEMY_PROJECTION":
                 SetProjection(true);
                 cancelButton.gameObject.SetActive(false);
+
+                //battleProjection.rectTransform.anchorMin = new Vector2(1, 0);
+                //battleProjection.rectTransform.anchorMax = new Vector2(1, 0);
+
                 break;
 
             default: break;
