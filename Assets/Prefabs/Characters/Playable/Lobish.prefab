@@ -372,12 +372,12 @@ MonoBehaviour:
   baseAtk: 11
   baseMag: 0
   baseVlt: 7
-  baseDef: 11
+  baseDef: 8
   baseRes: 4
-  baseStb: 5
+  baseStb: 4
   baseSkl: 5
   baseLck: 7
-  baseSpd: 6
+  baseSpd: 7
   status: 0
   overhead: {fileID: 223140014718741244}
   hpBar: {fileID: 114742846879012260}

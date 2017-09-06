@@ -8,6 +8,12 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class BattleManager : Manager {
 
+    /***GAME AT LARGE***/
+    private Overworld ow;
+
+    private FullParty fp;
+    private EnemyAvatar ea;
+
     /***PLAYERS AND ENEMIES***/
     ///<summary>A party containing the player's own characters</summary> 
     public PlayerParty pParty;
@@ -33,10 +39,6 @@ public class BattleManager : Manager {
     /// </summary>
     public BattleUI ui;
 
-    //Active entity
-    private Entity activeEntity;
-    private string activeCommand;
-
     private int hitChance;
     private int critChance;
 
@@ -44,6 +46,11 @@ public class BattleManager : Manager {
     protected override void Awake()
     {
         base.Awake();
+
+        ow = FindObjectOfType<Overworld>();
+        ow.Activate(false);
+
+        board.BoardInit(ow.encounteredParty.bi);
     }
 
     //Constructs both parties and attaches this battle manager to each of them
@@ -54,8 +61,11 @@ public class BattleManager : Manager {
         eParty.SetBattleManager(this, ui);
 
         //Organize parties
-        pParty.OrganizeParty(board.playerCoordinates, board.scaling);
-        eParty.OrganizeParty(board.enemyCoordinates, board.scaling);
+        fp = FindObjectOfType<FullParty>();
+        pParty.OrganizeParty(board.playerCoordinates, board.scaling, fp.GetParty());
+
+        ea = ow.encounteredParty;
+        eParty.OrganizeParty(board.enemyCoordinates, board.scaling, ea.GetParty());
 
         //Assign opposite parties
         pParty.ConstructOppositeParty(eParty.party);
@@ -70,6 +80,7 @@ public class BattleManager : Manager {
             StartCoroutine(Animate());
 
             CheckDeath(); //player party KO
+            CheckVictory(); //enemy party KO
         }
     }
 
@@ -81,8 +92,23 @@ public class BattleManager : Manager {
         List<Entity> partyMembers = pParty.GetLivingParty();
 
         if (partyMembers.Count == 0) SceneManager.LoadScene("game_over");
+    }
 
-        return;
+    /// <summary>
+    /// End battle and return to overworld once all enemies are defeated
+    /// </summary>
+    public void CheckVictory()
+    {
+        List<Entity> partyMembers = eParty.GetLivingParty();
+
+        if (partyMembers.Count == 0)
+        {
+            //Revive overworld
+            ow.activeEnemies.Remove(ea);
+            Destroy(ea.gameObject);
+            ow.Activate(true);
+            SceneManager.LoadScene("overworld");
+        }
     }
 
     /***ACTIONS***/
@@ -110,8 +136,6 @@ public class BattleManager : Manager {
     public void IssueOrder(string type, Entity user, Entity target)
     {
         Order order = new Order(type, user, target);
-        activeEntity = user;
-        activeCommand = type;
 
         actions.Enqueue(order);
     }
@@ -143,7 +167,7 @@ public class BattleManager : Manager {
         Order currentOrder = actions.Dequeue();
         string type = currentOrder.type;
         Entity user = currentOrder.user;
-        Entity target = currentOrder.target;
+        //Entity target = currentOrder.target;
 
         //Perform action
         switch (type)

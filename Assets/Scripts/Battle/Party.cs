@@ -43,7 +43,21 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)
     /// </summary>
-    public abstract void OrganizeParty(Vector2[] coords, int scaling);
+    public void OrganizeParty(Vector2[] coords, int scaling, List<Entity> newParty)
+    {
+        int j = 0;
+        foreach (Entity e in newParty)
+        {
+            party.Add(e);
+        }
+
+        for (int i = 0; i < party.Count; i++)
+        {
+            Entity e = Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
+            party[i] = e;
+            party[i].SetParty(this);
+        }
+    }
 
     //Party Management
     public void Add(Entity e)

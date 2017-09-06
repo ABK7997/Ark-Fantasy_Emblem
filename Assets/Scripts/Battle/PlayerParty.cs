@@ -78,36 +78,6 @@ public class PlayerParty : Party {
         }
     }
 
-    /// <summary>
-    /// Called by BattleManager to setup party configuration on the board
-    /// </summary>
-    public override void OrganizeParty(Vector2[] coords, int scaling)
-    {
-        List<PartyMember> fp = FindObjectOfType<FullParty>().getParty();
-
-        int j = 0;
-        foreach (PartyMember p in fp)
-        {
-            party.Add(p);
-
-            j++;
-            if (j == 3) break;
-        }
-
-        for (int i = 0; i < party.Count; i++)
-        {
-            Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
-        }
-
-        PartyMember[] members = FindObjectsOfType<PartyMember>();
-
-        for (int i = 0; i < party.Count; i++)
-        {
-            party[i] = members[i];
-            party[i].SetParty(this);
-        }
-    }
-
     /***COMMAND METHODS***/
     /// <summary>
     /// Called by multiple buttons to dictate the type of Order issued

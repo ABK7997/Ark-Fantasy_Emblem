@@ -9,8 +9,6 @@ public class GameManager : MonoBehaviour {
 
     protected GameManager() { }
 
-    //public string globalVar = "Game Manager global";
-
     private void Awake()
     {
         DontDestroyOnLoad(gameObject);

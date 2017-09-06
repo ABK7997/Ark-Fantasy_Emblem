@@ -2,19 +2,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FullParty : Singleton<FullParty> {
+public class FullParty : MonoBehaviour {
 
-    public List<PartyMember> party;
+    public List<Entity> party;
 
-    protected FullParty() { }
-
-    public List<PartyMember> getParty()
+    public List<Entity> GetParty()
     {
         return party; 
-    }
-
-    void Start()
-    {
-
     }
 }

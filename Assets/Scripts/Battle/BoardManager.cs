@@ -8,36 +8,36 @@ using System.Collections;
 public class BoardManager : MonoBehaviour {
 
     //Board - General
+
     /// <summary>The Main Camera</summary>
     public Camera cam;
 
-    /// <summary>X and Y sizese respectively</summary>
-    public int columns, rows;
-
-    /// <summary>
-    /// Places where player party members will start on the board
-    /// </summary>
-    public Vector2[] playerCoordinates;
-
-    /// <summary>
-    /// Places where the enemy party members will start on the board
-    /// </summary>
-    public Vector2[] enemyCoordinates;
-
-    /// <summary>A variable which helps with sizing the board properly</summary>
     public int scaling;
 
-    /// <summary>
-    /// The tile set which is chosen from at random to create the board
-    /// </summary>
-    public GameObject[] tiles;
+    //Data pulled from BoardInfo class
+    private int columns, rows;
+    [HideInInspector] public Vector2[] playerCoordinates;
+    [HideInInspector] public Vector2[] enemyCoordinates;
 
+    private GameObject[] tiles;
+
+    //Inherent
     private List<Vector3> gridPositions = new List<Vector3>(); //A precise layout of coordinates set up in advance for placing tiles
     private Transform boardHolder; //Transform generated in BoardSetup() which holds all the tiles as children of one GameObject 
 
-    //Runs InitializeGrid() and BoardSetup() functions to set the stage for battle
-    void Start()
+    /// <summary>
+    /// Runs InitializeGrid() and BoardSetup() functions to set the stage for battle
+    /// </summary>
+    /// <param name="bi">The board information from the enemy party encountered</param>
+    public void BoardInit(BoardInfo bi)
     {
+        //Information from BoardInfo class
+        playerCoordinates = bi.playerCoordinates;
+        enemyCoordinates = bi.enemyCoordinates;
+        columns = bi.columns;
+        rows = bi.rows;
+        tiles = bi.tiles;
+
         cam.transform.position = new Vector3(2.5f * (columns - 1), 2.5f * (rows - 1), -1); //Center camera
         cam.orthographicSize = scaling + (rows * 1.75f);
 

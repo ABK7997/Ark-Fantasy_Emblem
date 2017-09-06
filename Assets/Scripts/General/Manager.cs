@@ -10,28 +10,11 @@ public class Manager : MonoBehaviour {
 
     protected virtual void Awake()
     {
-        GameManager gm = FindObjectOfType<GameManager>(); //Search for existing object of type T
-        string sceneName = SceneManager.GetActiveScene().name;
-
-        //If there is more than 1 singleton (which would be an ERROR)
-        if (FindObjectsOfType<GameManager>().Length > 1)
+        //Instantiate first game manager
+        if (CheckSingle<GameManager>() == 1)
         {
-            Debug.LogError("Scene: " + sceneName + ": [Singleton] Something went really wrong " +
-                " - there should never be more than 1 singleton!" +
-                " Reopening the scene might fix it.");
-        }
-
-        //Object does not exist; instantiate new one
-        else if (gm == null)
-        {
+            Debug.Log(SceneManager.GetActiveScene().name + ": Game Manager did not yet exist, so it was created.");
             Instantiate(Resources.Load("Game Manager"));
-            Debug.Log("Game Manager created");
-        }
-
-        //Object already exists
-        else
-        {
-            Debug.Log("Game Manager already exists");
         }
     }
 
@@ -45,5 +28,38 @@ public class Manager : MonoBehaviour {
     public void Quit()
     {
         Application.Quit();
+    }
+
+    //Check if any singleton has been instantiated or not.
+    //0 - more than 1 singleton. Serious error
+    //1 - no singleton exists
+    //-1 - a singleton is already in existence
+    protected int CheckSingle<T>() where T : MonoBehaviour
+    {
+        T singleton = FindObjectOfType<T>();
+        string sceneName = SceneManager.GetActiveScene().name;
+
+        //If there is more than 1 singleton (which would be an ERROR)
+        if (FindObjectsOfType<GameManager>().Length > 1)
+        {
+            Debug.LogError("Scene: " + sceneName + ": [Singleton] Something went really wrong " +
+                " - there should never be more than 1 singleton!" +
+                " Reopening the scene might fix it.");
+
+            return 0;
+        }
+
+        //Object does not exist; instantiate new one
+        else if (singleton == null)
+        {
+            return 1;
+        }
+
+        //Object already exists
+        else
+        {
+            Debug.Log(singleton.name + " already exists.");
+            return -1;
+        }
     }
 }

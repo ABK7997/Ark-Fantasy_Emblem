@@ -446,12 +446,12 @@ MonoBehaviour:
   baseAtk: 8
   baseMag: 0
   baseVlt: 0
-  baseDef: 8
-  baseRes: 7
+  baseDef: 7
+  baseRes: 6
   baseStb: 2
   baseSkl: 8
   baseLck: 15
-  baseSpd: 7
+  baseSpd: 8
   status: 0
   overhead: {fileID: 223977011082131890}
   hpBar: {fileID: 114143545317962452}

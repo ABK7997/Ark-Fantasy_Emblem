@@ -234,11 +234,11 @@ MonoBehaviour:
   baseMag: 13
   baseVlt: 0
   baseDef: 4
-  baseRes: 11
-  baseStb: 14
+  baseRes: 10
+  baseStb: 12
   baseSkl: 7
   baseLck: 9
-  baseSpd: 4
+  baseSpd: 5
   status: 0
   overhead: {fileID: 223919342014007248}
   hpBar: {fileID: 114842254985391698}

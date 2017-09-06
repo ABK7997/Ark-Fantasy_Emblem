@@ -4,15 +4,43 @@ using UnityEngine;
 
 public class EnemyAvatar : Avatar {
 
+    /// <summary>
+    /// The Board information attached to this particular enemy party
+    /// </summary>
+    public BoardInfo bi;
+
+    /// <summary>
+    /// The overworld the enemy exists in
+    /// </summary>
+    public Overworld ow;
+
+    /// <summary>
+    /// The enemy party makeup, usually unique between avatars
+    /// </summary>
     public List<Entity> party;
 
-    public List<Entity> getParty()
+    /// <summary>
+    /// Method necessary for populating the EnemyParty in the battle scene
+    /// </summary>
+    /// <returns>party - this script's attached enemies</returns>
+    public List<Entity> GetParty()
     {
         return party;
     }
 
-    private void Awake()
+    /// <summary>
+    /// Disable or enable the avatar sprite
+    /// </summary>
+    public void SetVisible(bool b)
     {
-        DontDestroyOnLoad(this.gameObject);
+        GetComponent<SpriteRenderer>().enabled = b;
+    }
+
+    void OnTriggerEnter2D(Collider2D collide)
+    {
+        if (collide.gameObject.tag == "Player")
+        {
+            ow.encounteredParty = this;
+        }
     }
 }
