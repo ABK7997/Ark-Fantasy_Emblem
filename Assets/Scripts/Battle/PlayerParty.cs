@@ -92,6 +92,11 @@ public class PlayerParty : Party {
                 command = COMMAND.ATTACK;
                 bm.SetState("SELECTION");
                 break;
+            case "DEFEND":
+                command = COMMAND.DEFEND;
+                activeMember.SetDefending(true);
+                bm.SetState("NORMAL");
+                break;
         }
     }
 

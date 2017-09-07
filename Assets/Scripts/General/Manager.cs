@@ -18,16 +18,27 @@ public class Manager : MonoBehaviour {
         }
     }
 
-    //Change scene
+    /// <summary>
+    /// Load any scene from any other scene.
+    /// </summary>
+    /// <param name="sceneName">Name of the scene to be loaded</param>
     public void LoadScene(string sceneName)
     {
         SceneManager.LoadScene(sceneName);
     }
 
+    /// <summary>
+    /// Exits game to desktop
+    /// </summary>
     //Quit game
     public void Quit()
     {
         Application.Quit();
+    }
+
+    public void DetroySingletons()
+    {
+        Destroy(FindObjectOfType<Overworld>().gameObject);
     }
 
     //Check if any singleton has been instantiated or not.

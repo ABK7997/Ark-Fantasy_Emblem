@@ -36,7 +36,7 @@ public abstract class Party : MonoBehaviour {
     //The Different moves types an entity can perform
     protected enum COMMAND
     {
-        NONE, ATTACK
+        NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, FLEE
     }
     protected COMMAND command = COMMAND.NONE;
 
@@ -45,7 +45,6 @@ public abstract class Party : MonoBehaviour {
     /// </summary>
     public void OrganizeParty(Vector2[] coords, int scaling, List<Entity> newParty)
     {
-        int j = 0;
         foreach (Entity e in newParty)
         {
             party.Add(e);

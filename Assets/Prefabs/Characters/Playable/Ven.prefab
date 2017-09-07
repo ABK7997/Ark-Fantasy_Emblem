@@ -227,6 +227,7 @@ MonoBehaviour:
   statView: {fileID: 223416877910157436}
   statText: {fileID: 114718777182863978}
   normalSprite: {fileID: 21300000, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
+  defendingSprite: {fileID: 21300022, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
   deathSprite: {fileID: 21300028, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
   type: Droid/Magic
   maxHP: 23

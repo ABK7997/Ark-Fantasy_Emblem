@@ -12,7 +12,7 @@ public class BattleUI : MonoBehaviour {
     public GameObject commandsList;
 
     /// <summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
-    public Image pauseScreen;
+    public Canvas pauseScreen;
 
     /// <summary>Text which appears when the player is choosing a target</summary>
     public Text targetingText;
@@ -39,7 +39,7 @@ public class BattleUI : MonoBehaviour {
         switch (bm.GetState())
         {
             case "NORMAL":
-                pauseScreen.enabled = false;
+                pauseScreen.gameObject.SetActive(false);
                 commandsList.SetActive(false);
                 SetProjection(false);
                 cancelButton.gameObject.SetActive(true);
@@ -60,7 +60,7 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "PAUSED":
-                pauseScreen.enabled = true;
+                pauseScreen.gameObject.SetActive(true);
                 break;
 
             case "PLAYER_PROJECTION":

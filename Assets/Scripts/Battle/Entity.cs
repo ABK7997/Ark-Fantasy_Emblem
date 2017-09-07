@@ -27,6 +27,11 @@ public class Entity : MonoBehaviour {
     public Sprite normalSprite;
 
     /// <summary>
+    /// Sprite used when PC is using the DEFEND command. Most enemies do not have it
+    /// </summary>
+    public Sprite defendingSprite;
+
+    /// <summary>
     /// The sprite used for when an entity is KO
     /// </summary>
     public Sprite deathSprite;
@@ -127,6 +132,7 @@ public class Entity : MonoBehaviour {
         switch (status)
         {
             case STATUS.NORMAL: render.sprite = normalSprite; break;
+            case STATUS.DEFENDING: render.sprite = defendingSprite; break;
             case STATUS.DEAD: render.sprite = deathSprite; break;
 
             default: break;
@@ -265,6 +271,35 @@ public class Entity : MonoBehaviour {
         ResetTimer();
     }
 
+    /// <summary>
+    /// Doubles the user's defensive stats or returns them to normal
+    /// </summary>
+    /// <param name="b"></param>
+    public void SetDefending(bool b)
+    {
+        if (b)
+        {
+            Def *= 2;
+            Res *= 2;
+            Stb *= 2;
+
+            status = STATUS.DEFENDING;
+        }
+        else
+        {
+            Def /= 2;
+            if (Def < baseDef) Def = baseDef;
+
+            Res /= 2;
+            if (Res < baseRes) Res = baseRes;
+
+            Stb /= 2;
+            if (Stb < baseStb) Stb = baseStb;
+
+            status = STATUS.NORMAL;
+        }
+    }
+
     /***GETTER and SETTER METHODS***/
 
     /// <summary>
@@ -274,7 +309,7 @@ public class Entity : MonoBehaviour {
     {
         get { return _hp; }
         set {
-            anim.enabled = true;
+            if (status != STATUS.DEFENDING) anim.enabled = true;
 
             _hp = value; //change
 

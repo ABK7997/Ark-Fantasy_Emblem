@@ -169,6 +169,8 @@ public class BattleManager : Manager {
         Entity user = currentOrder.user;
         //Entity target = currentOrder.target;
 
+        user.SetDefending(false);
+
         //Perform action
         switch (type)
         {
