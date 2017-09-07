@@ -11,8 +11,8 @@ public class BattleManager : Manager {
     /***GAME AT LARGE***/
     private Overworld ow;
 
-    private FullParty fp;
     private EnemyAvatar ea;
+    private int numPartyMembers;
 
     /***PLAYERS AND ENEMIES***/
     ///<summary>A party containing the player's own characters</summary> 
@@ -30,9 +30,9 @@ public class BattleManager : Manager {
     /***BATTLE SATE ***/
     private enum STATE
     {
-        NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED, GAME_OVER
+        BATTLE_PREP, NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
-    private STATE state = STATE.NORMAL;
+    private STATE state = STATE.BATTLE_PREP;
 
     /// <summary>
     /// UI for in-game battles
@@ -51,6 +51,9 @@ public class BattleManager : Manager {
         ow.Activate(false);
 
         board.BoardInit(ow.encounteredParty.bi);
+
+        //Number of PCs allowed in battle
+        numPartyMembers = ow.encounteredParty.bi.numPlayers;
     }
 
     //Constructs both parties and attaches this battle manager to each of them
@@ -60,16 +63,9 @@ public class BattleManager : Manager {
         pParty.SetBattleManager(this, ui);
         eParty.SetBattleManager(this, ui);
 
-        //Organize parties
-        fp = FindObjectOfType<FullParty>();
-        pParty.OrganizeParty(board.playerCoordinates, board.scaling, fp.GetParty());
-
+        //Organize EnemyParty
         ea = ow.encounteredParty;
         eParty.OrganizeParty(board.enemyCoordinates, board.scaling, ea.GetParty());
-
-        //Assign opposite parties
-        pParty.ConstructOppositeParty(eParty.party);
-        eParty.ConstructOppositeParty(pParty.party);
     }
 	
     //Controls the flow of battle with Order Queue
@@ -82,6 +78,19 @@ public class BattleManager : Manager {
             CheckDeath(); //player party KO
             CheckVictory(); //enemy party KO
         }
+    }
+
+    /// <summary>
+    /// Place PCs on the field after player has selected them from the Battle Prep screen
+    /// </summary>
+    public void InstantiatePlayerParty(List<Entity> partyMembers)
+    {
+        //Configure PlayerParty
+        pParty.OrganizeParty(board.playerCoordinates, board.scaling, partyMembers);
+
+        //Assign opposite parties
+        pParty.ConstructOppositeParty(eParty.party);
+        eParty.ConstructOppositeParty(pParty.party);
     }
 
     /// <summary>
@@ -235,5 +244,14 @@ public class BattleManager : Manager {
         return state + "";
     }
 
+    /***MISCELLANEOUS***/
 
+    /// <summary>
+    /// Get the number of party members allowed from the player in the battle
+    /// </summary>
+    /// <returns>numPartyMembers - the party count allowed by the Board</returns>
+    public int getNumMembers()
+    {
+        return numPartyMembers;
+    }
 }

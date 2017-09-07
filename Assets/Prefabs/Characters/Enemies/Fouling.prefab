@@ -226,15 +226,16 @@ MonoBehaviour:
   statView: {fileID: 223323440124491524}
   statText: {fileID: 114383610813342500}
   normalSprite: {fileID: 21300002, guid: 9cc0fbc2d5e398b40b66ace1da14c936, type: 3}
+  defendingSprite: {fileID: 0}
   deathSprite: {fileID: 0}
   type: Organic
   maxHP: 10
-  baseAtk: 13
+  baseAtk: 12
   baseMag: 0
   baseVlt: 0
   baseDef: 0
-  baseRes: 0
-  baseStb: 0
+  baseRes: 2
+  baseStb: 3
   baseSkl: 2
   baseLck: 2
   baseSpd: 2

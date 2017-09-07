@@ -14,6 +14,7 @@ public class Entity : MonoBehaviour {
     protected Party party; //The party this entity belongs to (player or enemy)
 
     /***STATS***/
+    private int level = 1;
 
     /// <summary> UI showing stats which appears and disappears as the mouse hovers over entities </summary>
     public Canvas statView;
@@ -215,19 +216,7 @@ public class Entity : MonoBehaviour {
         statView.enabled = true;
 
         //Update stats
-        statText.text =
-            Name + "\n" +
-            "HP: " + Hp + "\n" +
-            "Type: " + type + "\n\n" +
-            "ATK: " + Atk + "\n" +
-            "MAG: " + Mag + "\n" +
-            "VLT: " + Vlt + "\n\n" +
-            "DEF: " + Def + "\n" +
-            "RES: " + Res + "\n" +
-            "STB: " + Stb + "\n\n" +
-            "SKL: " + Skl + "\n" +
-            "LCK: " + Lck + "\n" +
-            "SPD: " + Spd + "\n";
+        statText.text = GetAllStats();
     }
 
     protected void OnMouseExit()
@@ -284,6 +273,7 @@ public class Entity : MonoBehaviour {
             Stb *= 2;
 
             status = STATUS.DEFENDING;
+            ResetTimer();
         }
         else
         {
@@ -432,6 +422,26 @@ public class Entity : MonoBehaviour {
     public string GetStatus()
     {
         return status + "";
+    }
+
+    /// <summary>
+    /// A method which lists all the entity's current stats
+    /// </summary>
+    /// <returns>A long string with many line breaks to display current statistics</returns>
+    public string GetAllStats()
+    {
+        return Name + ", Lv. " + level + "\n" +
+            "HP: " + Hp + "\n" +
+            type + "\n\n" +
+            "ATK: " + Atk + "\n" +
+            "MAG: " + Mag + "\n" +
+            "VLT: " + Vlt + "\n\n" +
+            "DEF: " + Def + "\n" +
+            "RES: " + Res + "\n" +
+            "STB: " + Stb + "\n\n" +
+            "SKL: " + Skl + "\n" +
+            "LCK: " + Lck + "\n" +
+            "SPD: " + Spd + "\n";
     }
 
     /***BATTLE PROJECTION INFO***/

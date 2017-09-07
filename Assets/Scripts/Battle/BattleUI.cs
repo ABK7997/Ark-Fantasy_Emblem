@@ -14,6 +14,11 @@ public class BattleUI : MonoBehaviour {
     /// <summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
     public Canvas pauseScreen;
 
+    /// <summary>
+    /// The button which manually pauses the action. Unavailabe in Battle Prep state
+    /// </summary>
+    public Button pauseButton;
+
     /// <summary>Text which appears when the player is choosing a target</summary>
     public Text targetingText;
 
@@ -28,8 +33,12 @@ public class BattleUI : MonoBehaviour {
     /// <summary>Text within the Battle Projection canvas regarding the initiator</summary>
     public Text projectionInfo;
 
+    /***BUTTONS***/
+
     /// <summary> The cancel button in the BP window; unavailable if it is an Enemy Projection</summary>
     public Button cancelButton;
+
+    /***STATES***/
 
     /// <summary>
     /// Determines which UI elements to turn on or off depending on the game state
@@ -43,6 +52,7 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(false);
                 SetProjection(false);
                 cancelButton.gameObject.SetActive(true);
+                pauseButton.gameObject.SetActive(true);
                 break;
 
             case "ANIMATING":
