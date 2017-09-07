@@ -52,10 +52,10 @@ public class BattlePrep : MonoBehaviour {
             }
 
             //PartyMember not present. Hide selection image
-            c.enabled = false;
+            if (c.GetCharacter() == null) c.gameObject.SetActive(false);
         }
 
-        remainingText.text = "Remaining: " + numMembers;
+        remainingText.text = "Select " + numMembers + " More";
 	}
 
     void Update()
@@ -80,7 +80,7 @@ public class BattlePrep : MonoBehaviour {
     {
         battlingParty.Add(p);
 
-        remainingText.text = "Remaining: " + (numMembers - battlingParty.Count);
+        remainingText.text = "Select " + (numMembers - battlingParty.Count) + " More";
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class BattlePrep : MonoBehaviour {
     {
         battlingParty.Remove(p);
 
-        remainingText.text = "Remaining: " + (numMembers - battlingParty.Count);
+        remainingText.text = "Select " + (numMembers - battlingParty.Count) + " More";
     }
 
     /// <summary>
