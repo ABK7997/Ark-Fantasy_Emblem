@@ -49,11 +49,12 @@ public class Manager : MonoBehaviour {
     {
         T singleton = FindObjectOfType<T>();
         string sceneName = SceneManager.GetActiveScene().name;
+        string sig = "Scene: " + sceneName + ": [Singleton] ";
 
         //If there is more than 1 singleton (which would be an ERROR)
         if (FindObjectsOfType<GameManager>().Length > 1)
         {
-            Debug.LogError("Scene: " + sceneName + ": [Singleton] Something went really wrong " +
+            Debug.LogError(sig + singleton.name + " Something went really wrong " +
                 " - there should never be more than 1 singleton!" +
                 " Reopening the scene might fix it.");
 
@@ -63,13 +64,15 @@ public class Manager : MonoBehaviour {
         //Object does not exist; instantiate new one
         else if (singleton == null)
         {
+            Debug.Log(sig + "Object does not exist yet.");
+
             return 1;
         }
 
         //Object already exists
         else
         {
-            Debug.Log(singleton.name + " already exists.");
+            Debug.Log(sig + singleton.name + " already exists.");
             return -1;
         }
     }

@@ -16,6 +16,11 @@ public class Overworld : MonoBehaviour
 
     public GameObject enemyHolder;
 
+    private void Awake()
+    {
+        encounteredParty = activeEnemies[0]; //Default encountered enemy - avoid NULL errors
+    }
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);

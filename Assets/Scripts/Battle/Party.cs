@@ -50,8 +50,10 @@ public abstract class Party : MonoBehaviour {
             party.Add(e);
         }
 
-        for (int i = 0; i < party.Count; i++)
+        for (int i = 0; i < coords.Length; i++)
         {
+            if (i == party.Count) break;
+
             Entity e = Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
             party[i] = e;
             party[i].SetParty(this);
