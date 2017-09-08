@@ -7,6 +7,11 @@ using System.Collections.Generic;
 /// </summary>
 public class PlayerParty : Party {
 
+    /// <summary>
+    /// The selection window of the battle screen
+    /// </summary>
+    public SpecialSelection ss;
+
     protected override void Start()
     {
         base.Start();
@@ -42,7 +47,7 @@ public class PlayerParty : Party {
                         target = t;
                         activeMember.ChangeColor("active");
 
-                        CalculateAction("ATTACK"); //Battle Projection calculation
+                        CalculateAction(); //Battle Projection calculation
                         bm.SetState("PLAYER_PROJECTION");
 
                         ExecuteAction();
@@ -97,7 +102,24 @@ public class PlayerParty : Party {
                 activeMember.SetDefending(true);
                 bm.SetState("NORMAL");
                 break;
+            case "MAGIC":
+                if (activeMember.spells.Count == 0) break; //Non-magical PC
+                bm.SetState("SPECIAL_SELECTION");
+                command = COMMAND.MAGIC;
+                ss.SetSpecials(activeMember.spells);
+                break;
         }
+    }
+
+    /***BUTTONS***/
+    
+    /// <summary>
+    /// Active party member is about to use magic
+    /// </summary>
+    public void Magic(int spellIndex)
+    {
+        activeMember.SetSpell(spellIndex);
+        bm.SetState("SELECTION");
     }
 
     /***MISCELLANEOUS***/

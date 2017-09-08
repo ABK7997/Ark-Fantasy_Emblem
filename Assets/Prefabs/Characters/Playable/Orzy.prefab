@@ -415,7 +415,7 @@ MonoBehaviour:
   normalSprite: {fileID: 21300000, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
   defendingSprite: {fileID: 21300022, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
   deathSprite: {fileID: 21300028, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
-  type: Droid
+  type: 2
   maxHP: 29
   baseAtk: 15
   baseMag: 0
@@ -426,6 +426,7 @@ MonoBehaviour:
   baseSkl: 3
   baseLck: 2
   baseSpd: 4
+  spells: []
   status: 0
   overhead: {fileID: 223379118872263508}
   hpBar: {fileID: 114756141874922392}

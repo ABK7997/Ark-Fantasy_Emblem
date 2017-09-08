@@ -30,7 +30,9 @@ public class BattleManager : Manager {
     /***BATTLE SATE ***/
     private enum STATE
     {
-        BATTLE_PREP, NORMAL, ANIMATING, COMMANDING, SELECTION, PLAYER_PROJECTION, ENEMY_PROJECTION, PAUSED, GAME_OVER
+        BATTLE_PREP, NORMAL, ANIMATING,
+        COMMANDING, SELECTION, SPECIAL_SELECTION, PLAYER_PROJECTION,
+        ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
     private STATE state = STATE.BATTLE_PREP;
 
@@ -183,7 +185,9 @@ public class BattleManager : Manager {
         //Perform action
         switch (type)
         {
-            case "ATTACK": user.Attack(type); break;
+            case "ATTACK":
+            case "MAGIC":
+                user.Attack(type); break;
         }
     }
 
@@ -217,16 +221,19 @@ public class BattleManager : Manager {
             case "COMMANDING": state = STATE.COMMANDING;
                 break;
 
-            case "SELECTION": state = STATE.SELECTION;
+            case "SPECIAL_SELECTION": state = STATE.SPECIAL_SELECTION;
                 break;
 
-            case "PAUSED": state = STATE.PAUSED;
+            case "SELECTION": state = STATE.SELECTION;
                 break;
 
             case "PLAYER_PROJECTION": state = STATE.PLAYER_PROJECTION;
                 break;
 
             case "ENEMY_PROJECTION": state = STATE.ENEMY_PROJECTION;
+                break;
+
+            case "PAUSED": state = STATE.PAUSED;
                 break;
 
             default: Debug.Log("Not an existing state: " + newState); break;

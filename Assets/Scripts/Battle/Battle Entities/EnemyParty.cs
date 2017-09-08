@@ -27,9 +27,10 @@ public class EnemyParty : Party {
         {
             if (e.Ready && bm.GetState() == "NORMAL")
             {
+                command = COMMAND.ATTACK;
                 e.Behavior();
                 bm.SetState("ENEMY_PROJECTION");
-                CalculateAction("ATTACK");
+                CalculateAction();
 
                 e.ChangeColor("active");
                 target.ChangeColor("target");

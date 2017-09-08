@@ -11,7 +11,12 @@ public class BattleUI : MonoBehaviour {
     /// <summary>The canvas containing all the buttons for issuing player Orders</summary>
     public GameObject commandsList;
 
-    /// <summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
+    /// <summary>
+    /// The window containing the active party member's special abilties for selection
+    /// </summary>
+    public Canvas specialSelection;
+
+    ///<summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
     public Canvas pauseScreen;
 
     /// <summary>
@@ -61,16 +66,19 @@ public class BattleUI : MonoBehaviour {
             case "COMMANDING":
                 SetTargetting(false);
                 commandsList.SetActive(true);
+                specialSelection.enabled = false;
+                break;
+
+            case "SPECIAL_SELECTION":
+                commandsList.SetActive(false);
+                specialSelection.enabled = true;
                 break;
 
             case "SELECTION":
                 SetTargetting(true);
                 commandsList.SetActive(false);
                 SetProjection(false);
-                break;
-
-            case "PAUSED":
-                pauseScreen.gameObject.SetActive(true);
+                specialSelection.enabled = false;
                 break;
 
             case "PLAYER_PROJECTION":
@@ -90,6 +98,10 @@ public class BattleUI : MonoBehaviour {
                 //battleProjection.rectTransform.anchorMin = new Vector2(1, 0);
                 //battleProjection.rectTransform.anchorMax = new Vector2(1, 0);
 
+                break;
+
+            case "PAUSED":
+                pauseScreen.gameObject.SetActive(true);
                 break;
 
             default: break;

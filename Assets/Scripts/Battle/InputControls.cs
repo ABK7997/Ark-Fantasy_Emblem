@@ -53,6 +53,7 @@ public class InputControls : MonoBehaviour {
                 break;
 
             case "SELECTION":
+            case "SPECIAL_SELECTION":
                 bm.SetState("COMMANDING");
                 break;
 

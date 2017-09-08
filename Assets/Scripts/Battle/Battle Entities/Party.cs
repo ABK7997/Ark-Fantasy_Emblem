@@ -154,21 +154,21 @@ public abstract class Party : MonoBehaviour {
     /// Calculate information needed for the BattleManger's battle calculation window (Atk, hit, critical)
     /// </summary>
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
-    protected void CalculateAction(string type)
+    protected void CalculateAction()
     {
         activeMember.SetTemporaryStats(target);
 
-        switch (type)
+        switch (command)
         {
-            case "ATTACK":
+            case COMMAND.ATTACK:
                 ui.SetProjectionInfo(activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit);
                 break;
 
-            case "MAGIC":
+            case COMMAND.MAGIC:
                 ui.SetProjectionInfo(activeMember.MagicDmg, activeMember.Hit, activeMember.Crit);
                 break;
 
-            case "TECH":
+            case COMMAND.TECH:
                 ui.SetProjectionInfo(activeMember.TechDmg, activeMember.Hit, activeMember.Crit);
                 break;
 

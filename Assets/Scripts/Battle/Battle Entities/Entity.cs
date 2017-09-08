@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// An essential class containing all the basic information for player characters and enemies alike
@@ -38,7 +39,11 @@ public class Entity : MonoBehaviour {
     public Sprite deathSprite;
 
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
-    public string type;
+    public enum TYPE
+    {
+        ORGANIC, MAGIC, DROID, ORGANIC_MAGIC, DROID_ORGANIC, MAGIC_DROID
+    }
+    public TYPE type;
 
     /// <summary> Hit Points </summary>
     public int maxHP; protected int _hp; //Health
@@ -67,9 +72,13 @@ public class Entity : MonoBehaviour {
     /// <summary> Determines how fast the speed gauge increases </summary>
     public int baseSpd; protected int _spd;
 
+    //SPECIALS
+    public List<Special> spells;
+
     //Temporary stats
-    private int hitChance, critChance, physicalDmg, magicDmg, techDmg;
+    private int hitChance, critChance, physicalDmg, magicDmg, spellCost, techDmg, techCost;
     private Entity target;
+    private Special activeSpell;
 
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
@@ -245,7 +254,7 @@ public class Entity : MonoBehaviour {
         switch (type)
         {
             case "ATTACK": totalDamage = physicalDmg; break;
-            case "MAGIC": totalDamage = magicDmg; break;
+            case "MAGIC": totalDamage = magicDmg; Hp -= spellCost; break;
             case "TECH": totalDamage = techDmg; break;
 
             default: Debug.Log("Invalid attack type: " + type); break;
@@ -258,6 +267,34 @@ public class Entity : MonoBehaviour {
         anim.enabled = true;
         anim.SetTrigger("ATTACK");
         ResetTimer();
+    }
+
+    /// <summary>
+    /// Magical effect calculation - damage, heal, or none for status ailment
+    /// </summary>
+    /// <param name="spell">The spell about to be used</param>
+    public void MagicEffectCalculation()
+    {
+        int baseDamage = Mag;
+        baseDamage *= activeSpell.basePwr;
+
+        switch (activeSpell.type)
+        {
+            case Special.TYPE.ATTACK:
+                baseDamage -= target.Res;
+                break;
+
+            case Special.TYPE.HEAL:
+                baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
+                break;
+
+            case Special.TYPE.AILMENT:
+                break; //Status ailments do not immediately do damage
+        }
+
+        magicDmg = baseDamage;
+        if (magicDmg < 0) magicDmg = 0;
+        spellCost = activeSpell.cost;
     }
 
     /// <summary>
@@ -510,8 +547,7 @@ public class Entity : MonoBehaviour {
         if (physicalDmg < 0) physicalDmg = 0;
 
         //Magic Attack Calculation
-        magicDmg = Mag - t.Res;
-        if (magicDmg < 0) magicDmg = 0;
+        if (activeSpell != null) MagicEffectCalculation();
 
         //Tech Attack Calculation
         techDmg = Vlt - t.Stb;
@@ -621,5 +657,14 @@ public class Entity : MonoBehaviour {
     {
         get { return critChance; }
         set { critChance = value; }
+    }
+
+    /// <summary>
+    /// Set the spell the user may use next
+    /// </summary>
+    /// <param name="spell">A spell to be cast</param>
+    public void SetSpell(int index)
+    {
+        activeSpell = spells[index];
     }
 }
