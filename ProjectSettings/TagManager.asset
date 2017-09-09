@@ -48,3 +48,6 @@ TagManager:
   - name: Entities
     uniqueID: 3981617231
     locked: 0
+  - name: Effects
+    uniqueID: 894910205
+    locked: 0

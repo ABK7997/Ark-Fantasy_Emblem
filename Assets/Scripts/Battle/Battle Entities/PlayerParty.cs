@@ -57,6 +57,8 @@ public class PlayerParty : Party {
                 case "PLAYER_PROJECTION":
                     if (target.IsHovering()) //Double click to perform action immediately
                     {
+                        activeMember.SetAnimator(true);
+                        activeMember.SetDefending(false);
                         bm.SetState("NORMAL");
                     }
                     break;
@@ -93,20 +95,32 @@ public class PlayerParty : Party {
         switch(cmd)
         {
             case "NONE": command = COMMAND.NONE; break;
+
             case "ATTACK":
                 command = COMMAND.ATTACK;
                 bm.SetState("SELECTION");
                 break;
+
             case "DEFEND":
                 command = COMMAND.DEFEND;
                 activeMember.SetDefending(true);
                 bm.SetState("NORMAL");
                 break;
+
             case "MAGIC":
                 if (activeMember.spells.Count == 0) break; //Non-magical PC
                 bm.SetState("SPECIAL_SELECTION");
                 command = COMMAND.MAGIC;
                 ss.SetSpecials(activeMember.spells);
+                break;
+
+            case "TECH":
+                if (activeMember.techs.Count == 0 || activeMember.TechTimer > 0) break;
+
+                bm.SetState("SPECIAL_SELECTION");
+                command = COMMAND.TECH;
+                ss.SetSpecials(activeMember.techs);
+
                 break;
         }
     }
@@ -114,11 +128,11 @@ public class PlayerParty : Party {
     /***BUTTONS***/
     
     /// <summary>
-    /// Active party member is about to use magic
+    /// Active party member is about to use a special ability
     /// </summary>
-    public void Magic(int spellIndex)
+    public void Special(int specialIndex)
     {
-        activeMember.SetSpell(spellIndex);
+        activeMember.SetSpecial(specialIndex, command + "");
         bm.SetState("SELECTION");
     }
 

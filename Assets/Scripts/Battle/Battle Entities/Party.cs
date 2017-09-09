@@ -165,11 +165,27 @@ public abstract class Party : MonoBehaviour {
                 break;
 
             case COMMAND.MAGIC:
-                ui.SetProjectionInfo(activeMember.MagicDmg, activeMember.Hit, activeMember.Crit);
+                switch (activeMember.GetSpecial().type)
+                {
+                    case Special.TYPE.ATTACK:
+                        ui.SetProjectionInfo(activeMember.MagicDmg, activeMember.Hit, activeMember.Crit); break;
+
+                    case Special.TYPE.HEAL:
+                        ui.SetProjectionInfo(-activeMember.MagicDmg, activeMember.Crit); break;
+                }
+                
                 break;
 
             case COMMAND.TECH:
-                ui.SetProjectionInfo(activeMember.TechDmg, activeMember.Hit, activeMember.Crit);
+                switch (activeMember.GetSpecial().type)
+                {
+                    case Special.TYPE.ATTACK:
+                        ui.SetProjectionInfo(activeMember.TechDmg, activeMember.Hit, activeMember.Crit); break;
+
+                    case Special.TYPE.REPAIR:
+                        ui.SetProjectionInfo(-activeMember.TechDmg, activeMember.Crit); break;
+                }
+
                 break;
 
             default: break;
@@ -183,7 +199,11 @@ public abstract class Party : MonoBehaviour {
     /// </summary>
     public void ResetState()
     {
-        if (activeMember != null) activeMember.ChangeColor("normal");
+        if (activeMember != null)
+        {
+            activeMember.ChangeColor("normal");
+            activeMember.SetSpecial(-1, null);
+        }
         activeMember = null;
 
         if (target != null) target.ChangeColor("normal");
@@ -197,6 +217,19 @@ public abstract class Party : MonoBehaviour {
     {
         if (target != null) target.ChangeColor("normal");
         target = null;
+    }
+
+    /// <summary>
+    /// Set the currently-set special ability to null so it can't be used by accident
+    /// </summary>
+    public void NullifySpecial()
+    {
+        activeMember.SetSpecial(-1, null);
+    }
+
+    public void Normalize()
+    {
+        bm.SetState("NORMAL");
     }
 
     /***GET PARTY***/
@@ -243,5 +276,14 @@ public abstract class Party : MonoBehaviour {
         }
 
         return enemies;
+    }
+
+    /// <summary>
+    /// Get the currently-acting party member
+    /// </summary>
+    /// <returns>The party member in action</returns>
+    public Entity GetActiveMember()
+    {
+        return activeMember;
     }
 }

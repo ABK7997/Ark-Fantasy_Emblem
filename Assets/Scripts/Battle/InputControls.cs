@@ -16,11 +16,6 @@ public class InputControls : MonoBehaviour {
     /// The player's party of characters
     /// </summary>
     public PlayerParty pParty;
-
-	// Use this for initialization
-	void Start () {
-		
-	}
 	
 	// Update is called once per frame
 	void Update () {
@@ -54,6 +49,7 @@ public class InputControls : MonoBehaviour {
 
             case "SELECTION":
             case "SPECIAL_SELECTION":
+                pParty.NullifySpecial();
                 bm.SetState("COMMANDING");
                 break;
 

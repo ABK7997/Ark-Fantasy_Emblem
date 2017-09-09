@@ -74,11 +74,14 @@ public class Entity : MonoBehaviour {
 
     //SPECIALS
     public List<Special> spells;
+    public List<Special> techs;
 
     //Temporary stats
-    private int hitChance, critChance, physicalDmg, magicDmg, spellCost, techDmg, techCost;
+    private int hitChance, critChance, physicalDmg, magicDmg, techDmg, specialCost;
+    private bool landedHit, landedCrit;
     private Entity target;
-    private Special activeSpell;
+    private Special activeSpecial;
+    private int techTimer = 0; //Turns which remain until a tech can be used again
 
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
@@ -134,7 +137,9 @@ public class Entity : MonoBehaviour {
 
         normal = render.color; //Set the normal color to the sprite's starting color
 
-        anim.enabled = false;
+        SetAnimator(false);
+
+        Hp -= 5;
     }
 
     void Update()
@@ -200,6 +205,7 @@ public class Entity : MonoBehaviour {
     {
         moveTimer = 0;
         ready = false;
+        TechTimer--;
 
         UpdateDisplay();
     }
@@ -241,32 +247,72 @@ public class Entity : MonoBehaviour {
     /// Primary Command; uses physical attack based on ATK stat to harm one other entity
     /// </summary>
     /// <param name="e">Entity to attack - can be friendly</param>
-    public void Attack(string type)
+    public void Attack()
     {
-        bool landedHit = false;
-        bool landedCrit = false;
+        SetDefending(false);
+
         int totalDamage = 0;
 
-        //Calculate hit or miss
-        if (Random.Range(0, 100) <= hitChance) landedHit = true;
-        if (Random.Range(0, 100) <= critChance) landedCrit = true;
-
-        switch (type)
-        {
-            case "ATTACK": totalDamage = physicalDmg; break;
-            case "MAGIC": totalDamage = magicDmg; Hp -= spellCost; break;
-            case "TECH": totalDamage = techDmg; break;
-
-            default: Debug.Log("Invalid attack type: " + type); break;
-        }
+        totalDamage = physicalDmg;
+        anim.SetTrigger("ATTACK");
 
         if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
         if (landedHit) target.Hp -= totalDamage; //Hit
 
-        //Animate
-        anim.enabled = true;
-        anim.SetTrigger("ATTACK");
         ResetTimer();
+    }
+    
+    /// <summary>
+    /// Begin the casting of a spell, tech, or skill
+    /// </summary>
+    /// <param name="type">The type of special ability being used</param>
+    public void Cast(string type)
+    {
+        SetDefending(false);
+
+        if (type == "MAGIC") Hp -= specialCost;
+        else if (type == "TECH") techTimer += specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
+
+        anim.SetTrigger("SPECIAL");
+        activeSpecial.StartAnimation(this, target, landedHit);
+        ResetTimer();
+    }
+
+    /// <summary>
+    /// A special's effect when it finally hits its target
+    /// </summary>
+    public void SpecialEffect()
+    {
+        int totalDamage = 0;
+
+        switch (activeSpecial.classification)
+        {
+            case Special.CLASS.SKILL:
+                break;
+
+            case Special.CLASS.SPELL:
+                totalDamage = magicDmg;
+                break;
+
+            case Special.CLASS.TECH:
+                totalDamage = techDmg;
+                break;
+        }
+
+        if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
+
+        //Healing and Repair spells can't miss
+        if (activeSpecial.type == Special.TYPE.HEAL ||
+            activeSpecial.type == Special.TYPE.REPAIR)
+        {
+            landedHit = true;
+            if (landedCrit) totalDamage = (int)(totalDamage * 1.50); //Bonus restoration
+        }
+        
+        if (landedHit) target.Hp -= totalDamage; //Hit
+
+        party.Normalize();
+        SetAnimator(false);
     }
 
     /// <summary>
@@ -275,26 +321,61 @@ public class Entity : MonoBehaviour {
     /// <param name="spell">The spell about to be used</param>
     public void MagicEffectCalculation()
     {
-        int baseDamage = Mag;
-        baseDamage *= activeSpell.basePwr;
+        float baseDamage = Mag;
+        baseDamage *= activeSpecial.basePwr;
 
-        switch (activeSpell.type)
+        switch (activeSpecial.type)
         {
             case Special.TYPE.ATTACK:
                 baseDamage -= target.Res;
+                if (baseDamage < 0) baseDamage = 0;
                 break;
 
             case Special.TYPE.HEAL:
                 baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
+
+                //Heal spells CANNOT heal Droids that are not also Organic
+                if (!target.IsOrganic() && target.type != TYPE.MAGIC) baseDamage = 0;
+
                 break;
 
             case Special.TYPE.AILMENT:
+                baseDamage = 0;
                 break; //Status ailments do not immediately do damage
         }
 
-        magicDmg = baseDamage;
-        if (magicDmg < 0) magicDmg = 0;
-        spellCost = activeSpell.cost;
+        magicDmg = (int)baseDamage;
+    }
+
+    /// <summary>
+    /// Technical effect calculation. Determines what a user's Tech ability will do
+    /// </summary>
+    public void TechnicalEffectCalculation()
+    {
+        float baseDamage = Vlt;
+        baseDamage *= activeSpecial.basePwr;
+
+        switch (activeSpecial.type)
+        {
+            case Special.TYPE.ATTACK:
+                baseDamage -= target.Stb;
+                if (baseDamage < 0) baseDamage = 0;
+                break;
+
+            case Special.TYPE.REPAIR:
+                baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
+
+                //Repair spells CANNOT heal non-Droids
+                if (!target.IsDroid()) baseDamage = 0;
+
+                break;
+
+            case Special.TYPE.AILMENT:
+                baseDamage = 0;
+                break; //Status ailments do not immediately do damage
+        }
+
+        techDmg = (int)baseDamage;
     }
 
     /// <summary>
@@ -310,6 +391,7 @@ public class Entity : MonoBehaviour {
             Stb *= 2;
 
             status = STATUS.DEFENDING;
+            SetAnimator(false);
             ResetTimer();
         }
         else
@@ -350,7 +432,7 @@ public class Entity : MonoBehaviour {
                 moveTimer = 0f;
                 ready = false;
 
-                anim.enabled = false;
+                SetAnimator(false);
             }
 
             UpdateDisplay();
@@ -481,6 +563,11 @@ public class Entity : MonoBehaviour {
             "SPD: " + Spd + "\n";
     }
 
+    public void SetAnimator(bool b)
+    {
+        anim.enabled = b;
+    }
+
     /***BATTLE PROJECTION INFO***/
 
     /// <summary>
@@ -504,60 +591,42 @@ public class Entity : MonoBehaviour {
     }
 
     /// <summary>
-    /// Method to find the length of the entity's current animation
-    /// 0 - IDLE
-    /// 1 - ATTACK
-    /// 2 - SKILL
-    /// 3 - MAGIC
-    /// 4 - TECH
-    /// 5 - ITEM
+    /// Do battle calculations for all possible moves the entity can make
     /// </summary>
-    /// <returns>length - length (in seconds) of the current animation clip</returns>
-    public float GetAnimationTime(string command)
-    {
-        foreach (AnimationClip c in clips)
-        {
-            //Debug.Log(c.name + ": " + c.length);
-        }
-
-        /*
-        switch (command)
-        { 
-            case "ATTACK": return clips[1].length * 4;
-            default: return 1f;
-        }
-        */
-
-        return 0;
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="hit"></param>
-    /// <param name="crit"></param>
+    /// <param name="t">The target entity for an action</param>
     public void SetTemporaryStats(Entity t)
     {
         target = t;
+
+        //Calculate hit and crit chance
         hitChance = HitChance();
         critChance = CritChance();
+
+        //Calculate hit or miss
+        if (Random.Range(0, 100) <= hitChance) landedHit = true;
+        if (Random.Range(0, 100) <= critChance) landedCrit = true;
 
         //Physical Attack Calculation
         physicalDmg = Atk - t.Def;
         if (physicalDmg < 0) physicalDmg = 0;
 
         //Magic Attack Calculation
-        if (activeSpell != null) MagicEffectCalculation();
+        if (activeSpecial != null) MagicEffectCalculation();
 
         //Tech Attack Calculation
-        techDmg = Vlt - t.Stb;
-        if (techDmg < 0) techDmg = 0;
+        if (activeSpecial != null) TechnicalEffectCalculation();
+
+        if (activeSpecial != null) specialCost = activeSpecial.cost;
     }
 
     //Accuracy
     protected int AccuracyCalculation()
     {
-        int accuracy = 70; //base acc = 70
+        int accuracy;
+
+        if (activeSpecial == null) accuracy = 70; //base acc = 70
+        else accuracy = activeSpecial.baseAccuracy;
+
         accuracy += Skl * 2; // + SKL * 2
         accuracy += Lck; // + LCK
 
@@ -588,7 +657,11 @@ public class Entity : MonoBehaviour {
     //Crit Accuracy
     protected int CritAccuracyCalculation()
     {
-        int crit = 1;
+        int crit;
+
+        if (activeSpecial == null) crit = 1;
+        else crit = activeSpecial.baseCrit;
+
         crit += Skl / 2;
 
         return crit;
@@ -597,6 +670,8 @@ public class Entity : MonoBehaviour {
     //Crit Evasion
     protected int CritEvasionCalcuation()
     {
+        if (activeSpecial != null) return 0;
+
         int evd = 0;
         evd += target.Lck;
 
@@ -619,8 +694,8 @@ public class Entity : MonoBehaviour {
     /// Physical damage possible; based on ATK
     /// </summary>
     public int PhysicalDmg {
-         get { return physicalDmg; }
-         set { physicalDmg = value; }  
+        get { return physicalDmg; }
+        set { physicalDmg = value; }
     }
 
     /// <summary>
@@ -660,11 +735,82 @@ public class Entity : MonoBehaviour {
     }
 
     /// <summary>
+    /// The number of turns remaining until a Tech ability can be used again
+    /// </summary>
+    public int TechTimer
+    {
+        get
+        {
+            return techTimer;
+        }
+        set
+        {
+            techTimer = value;
+
+            if (techTimer < 0) techTimer = 0;
+        }
+    }
+
+    /// <summary>
     /// Set the spell the user may use next
     /// </summary>
     /// <param name="spell">A spell to be cast</param>
-    public void SetSpell(int index)
+    public void SetSpecial(int index, string type)
     {
-        activeSpell = spells[index];
+        switch (type)
+        {
+            case "SKILL": activeSpecial = spells[index]; break;
+            case "MAGIC": activeSpecial = spells[index]; break;
+            case "TECH": activeSpecial = techs[index]; break;
+
+            case "NULL": activeSpecial = null; break;
+        }
+    }
+
+    /// <summary>
+    /// Returns the special ability the entity is currently using
+    /// </summary>
+    /// <returns>The active special ability</returns>
+    public Special GetSpecial()
+    {
+        return activeSpecial;
+    }
+
+    //Type Methods
+
+    /// <summary>
+    /// Determines if the entity is any of the Organic types
+    /// </summary>
+    /// <returns>True - if entity type is Organic, Droid/Organic, or Magic/Organic; False - otherwise</returns>
+    public bool IsOrganic()
+    {
+        return
+            type == TYPE.ORGANIC ||
+            type == TYPE.DROID_ORGANIC ||
+            type == TYPE.ORGANIC_MAGIC;
+    }
+
+    /// <summary>
+    /// Determines if the entity is of any of the Magic types
+    /// </summary>
+    /// <returns>True - if entity type is Magic, Magic/Droid, or Magic/Organic; False - otherwise</returns>
+    public bool IsMagic()
+    {
+        return
+            type == TYPE.MAGIC ||
+            type == TYPE.MAGIC_DROID ||
+            type == TYPE.ORGANIC_MAGIC;
+    }
+
+    /// <summary>
+    /// Determines if the entity is of any of the Droid types
+    /// </summary>
+    /// <returns>True - if entity type is Droid, Droid/Magic, or Droid/Organicc; False - otherwise</returns>
+    public bool IsDroid()
+    {
+        return
+            type == TYPE.DROID ||
+            type == TYPE.DROID_ORGANIC ||
+            type == TYPE.MAGIC_DROID;
     }
 }

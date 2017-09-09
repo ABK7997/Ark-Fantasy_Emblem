@@ -6,11 +6,6 @@ using UnityEngine.UI;
 public class SpecialImage : MonoBehaviour {
 
     /// <summary>
-    /// The place in the selection view where this image is
-    /// </summary>
-    public int index;
-
-    /// <summary>
     /// Text for the name of the special
     /// </summary>
     public Text nameText;

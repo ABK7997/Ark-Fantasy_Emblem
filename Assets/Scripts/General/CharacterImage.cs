@@ -76,13 +76,20 @@ public class CharacterImage : MonoBehaviour, IPointerEnterHandler {
         return hovering;
     }
 
+    /// <summary>
+    /// Mouse is over the image
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        Debug.Log("Running");
         hovering = true;
         //throw new NotImplementedException();
     }
 
+    /// <summary>
+    /// Mouse exits the image
+    /// </summary>
+    /// <param name="eventData"></param>
     public void OnPointerExit(PointerEventData eventData)
     {
         hovering = false;

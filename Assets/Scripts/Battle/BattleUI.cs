@@ -12,6 +12,12 @@ public class BattleUI : MonoBehaviour {
     public GameObject commandsList;
 
     /// <summary>
+    /// The text associated with the Tech button on the command list. 
+    /// If a Tech timer is above 0, that number is displayed in red on the button.
+    /// </summary>
+    public Text techButtonText;
+
+    /// <summary>
     /// The window containing the active party member's special abilties for selection
     /// </summary>
     public Canvas specialSelection;
@@ -66,19 +72,39 @@ public class BattleUI : MonoBehaviour {
             case "COMMANDING":
                 SetTargetting(false);
                 commandsList.SetActive(true);
-                specialSelection.enabled = false;
+                specialSelection.gameObject.SetActive(false);
+                pauseButton.gameObject.SetActive(false);
+
+                int timer = bm.pParty.GetActiveMember().TechTimer;
+
+                if (timer == 0)
+                {
+                    techButtonText.text = "TECH";
+                    techButtonText.color = Color.black;
+                }
+                else if (timer == 1)
+                {
+                    techButtonText.text = "TECH recharging: " + timer + " turn";
+                    techButtonText.color = Color.gray;
+                }
+                else
+                {
+                    techButtonText.text = "TECH recharging: " + timer + " turns";
+                    techButtonText.color = Color.gray;
+                }
+
                 break;
 
             case "SPECIAL_SELECTION":
                 commandsList.SetActive(false);
-                specialSelection.enabled = true;
+                specialSelection.gameObject.SetActive(true);
                 break;
 
             case "SELECTION":
                 SetTargetting(true);
                 commandsList.SetActive(false);
                 SetProjection(false);
-                specialSelection.enabled = false;
+                specialSelection.gameObject.SetActive(false);
                 break;
 
             case "PLAYER_PROJECTION":
@@ -94,6 +120,7 @@ public class BattleUI : MonoBehaviour {
             case "ENEMY_PROJECTION":
                 SetProjection(true);
                 cancelButton.gameObject.SetActive(false);
+                pauseButton.gameObject.SetActive(false);
 
                 //battleProjection.rectTransform.anchorMin = new Vector2(1, 0);
                 //battleProjection.rectTransform.anchorMax = new Vector2(1, 0);
@@ -109,8 +136,11 @@ public class BattleUI : MonoBehaviour {
     }
 
     /// <summary>
-    /// Recieve info from active entity to update the Battle Projection texts; also pauses game and displays BP window
+    /// Physical attack projection. Pauses game and display BP window.
     /// </summary>
+    /// <param name="atk">Amount of damage that might be done</param>
+    /// <param name="hit">% chance to hit target</param>
+    /// <param name="crit">% chance to land a critical on target</param>
     public void SetProjectionInfo(int atk, int hit, int crit)
     {
         SetProjection(true);
@@ -119,6 +149,19 @@ public class BattleUI : MonoBehaviour {
             "ATK: " + atk + "\n" +
             "HIT: " + hit + "%\n" +
             "CRIT: " + crit + "%\n";
+    }
+
+    /// <summary>
+    /// Projection method for healing or repair spells/techs
+    /// </summary>
+    /// <param name="effect">Amount that the target will be healed for</param>
+    public void SetProjectionInfo(int effect, int crit)
+    {
+        SetProjection(true);
+
+        projectionInfo.text =
+            "HP Up: " + effect +
+            "\nBonus: " + crit + "%";
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object

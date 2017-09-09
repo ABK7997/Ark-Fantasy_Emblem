@@ -30,7 +30,7 @@ public class BattleManager : Manager {
     /***BATTLE SATE ***/
     private enum STATE
     {
-        BATTLE_PREP, NORMAL, ANIMATING,
+        BATTLE_PREP, NORMAL, ANIMATING, SPECIAL_ANIMATING,
         COMMANDING, SELECTION, SPECIAL_SELECTION, PLAYER_PROJECTION,
         ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
@@ -156,17 +156,34 @@ public class BattleManager : Manager {
     {
         while (actions.Count != 0)
         {
-            state = STATE.ANIMATING;
-            EnactOrder();
-            yield return new WaitForSeconds(1f);
-        }
+            float animationTime;
 
-        state = STATE.NORMAL;
+            switch (actions.Peek().type)
+            {
+                case "ATTACK":
+                    SetState("ANIMATING");
+                    animationTime = 1f;
+                    break;
+
+                case "MAGIC": case "TECH":
+                    SetState("SPECIAL_ANIMATING");
+                    animationTime = 0f;
+                    break;
+
+                default: animationTime = 1.5f; break;
+            }
+
+            EnactOrder(); //Next action is dequeued here
+
+            yield return new WaitForSeconds(animationTime);
+
+            if (animationTime > 0f) state = STATE.NORMAL;
+        }
     }
 
     public bool IsAnimating()
     {
-        return state == STATE.ANIMATING;
+        return (state == STATE.ANIMATING || state == STATE.SPECIAL_ANIMATING);
     }
 
     /// <summary>
@@ -178,16 +195,16 @@ public class BattleManager : Manager {
         Order currentOrder = actions.Dequeue();
         string type = currentOrder.type;
         Entity user = currentOrder.user;
-        //Entity target = currentOrder.target;
-
-        user.SetDefending(false);
 
         //Perform action
         switch (type)
         {
-            case "ATTACK":
+            case "ATTACK": user.Attack(); break; 
+
             case "MAGIC":
-                user.Attack(type); break;
+            case "TECH":
+                user.Cast(type);
+                break;
         }
     }
 
@@ -209,13 +226,15 @@ public class BattleManager : Manager {
     {
         switch (newState)
         {
-            case "NORMAL":
-                state = STATE.NORMAL;
+            case "NORMAL": state = STATE.NORMAL;
                 eParty.ResetState();
                 pParty.ResetState();
                 break;
 
             case "ANIMATING": state = STATE.ANIMATING;
+                break;
+
+            case "SPECIAL_ANIMATING": state = STATE.SPECIAL_ANIMATING;
                 break;
 
             case "COMMANDING": state = STATE.COMMANDING;
@@ -257,7 +276,7 @@ public class BattleManager : Manager {
     /// Get the number of party members allowed from the player in the battle
     /// </summary>
     /// <returns>numPartyMembers - the party count allowed by the Board</returns>
-    public int getNumMembers()
+    public int GetNumMembers()
     {
         return numPartyMembers;
     }

@@ -38,7 +38,7 @@ public class BattlePrep : MonoBehaviour {
 
 	void Start () {
 
-        numMembers = bm.getNumMembers();
+        numMembers = bm.GetNumMembers();
         FullParty fp = FindObjectOfType<FullParty>();
 
         foreach(CharacterImage c in ci)
@@ -58,19 +58,21 @@ public class BattlePrep : MonoBehaviour {
         remainingText.text = "Select " + numMembers + " More";
 	}
 
+    /*
     void Update()
     {
-        statView.enabled = false;
+        statView.gameObject.SetActive(false);
 
-        foreach(CharacterImage c in ci)
+        foreach (CharacterImage c in ci)
         {
             if (c.IsHovering())
             {
-                statView.enabled = true;
+                statView.gameObject.SetActive(true);
                 statText.text = c.GetCharacter().GetAllStats();
             }
         }
     }
+    */
 
     /// <summary>
     /// Add a PC to party which will partake in the battle after selecting them
@@ -106,9 +108,14 @@ public class BattlePrep : MonoBehaviour {
         gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Determines if the number of party members chosen has hit the battle limit
+    /// </summary>
+    /// <returns>True - the player cannot select anymore party members; False - the player can select at least 1 more </returns>
     public bool IsFull()
     {
         if (battlingParty.Count == numMembers) return true;
         else return false;
     }
+
 }

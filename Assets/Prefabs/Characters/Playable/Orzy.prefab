@@ -425,8 +425,11 @@ MonoBehaviour:
   baseStb: 7
   baseSkl: 3
   baseLck: 2
-  baseSpd: 4
+  baseSpd: 25
   spells: []
+  techs:
+  - {fileID: 114161810696810686, guid: 97918590e9b1d124f99fb0e33722c13d, type: 2}
+  - {fileID: 114204611830792758, guid: 36ae37017075430459a60e76be10aae1, type: 2}
   status: 0
   overhead: {fileID: 223379118872263508}
   hpBar: {fileID: 114756141874922392}

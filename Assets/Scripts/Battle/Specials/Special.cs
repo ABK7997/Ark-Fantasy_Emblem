@@ -9,7 +9,7 @@ public class Special : MonoBehaviour {
     /// <summary>
     /// The multiplier effect the MAG stat has on this spell
     /// </summary>
-    public int basePwr;
+    public float basePwr;
 
     /// <summary>
     /// The HP cost of this spell
@@ -17,9 +17,24 @@ public class Special : MonoBehaviour {
     public int cost;
 
     /// <summary>
+    /// A quantity which helps define a spell's chance of hitting
+    /// </summary>
+    public int baseAccuracy;
+
+    /// <summary>
+    /// A quantity which helps define a spell's chance of getting a critical hit
+    /// </summary>
+    public int baseCrit;
+
+    /// <summary>
     /// A worded, lore description of this spell
     /// </summary>
     public string description;
+
+    /// <summary>
+    /// The time (in sec) this special takes to animate
+    /// </summary>
+    public float animationTime;
 
     /// <summary>
     /// The class of special
@@ -41,6 +56,9 @@ public class Special : MonoBehaviour {
 
     //Componenets
     private SpriteRenderer render;
+
+    //Animation
+    public AnimatedProjectile projectile;
 
     /// <summary>
     /// Put together all information about the spell
@@ -83,5 +101,17 @@ public class Special : MonoBehaviour {
             
             default: return "";
         }
+    }
+
+    /// <summary>
+    /// Create special as an animating game object
+    /// </summary>
+    /// <param name="user">The entity casting the Special</param>
+    /// <param name="target">The target of the Special</param>
+    public void StartAnimation(Entity user, Entity target, bool hit)
+    {
+        AnimatedProjectile p = Instantiate(projectile, user.transform.position, Quaternion.identity);
+
+        p.StartAnimation(this, user, target, animationTime, hit);
     }
 }
