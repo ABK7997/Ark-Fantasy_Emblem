@@ -5,6 +5,7 @@ using UnityEngine;
 public class AnimatedProjectile : MonoBehaviour {
 
     private Entity user;
+    private Entity target;
 
     private float xSpeed, ySpeed;
 
@@ -18,26 +19,38 @@ public class AnimatedProjectile : MonoBehaviour {
 	void Update () {
         Vector3 position = transform.position;
         Vector3 newPosition = new Vector3(0f, 0f, 0f);
+        Vector3 enemyPosition = target.transform.position;
 
-        //Has hit target or (if missed) far beyond target. Destroy game object
-        if ( (Mathf.Abs(position.x - destination.x) <= epsilon) 
-            && (Mathf.Abs(position.y - destination.y) <= epsilon) ) {
+        if (hit)
+        {
+            //Has hit target. Perform spell effect and Destroy game object
+            if ((Mathf.Abs(position.x - destination.x) <= epsilon)
+                && (Mathf.Abs(position.y - destination.y) <= epsilon))
+            {
+                user.SpecialEffect();
+                Destroy(gameObject);
+            }
+        }
 
-            //Spell effect
-            if (hit)
+        //If the shot is a miss
+        else
+        {
+            //Has hit target. Perform spell effect and Destroy game object
+            if ((Mathf.Abs(position.x - destination.x) <= epsilon)
+                && (Mathf.Abs(position.y - destination.y) <= epsilon))
+            {
+                Destroy(gameObject);
+            }
+
+            if ((Mathf.Abs(position.x - enemyPosition.x) <= 0.25f)
+                && (Mathf.Abs(position.y - enemyPosition.y) <= 0.25f))
             {
                 user.SpecialEffect();
             }
-
-            Destroy(gameObject);
         }
 
-        //Animate
-        else
-        {
-            newPosition.x = xSpeed;
-            newPosition.y = ySpeed;
-        }
+        newPosition.x = xSpeed;
+        newPosition.y = ySpeed;
 
         transform.position += newPosition;
     }
@@ -60,6 +73,7 @@ public class AnimatedProjectile : MonoBehaviour {
         }
 
         user = u;
+        target = t;
 
         hit = accurate;
 

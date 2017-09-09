@@ -776,6 +776,14 @@ public class Entity : MonoBehaviour {
         return activeSpecial;
     }
 
+    /// <summary>
+    /// Return the game to state NORMAL
+    /// </summary>
+    public void Normalize()
+    {
+        party.Normalize();
+    }
+
     //Type Methods
 
     /// <summary>

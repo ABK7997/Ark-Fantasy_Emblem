@@ -58,6 +58,10 @@ public class Special : MonoBehaviour {
     private SpriteRenderer render;
 
     //Animation
+
+    /// <summary>
+    /// An object which is instantiated to be the spell's animated form
+    /// </summary>
     public AnimatedProjectile projectile;
 
     /// <summary>
