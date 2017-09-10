@@ -23,21 +23,6 @@ public class Entity : MonoBehaviour {
     /// <summary> Inside of the statView, contains all momentary stat information for a character - constantly updated </summary>
     public Text statText;
 
-    /// <summary>
-    /// Typical side-facing sprite
-    /// </summary>
-    public Sprite normalSprite;
-
-    /// <summary>
-    /// Sprite used when PC is using the DEFEND command. Most enemies do not have it
-    /// </summary>
-    public Sprite defendingSprite;
-
-    /// <summary>
-    /// The sprite used for when an entity is KO
-    /// </summary>
-    public Sprite deathSprite;
-
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
     public enum TYPE
     {
@@ -73,6 +58,7 @@ public class Entity : MonoBehaviour {
     public int baseSpd; protected int _spd;
 
     //SPECIALS
+    public List<Special> skills;
     public List<Special> spells;
     public List<Special> techs;
 
@@ -82,6 +68,10 @@ public class Entity : MonoBehaviour {
     private Entity target;
     private Special activeSpecial;
     private int techTimer = 0; //Turns which remain until a tech can be used again
+
+    //Effects
+    //private Dictionary<string, bool> effects;
+    private List<Effect> effects;
 
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
@@ -130,28 +120,12 @@ public class Entity : MonoBehaviour {
 
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
-        clips = anim.runtimeAnimatorController.animationClips;
 
         ResetStats();
         UpdateDisplay();
+        AddAllEffects();
 
         normal = render.color; //Set the normal color to the sprite's starting color
-
-        SetAnimator(false);
-
-        Hp -= 5;
-    }
-
-    void Update()
-    {
-        switch (status)
-        {
-            case STATUS.NORMAL: render.sprite = normalSprite; break;
-            case STATUS.DEFENDING: render.sprite = defendingSprite; break;
-            case STATUS.DEAD: render.sprite = deathSprite; break;
-
-            default: break;
-        }
     }
 
     /// <summary>
@@ -206,6 +180,7 @@ public class Entity : MonoBehaviour {
         moveTimer = 0;
         ready = false;
         TechTimer--;
+        CycleEffects();
 
         UpdateDisplay();
     }
@@ -283,38 +258,63 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public void SpecialEffect()
     {
-        int totalDamage = 0;
+        switch (activeSpecial.type)
+        {
+            case Special.TYPE.ATTACK: OffensiveSpecial(); break;
+            case Special.TYPE.HEAL: HealingSpecial(); break;
+            case Special.TYPE.REPAIR: RepairSpecial(); break;
+            case Special.TYPE.EFFECT: EffectSpecial(); break;
+
+            default: break;
+        }
+
+        party.Normalize();
+    }
+
+    //Special Types
+    private void OffensiveSpecial()
+    {
+        if (!landedHit) return;
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 2.25f;
 
         switch (activeSpecial.classification)
         {
-            case Special.CLASS.SKILL:
-                break;
-
-            case Special.CLASS.SPELL:
-                totalDamage = magicDmg;
-                break;
-
-            case Special.CLASS.TECH:
-                totalDamage = techDmg;
-                break;
+            case Special.CLASS.SKILL: break;
+            case Special.CLASS.SPELL: target.Hp -= (int)(magicDmg * multiplier); break;
+            case Special.CLASS.TECH: target.Hp -= (int)(techDmg * multiplier); break;
         }
-
-        if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
-
-        //Healing and Repair spells can't miss
-        if (activeSpecial.type == Special.TYPE.HEAL ||
-            activeSpecial.type == Special.TYPE.REPAIR)
-        {
-            landedHit = true;
-            if (landedCrit) totalDamage = (int)(totalDamage * 1.50); //Bonus restoration
-        }
-        
-        if (landedHit) target.Hp -= totalDamage; //Hit
-
-        party.Normalize();
-        SetAnimator(false);
     }
 
+    private void HealingSpecial()
+    {
+        landedHit = true; //Healing can't miss
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 1.5f;
+
+        target.Hp -= (int)(magicDmg * multiplier);
+    }
+
+    private void RepairSpecial()
+    {
+        landedHit = true; //Repairing can't miss
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 1.5f;
+
+        target.Hp -= (int)(techDmg * multiplier);
+    }
+
+    private void EffectSpecial()
+    {
+        string eff = activeSpecial.effect + "";
+
+        target.SetEffect(eff, activeSpecial.turnTimer + 1); //TurnTimer is decremented immediately after Skill is used
+    }
+
+    //Calculations
     /// <summary>
     /// Magical effect calculation - damage, heal, or none for status ailment
     /// </summary>
@@ -339,7 +339,7 @@ public class Entity : MonoBehaviour {
 
                 break;
 
-            case Special.TYPE.AILMENT:
+            case Special.TYPE.EFFECT:
                 baseDamage = 0;
                 break; //Status ailments do not immediately do damage
         }
@@ -370,7 +370,7 @@ public class Entity : MonoBehaviour {
 
                 break;
 
-            case Special.TYPE.AILMENT:
+            case Special.TYPE.EFFECT:
                 baseDamage = 0;
                 break; //Status ailments do not immediately do damage
         }
@@ -378,6 +378,7 @@ public class Entity : MonoBehaviour {
         techDmg = (int)baseDamage;
     }
 
+    //Defense
     /// <summary>
     /// Doubles the user's defensive stats or returns them to normal
     /// </summary>
@@ -391,7 +392,7 @@ public class Entity : MonoBehaviour {
             Stb *= 2;
 
             status = STATUS.DEFENDING;
-            SetAnimator(false);
+            anim.SetBool("Defending", true);
             ResetTimer();
         }
         else
@@ -406,6 +407,7 @@ public class Entity : MonoBehaviour {
             if (Stb < baseStb) Stb = baseStb;
 
             status = STATUS.NORMAL;
+            anim.SetBool("Defending", false);
         }
     }
 
@@ -432,7 +434,8 @@ public class Entity : MonoBehaviour {
                 moveTimer = 0f;
                 ready = false;
 
-                SetAnimator(false);
+                AnimationOff();
+                anim.SetBool("Dead", true);
             }
 
             UpdateDisplay();
@@ -561,11 +564,6 @@ public class Entity : MonoBehaviour {
             "SKL: " + Skl + "\n" +
             "LCK: " + Lck + "\n" +
             "SPD: " + Spd + "\n";
-    }
-
-    public void SetAnimator(bool b)
-    {
-        anim.enabled = b;
     }
 
     /***BATTLE PROJECTION INFO***/
@@ -737,6 +735,7 @@ public class Entity : MonoBehaviour {
     /// <summary>
     /// The number of turns remaining until a Tech ability can be used again
     /// </summary>
+
     public int TechTimer
     {
         get
@@ -759,11 +758,13 @@ public class Entity : MonoBehaviour {
     {
         switch (type)
         {
-            case "SKILL": activeSpecial = spells[index]; break;
+            case "SKILL": activeSpecial = skills[index]; break;
             case "MAGIC": activeSpecial = spells[index]; break;
             case "TECH": activeSpecial = techs[index]; break;
 
             case "NULL": activeSpecial = null; break;
+
+            default: break;
         }
     }
 
@@ -782,6 +783,114 @@ public class Entity : MonoBehaviour {
     public void Normalize()
     {
         party.Normalize();
+    }
+
+    //Status Effects
+    private struct Effect
+    {
+        public string name;
+        public int turnsRemaining;
+
+        public void TurnTimer()
+        {
+            turnsRemaining--;
+        }
+    }
+
+    private void AddAllEffects()
+    {
+        effects = new List<Effect>();
+        /*
+        effects = new Dictionary<string, bool>();
+
+        effects.Add("OBSCURE", false);
+        */
+    }
+
+    /// <summary>
+    /// Set all possible status effecst to false
+    /// </summary>
+    public void NullifyAllEffects()
+    {
+        /*
+        foreach (KeyValuePair<string, bool> entry in effects)
+        {
+            effects[entry.Key] = false;
+        }
+        */
+
+        effects = new List<Effect>();
+    }
+
+    /// <summary>
+    /// Check if an entity has a certain status effect active
+    /// </summary>
+    /// <param name="status">The effect to be checked for</param>
+    /// <returns></returns>
+    public bool CheckEffect(string status)
+    {
+        /*
+        bool b;
+
+        effects.TryGetValue(status, out b);
+
+        return b;
+        */
+
+        foreach(Effect e in effects)
+        {
+            if (e.name == status) return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// Enable or disable a status effect
+    /// </summary>
+    /// <param name="status">The status to be altered</param>
+    /// <param name="set">Enable or disable</param>
+    public void SetEffect(string status, int turns)
+    {
+        Effect neff = new Effect();
+        neff.name = status;
+        neff.turnsRemaining = turns;
+
+        if (CheckEffect(status)) //Effect is already active; reset effect
+        {
+            DisableEffect(status);
+        }
+
+        effects.Add(neff);
+    }
+
+    /// <summary>
+    /// Nullify a status effect, good or bad
+    /// </summary>
+    /// <param name="status">The effect to be nullified</param>
+    public void DisableEffect(string status)
+    {
+        foreach (Effect e in effects)
+        {
+            if (e.name == status) effects.Remove(e);
+        }
+    }
+
+    //Cycle through effects 
+    public void CycleEffects()
+    {
+        foreach (Effect e in effects)
+        {
+            Debug.Log("Effect Active:" + e.name);
+            e.TurnTimer();
+
+            Debug.Log(e.turnsRemaining);
+
+            if (e.turnsRemaining == 0)
+            {
+                effects.Remove(e);
+            }
+        }
     }
 
     //Type Methods
@@ -820,5 +929,13 @@ public class Entity : MonoBehaviour {
             type == TYPE.DROID ||
             type == TYPE.DROID_ORGANIC ||
             type == TYPE.MAGIC_DROID;
+    }
+
+    //Animation State
+
+    public void AnimationOff()
+    {
+        anim.SetBool("Dead", false);
+        anim.SetBool("Defending", false);
     }
 }

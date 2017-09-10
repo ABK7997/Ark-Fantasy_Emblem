@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1103188076205054}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5634573ea4fe75b4b9f1b7f3190ca3c7, type: 2}
+  m_Controller: {fileID: 22100000, guid: a79a44f7ada622b40a4511103f2c6c84, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -412,9 +412,6 @@ MonoBehaviour:
   Name: Orzy
   statView: {fileID: 223442047005622228}
   statText: {fileID: 114816726238205974}
-  normalSprite: {fileID: 21300000, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
-  defendingSprite: {fileID: 21300022, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
-  deathSprite: {fileID: 21300028, guid: 79d5108affc75ad4f9aac24174f1b03c, type: 3}
   type: 2
   maxHP: 29
   baseAtk: 15
@@ -426,6 +423,7 @@ MonoBehaviour:
   baseSkl: 3
   baseLck: 2
   baseSpd: 25
+  skills: []
   spells: []
   techs:
   - {fileID: 114161810696810686, guid: 97918590e9b1d124f99fb0e33722c13d, type: 2}

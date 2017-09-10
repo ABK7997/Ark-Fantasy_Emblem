@@ -80,12 +80,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePwr: 0.75
   cost: 1
+  turnTimer: 0
   baseAccuracy: 100
   baseCrit: 1
   description: Restore HP to a Droid (only works on Droids)
   animationTime: 2
   classification: 2
-  type: 0
+  type: 2
+  effect: 0
   projectile: {fileID: 114147984333041134, guid: d9b683477901d424abcecb46b14d8a4a,
     type: 2}
 --- !u!212 &212111937630350678

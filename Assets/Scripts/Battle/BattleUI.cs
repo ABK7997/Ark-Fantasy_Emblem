@@ -111,6 +111,7 @@ public class BattleUI : MonoBehaviour {
                 SetTargetting(true);
                 SetProjection(true);
                 SetTargetting(false);
+                specialSelection.gameObject.SetActive(false);
 
                 //battleProjection.rectTransform.anchorMin = new Vector2(0, 0);
                 //battleProjection.rectTransform.anchorMax = new Vector2(0, 0);
@@ -162,6 +163,20 @@ public class BattleUI : MonoBehaviour {
         projectionInfo.text =
             "HP Up: " + effect +
             "\nBonus: " + crit + "%";
+    }
+
+    /// <summary>
+    /// Projection method for status effect actions
+    /// </summary>
+    /// <param name="effect">The status effect in question</param>
+    /// <param name="hit">The chance the effect will actually be instilled upon the target</param>
+    public void SetProjectionInfo(string effect, int hit)
+    {
+        SetProjection(true);
+
+        projectionInfo.text =
+            effect + "\n" +
+            "HIT: " + hit + "%";
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object

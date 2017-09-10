@@ -126,7 +126,7 @@ Transform:
   m_GameObject: {fileID: 1304976461743420}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224201235489874468}
   - {fileID: 224785819461110394}
@@ -187,7 +187,7 @@ Animator:
   m_GameObject: {fileID: 1304976461743420}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2438f287698db1c48af1acc9af6269b8, type: 2}
+  m_Controller: {fileID: 22100000, guid: 80e7f38eed7f61e4fab4be570488672c, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -225,10 +225,7 @@ MonoBehaviour:
   Name: Fouling
   statView: {fileID: 223323440124491524}
   statText: {fileID: 114383610813342500}
-  normalSprite: {fileID: 21300002, guid: 9cc0fbc2d5e398b40b66ace1da14c936, type: 3}
-  defendingSprite: {fileID: 0}
-  deathSprite: {fileID: 0}
-  type: Organic
+  type: 0
   maxHP: 10
   baseAtk: 12
   baseMag: 0
@@ -239,6 +236,9 @@ MonoBehaviour:
   baseSkl: 2
   baseLck: 2
   baseSpd: 2
+  skills: []
+  spells: []
+  techs: []
   status: 0
   overhead: {fileID: 223101204964993824}
   hpBar: {fileID: 114300647946785628}

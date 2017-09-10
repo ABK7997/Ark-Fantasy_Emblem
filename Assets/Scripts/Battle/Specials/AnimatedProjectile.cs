@@ -72,6 +72,21 @@ public class AnimatedProjectile : MonoBehaviour {
             destination *= 2;
         }
 
+        //Target is same as user
+        if (Vector3.Distance(u.transform.position, t.transform.position) == 0) {
+            destination = new Vector3(start.x + 2.5f, start.y, 0);
+
+            xSpeed = ((destination.x - start.x) * Time.deltaTime) / animationTime;
+            ySpeed = ((destination.y - start.y) * Time.deltaTime) / animationTime;
+
+            //If it's a miss, projectile will fly in opposite direction
+            if (!accurate)
+            {
+                destination = new Vector3(start.x - 10f, start.y, 0);
+                xSpeed *= -1;
+            }
+        }
+
         user = u;
         target = t;
 

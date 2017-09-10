@@ -17,6 +17,11 @@ public class Special : MonoBehaviour {
     public int cost;
 
     /// <summary>
+    /// The length a status effect special lasts (in turns)
+    /// </summary>
+    public int turnTimer;
+
+    /// <summary>
     /// A quantity which helps define a spell's chance of hitting
     /// </summary>
     public int baseAccuracy;
@@ -50,9 +55,15 @@ public class Special : MonoBehaviour {
     /// </summary>
     public enum TYPE
     {
-        ATTACK, HEAL, REPAIR, AILMENT, BUFF
+        ATTACK, HEAL, REPAIR, EFFECT
     }
     public TYPE type;
+
+    public enum EFFECT
+    {
+        NONE, OBSCURE
+    }
+    public EFFECT effect;
 
     //Componenets
     private SpriteRenderer render;
@@ -100,8 +111,9 @@ public class Special : MonoBehaviour {
     {
         switch (classification)
         {
+            case CLASS.SKILL: return turnTimer + " Turns";
             case CLASS.SPELL: return cost + " HP";
-            case CLASS.TECH: return cost + " Turns";
+            case CLASS.TECH: return cost + " Recharge";
             
             default: return "";
         }
@@ -118,4 +130,5 @@ public class Special : MonoBehaviour {
 
         p.StartAnimation(this, user, target, animationTime, hit);
     }
+
 }

@@ -57,7 +57,6 @@ public class PlayerParty : Party {
                 case "PLAYER_PROJECTION":
                     if (target.IsHovering()) //Double click to perform action immediately
                     {
-                        activeMember.SetAnimator(true);
                         activeMember.SetDefending(false);
                         bm.SetState("NORMAL");
                     }
@@ -115,25 +114,45 @@ public class PlayerParty : Party {
                 break;
 
             case "TECH":
-                if (activeMember.techs.Count == 0 || activeMember.TechTimer > 0) break;
+                if (activeMember.techs.Count == 0 || activeMember.TechTimer > 0) break; //PC is not a Droid
 
                 bm.SetState("SPECIAL_SELECTION");
                 command = COMMAND.TECH;
                 ss.SetSpecials(activeMember.techs);
 
                 break;
+
+            case "SKILL":
+                if (activeMember.skills.Count == 0) break; //Unskilled PC
+                bm.SetState("SPECIAL_SELECTION");
+                command = COMMAND.SKILL;
+                ss.SetSpecials(activeMember.skills);
+                break;
         }
     }
 
     /***BUTTONS***/
-    
+
     /// <summary>
     /// Active party member is about to use a special ability
     /// </summary>
     public void Special(int specialIndex)
     {
         activeMember.SetSpecial(specialIndex, command + "");
-        bm.SetState("SELECTION");
+
+        //Skill selected
+        if (command == COMMAND.SKILL)
+        {
+            target = activeMember;
+            activeMember.ChangeColor("target");
+
+            CalculateAction(); //Battle Projection calculation
+            bm.SetState("PLAYER_PROJECTION");
+
+            ExecuteAction();
+        }
+
+        else bm.SetState("SELECTION");
     }
 
     /***MISCELLANEOUS***/

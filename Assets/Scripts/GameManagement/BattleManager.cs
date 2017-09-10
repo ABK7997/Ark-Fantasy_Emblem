@@ -199,8 +199,9 @@ public class BattleManager : Manager {
         //Perform action
         switch (type)
         {
-            case "ATTACK": user.Attack(); break; 
+            case "ATTACK": user.Attack(); break;
 
+            case "SKILL":
             case "MAGIC":
             case "TECH":
                 user.Cast(type);

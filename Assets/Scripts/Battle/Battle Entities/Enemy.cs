@@ -42,7 +42,14 @@ public class Enemy : Entity {
 
         int selection = Random.Range(0, targets.Count);
 
-        return targets[selection];
+        //Obscure Target
+        if (targets.Count > 1 && targets[selection].CheckEffect("OBSCURE"))
+        {
+            return ObscureEffect(targets, targets[selection]);
+        }
+
+        //Normal Selection
+        else return targets[selection]; 
     }
 
     //Get a random ally from this one's enemy party to target
@@ -51,5 +58,26 @@ public class Enemy : Entity {
         int selection = Random.Range(0, party.party.Count);
 
         return party.party[selection];
+    }
+
+    //EFFECT - OBSCURE
+    protected Entity ObscureEffect(List<Entity> targets, Entity previousTarget)
+    {
+        int chance = 70;
+
+        //Change target
+        if (Random.Range(0, 100) <= chance)
+        {
+            targets.Remove(previousTarget);
+
+            int selection = Random.Range(0, targets.Count);
+
+            targets.Add(previousTarget);
+
+            return targets[selection];
+        }
+
+        //Chance failed - same target acquired
+        else return previousTarget;
     }
 }

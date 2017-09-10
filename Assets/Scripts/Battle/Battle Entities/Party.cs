@@ -188,6 +188,15 @@ public abstract class Party : MonoBehaviour {
 
                 break;
 
+            case COMMAND.SKILL:
+                switch (activeMember.GetSpecial().type)
+                {
+                    case Special.TYPE.EFFECT:
+                        ui.SetProjectionInfo(activeMember.GetSpecial().effect + "", activeMember.Hit); break;
+                }
+
+                break;
+
             default: break;
         }
     }

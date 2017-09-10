@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1432228986576130}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 2c5abb7abfbb89b418d1f796c9aaf00f, type: 2}
+  m_Controller: {fileID: 22100000, guid: 2ef3b1feec01ef24db00cf348da9e4d3, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -439,10 +439,7 @@ MonoBehaviour:
   Name: Oscar
   statView: {fileID: 223654672400546582}
   statText: {fileID: 114301884280258900}
-  normalSprite: {fileID: 21300000, guid: 8d81111ccc68458448649a0901895398, type: 3}
-  defendingSprite: {fileID: 21300022, guid: 8d81111ccc68458448649a0901895398, type: 3}
-  deathSprite: {fileID: 21300028, guid: 8d81111ccc68458448649a0901895398, type: 3}
-  type: Normal
+  type: 0
   maxHP: 22
   baseAtk: 8
   baseMag: 0
@@ -453,6 +450,9 @@ MonoBehaviour:
   baseSkl: 8
   baseLck: 15
   baseSpd: 8
+  skills: []
+  spells: []
+  techs: []
   status: 0
   overhead: {fileID: 223977011082131890}
   hpBar: {fileID: 114143545317962452}

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: PC_Dimmler_Controller
+  m_Controller: {fileID: 9100000, guid: ef93c214eb805cf4ea12c18eaa889b93, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 7400000, guid: da6f1147ed3f9204bac3b3beffc129d9, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: c316245eaa0194b4db77f61dba0556aa, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 8626801278bf2654fbccbf75771ef686, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 9307fd23e30a2ea4ab81941b1101cb43, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: f0197dfd549d68840b063888da14c9d0, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 9bdc58f3c4897384bbc8fdec8a45ffe7, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 007f124c76739414b81911600537ee91, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: 49a4e8577309e9d4daf220b0bc2ba0a8, type: 2}
+  - m_OriginalClip: {fileID: 7400000, guid: 4d04ea8cd35985240893094e35714def, type: 2}
+    m_OverrideClip: {fileID: 7400000, guid: f8c54e82946b0e645abfa47ec6e1beea, type: 2}

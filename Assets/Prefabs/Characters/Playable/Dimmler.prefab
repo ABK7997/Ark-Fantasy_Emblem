@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1673767172768956}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d9b6ea8367b342c49a2ab81f0c93d11d, type: 2}
+  m_Controller: {fileID: 22100000, guid: af79c30660abf4e49878f12801cc7ecb, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -226,9 +226,6 @@ MonoBehaviour:
   Name: Dimmler
   statView: {fileID: 223237088882564222}
   statText: {fileID: 114556128065722420}
-  normalSprite: {fileID: 21300000, guid: fcfa0f3991bb5784d90a89b21f3bff33, type: 3}
-  defendingSprite: {fileID: 21300022, guid: fcfa0f3991bb5784d90a89b21f3bff33, type: 3}
-  deathSprite: {fileID: 21300028, guid: fcfa0f3991bb5784d90a89b21f3bff33, type: 3}
   type: 1
   maxHP: 17
   baseAtk: 4
@@ -239,7 +236,9 @@ MonoBehaviour:
   baseStb: 12
   baseSkl: 7
   baseLck: 9
-  baseSpd: 5
+  baseSpd: 15
+  skills:
+  - {fileID: 114811500840411924, guid: c4908b4e4506a3640ad02f9dd6972bb1, type: 2}
   spells:
   - {fileID: 114493202515641324, guid: 51b0639c9bd28184d97a86d76c67a084, type: 2}
   - {fileID: 114889994196545244, guid: 1d993d78ef6f2f4479625ab4a71c7514, type: 2}

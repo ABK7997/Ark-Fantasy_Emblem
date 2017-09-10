@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1096207003885822}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: ed06ea2247b2a0c4599675f46c369abd, type: 2}
+  m_Controller: {fileID: 22100000, guid: 5e381a7c153aa584eb28dc2283eb0da7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -365,9 +365,6 @@ MonoBehaviour:
   Name: Lobish
   statView: {fileID: 223022948011508594}
   statText: {fileID: 114819903596292462}
-  normalSprite: {fileID: 21300000, guid: 02ffe7aceeb4612438e5bc4280cbf195, type: 3}
-  defendingSprite: {fileID: 21300022, guid: 02ffe7aceeb4612438e5bc4280cbf195, type: 3}
-  deathSprite: {fileID: 21300028, guid: 02ffe7aceeb4612438e5bc4280cbf195, type: 3}
   type: 4
   maxHP: 25
   baseAtk: 11
@@ -379,7 +376,9 @@ MonoBehaviour:
   baseSkl: 5
   baseLck: 7
   baseSpd: 7
+  skills: []
   spells: []
+  techs: []
   status: 0
   overhead: {fileID: 223140014718741244}
   hpBar: {fileID: 114742846879012260}

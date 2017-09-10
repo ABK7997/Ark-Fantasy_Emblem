@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1742252356995240}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 421e6ecad6ff4424a8eaaaf951b683ae, type: 2}
+  m_Controller: {fileID: 22100000, guid: cd4a4b7faa1b0eb409edcce2c197a1a7, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -226,9 +226,6 @@ MonoBehaviour:
   Name: Ven
   statView: {fileID: 223416877910157436}
   statText: {fileID: 114718777182863978}
-  normalSprite: {fileID: 21300000, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
-  defendingSprite: {fileID: 21300022, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
-  deathSprite: {fileID: 21300028, guid: a5b96658c4cf3a64f93370f529e91527, type: 3}
   type: 5
   maxHP: 23
   baseAtk: 7
@@ -240,7 +237,9 @@ MonoBehaviour:
   baseSkl: 10
   baseLck: 4
   baseSpd: 3
+  skills: []
   spells: []
+  techs: []
   status: 0
   overhead: {fileID: 223093527027793866}
   hpBar: {fileID: 114950857808404354}

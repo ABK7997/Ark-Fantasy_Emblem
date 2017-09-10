@@ -204,7 +204,7 @@ Animator:
   m_GameObject: {fileID: 1921748335051362}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: f3773ea03b938374d80175583fd5283c, type: 2}
+  m_Controller: {fileID: 22100000, guid: 650e340834d2739408cdaf359a2da4fc, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -423,9 +423,6 @@ MonoBehaviour:
   Name: Steiner
   statView: {fileID: 223537673913792848}
   statText: {fileID: 114335770913056396}
-  normalSprite: {fileID: 21300000, guid: f9e96b53b2d0f3f48ba6b4fed927b286, type: 3}
-  defendingSprite: {fileID: 21300022, guid: f9e96b53b2d0f3f48ba6b4fed927b286, type: 3}
-  deathSprite: {fileID: 21300028, guid: f9e96b53b2d0f3f48ba6b4fed927b286, type: 3}
   type: 3
   maxHP: 20
   baseAtk: 7
@@ -437,7 +434,9 @@ MonoBehaviour:
   baseSkl: 13
   baseLck: 11
   baseSpd: 6
+  skills: []
   spells: []
+  techs: []
   status: 0
   overhead: {fileID: 223370835394380030}
   hpBar: {fileID: 114113706265764090}
