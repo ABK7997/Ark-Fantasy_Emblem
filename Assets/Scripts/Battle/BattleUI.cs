@@ -37,12 +37,26 @@ public class BattleUI : MonoBehaviour {
     public Button targetCancelButton;
 
     /***BATTLE PROJECTION***/
-    
-    /// <summary>A box which is used to display the battle projection stats</summary>
+
+    /// <summary>
+    /// A box which is used to display the battle projection stats
+    /// </summary>
     public Image battleProjection;
-    
-    /// <summary>Text within the Battle Projection canvas regarding the initiator</summary>
+
+    /// <summary>
+    /// Text within the Battle Projection canvas regarding the initiator
+    /// </summary>
     public Text projectionInfo;
+
+    /// <summary>
+    /// A box which displays battle projection stats for enemy moves
+    /// </summary>
+    public Image enemyProjection;
+
+    /// <summary>
+    /// Text within the enemy Battle Projection canvas regarding the action
+    /// </summary>
+    public Text eProjectionInfo;
 
     /***BUTTONS***/
 
@@ -61,7 +75,8 @@ public class BattleUI : MonoBehaviour {
             case "NORMAL":
                 pauseScreen.gameObject.SetActive(false);
                 commandsList.SetActive(false);
-                SetProjection(false);
+                SetProjection(false, "");
+                SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
                 pauseButton.gameObject.SetActive(true);
                 break;
@@ -103,28 +118,20 @@ public class BattleUI : MonoBehaviour {
             case "SELECTION":
                 SetTargetting(true);
                 commandsList.SetActive(false);
-                SetProjection(false);
+                SetProjection(false, "");
                 specialSelection.gameObject.SetActive(false);
                 break;
 
             case "PLAYER_PROJECTION":
-                SetTargetting(true);
-                SetProjection(true);
+                SetTargetting(false);
                 SetTargetting(false);
                 specialSelection.gameObject.SetActive(false);
-
-                //battleProjection.rectTransform.anchorMin = new Vector2(0, 0);
-                //battleProjection.rectTransform.anchorMax = new Vector2(0, 0);
 
                 break;
 
             case "ENEMY_PROJECTION":
-                SetProjection(true);
                 cancelButton.gameObject.SetActive(false);
                 pauseButton.gameObject.SetActive(false);
-
-                //battleProjection.rectTransform.anchorMin = new Vector2(1, 0);
-                //battleProjection.rectTransform.anchorMax = new Vector2(1, 0);
 
                 break;
 
@@ -142,27 +149,30 @@ public class BattleUI : MonoBehaviour {
     /// <param name="atk">Amount of damage that might be done</param>
     /// <param name="hit">% chance to hit target</param>
     /// <param name="crit">% chance to land a critical on target</param>
-    public void SetProjectionInfo(int atk, int hit, int crit)
+    public void SetProjectionInfo(bool isPlayer, int atk, int hit, int crit)
     {
-        SetProjection(true);
-
-        projectionInfo.text =
+        string projectionText =
             "ATK: " + atk + "\n" +
             "HIT: " + hit + "%\n" +
             "CRIT: " + crit + "%\n";
+
+        if (isPlayer) SetProjection(true, projectionText);
+        else SetEnemyProjection(true, projectionText);
+            
     }
 
     /// <summary>
     /// Projection method for healing or repair spells/techs
     /// </summary>
     /// <param name="effect">Amount that the target will be healed for</param>
-    public void SetProjectionInfo(int effect, int crit)
+    public void SetProjectionInfo(bool isPlayer, int effect, int crit)
     {
-        SetProjection(true);
-
-        projectionInfo.text =
+        string projectionText = 
             "HP Up: " + effect +
             "\nBonus: " + crit + "%";
+
+        if (isPlayer) SetProjection(true, projectionText);
+        else SetEnemyProjection(true, projectionText);
     }
 
     /// <summary>
@@ -170,19 +180,28 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     /// <param name="effect">The status effect in question</param>
     /// <param name="hit">The chance the effect will actually be instilled upon the target</param>
-    public void SetProjectionInfo(string effect, int hit)
+    public void SetProjectionInfo(bool isPlayer, string effect, int hit)
     {
-        SetProjection(true);
-
-        projectionInfo.text =
+        string projectionText =
             effect + "\n" +
             "HIT: " + hit + "%";
+
+        if (isPlayer) SetProjection(true, projectionText);
+        else SetEnemyProjection(true, projectionText);
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object
-    private void SetProjection(bool b)
+    private void SetProjection(bool b, string text)
     {
         battleProjection.gameObject.SetActive(b);
+        projectionInfo.text = text;
+    }
+
+    //Shorthand to enabling.disabling the Enemy's BP game object
+    private void SetEnemyProjection(bool b, string text)
+    {
+        enemyProjection.gameObject.SetActive(b);
+        eProjectionInfo.text = text;
     }
 
     //Shorthand to enable/disable targetting UI elements

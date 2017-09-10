@@ -67,13 +67,13 @@ public class BattleManager : Manager {
 
         //Organize EnemyParty
         ea = ow.encounteredParty;
-        eParty.OrganizeParty(board.enemyCoordinates, board.scaling, ea.GetParty());
+        eParty.OrganizeParty(false, board.enemyCoordinates, board.scaling, ea.GetParty());
     }
 	
     //Controls the flow of battle with Order Queue
 	void Update () {
 
-        if (state == STATE.NORMAL) //Check if both not animating and not paused by player7
+        if (state == STATE.NORMAL) //Check if both not animating and not paused by player
         {
             StartCoroutine(Animate());
 
@@ -88,7 +88,7 @@ public class BattleManager : Manager {
     public void InstantiatePlayerParty(List<Entity> partyMembers)
     {
         //Configure PlayerParty
-        pParty.OrganizeParty(board.playerCoordinates, board.scaling, partyMembers);
+        pParty.OrganizeParty(true, board.playerCoordinates, board.scaling, partyMembers);
 
         //Assign opposite parties
         pParty.ConstructOppositeParty(eParty.party);
@@ -165,7 +165,7 @@ public class BattleManager : Manager {
                     animationTime = 1f;
                     break;
 
-                case "MAGIC": case "TECH":
+                case "MAGIC": case "TECH": case "SKILL":
                     SetState("SPECIAL_ANIMATING");
                     animationTime = 0f;
                     break;

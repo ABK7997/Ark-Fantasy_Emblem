@@ -32,6 +32,11 @@ public class Special : MonoBehaviour {
     public int baseCrit;
 
     /// <summary>
+    /// Scope of the special ability: single target or all enemies / friendlies?
+    /// </summary>
+    public bool hitAll;
+
+    /// <summary>
     /// A worded, lore description of this spell
     /// </summary>
     public string description;
@@ -59,9 +64,12 @@ public class Special : MonoBehaviour {
     }
     public TYPE type;
 
+    /// <summary>
+    /// The status effect this speical gives or inflicts. Not all special have a status effect.
+    /// </summary>
     public enum EFFECT
     {
-        NONE, OBSCURE
+        NONE, OBSCURE, EXPOSED
     }
     public EFFECT effect;
 

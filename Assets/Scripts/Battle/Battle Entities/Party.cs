@@ -7,6 +7,8 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class Party : MonoBehaviour {
 
+    protected bool isPlayer;
+
     protected BattleManager bm; //Set in the BattleManager class during battle setup
     protected BattleUI ui; //Set in the Battlemanager
 
@@ -43,8 +45,10 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)
     /// </summary>
-    public void OrganizeParty(Vector2[] coords, int scaling, List<Entity> newParty)
+    public void OrganizeParty(bool isPlayer, Vector2[] coords, int scaling, List<Entity> newParty)
     {
+        this.isPlayer = isPlayer;
+
         foreach (Entity e in newParty)
         {
             party.Add(e);
@@ -61,10 +65,20 @@ public abstract class Party : MonoBehaviour {
     }
 
     //Party Management
+
+    /// <summary>
+    /// Add a member to this party
+    /// </summary>
+    /// <param name="e">Entity to be added </param>
     public void Add(Entity e)
     {
         party.Add(e);
     }
+
+    /// <summary>
+    /// Remove a member from this party
+    /// </summary>
+    /// <param name="e">Entity to be removed</param>
     public void Remove(Entity e)
     {
         party.Remove(e);
@@ -161,17 +175,17 @@ public abstract class Party : MonoBehaviour {
         switch (command)
         {
             case COMMAND.ATTACK:
-                ui.SetProjectionInfo(activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit);
+                ui.SetProjectionInfo(isPlayer, activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit);
                 break;
 
             case COMMAND.MAGIC:
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(activeMember.MagicDmg, activeMember.Hit, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.MagicDmg, activeMember.Hit, activeMember.Crit); break;
 
                     case Special.TYPE.HEAL:
-                        ui.SetProjectionInfo(-activeMember.MagicDmg, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, -activeMember.MagicDmg, activeMember.Crit); break;
                 }
                 
                 break;
@@ -180,10 +194,10 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(activeMember.TechDmg, activeMember.Hit, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.TechDmg, activeMember.Hit, activeMember.Crit); break;
 
                     case Special.TYPE.REPAIR:
-                        ui.SetProjectionInfo(-activeMember.TechDmg, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, - activeMember.TechDmg, activeMember.Crit); break;
                 }
 
                 break;
@@ -192,7 +206,7 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.EFFECT:
-                        ui.SetProjectionInfo(activeMember.GetSpecial().effect + "", activeMember.Hit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.Hit); break;
                 }
 
                 break;
@@ -236,6 +250,9 @@ public abstract class Party : MonoBehaviour {
         activeMember.SetSpecial(-1, null);
     }
 
+    /// <summary>
+    /// Return the battle to a NORMAL game state
+    /// </summary>
     public void Normalize()
     {
         bm.SetState("NORMAL");
@@ -259,13 +276,19 @@ public abstract class Party : MonoBehaviour {
     public List<Entity> GetLivingParty()
     {
         List<Entity> retParty = party;
+        List<Entity> deadParty = new List<Entity>();
 
         foreach (Entity e in retParty)
         {
             if (e.GetStatus() == "DEAD")
             {
-                retParty.Remove(e);
+                deadParty.Add(e);
             }
+        }
+
+        foreach (Entity e in deadParty)
+        {
+            retParty.Remove(e);
         }
 
         return retParty;
@@ -278,10 +301,16 @@ public abstract class Party : MonoBehaviour {
     public List<Entity> GetLivingEnemies()
     {
         List<Entity> enemies = oppositeParty;
+        List<Entity> deadEnemies = new List<Entity>();
 
         foreach (Entity e in enemies)
         {
-            if (e.GetStatus() == "DEAD") enemies.Remove(e);
+            if (e.GetStatus() == "DEAD") deadEnemies.Add(e);
+        }
+
+        foreach (Entity e in deadEnemies)
+        {
+            enemies.Remove(e);
         }
 
         return enemies;

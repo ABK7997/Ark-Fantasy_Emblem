@@ -70,8 +70,8 @@ public class Entity : MonoBehaviour {
     private int techTimer = 0; //Turns which remain until a tech can be used again
 
     //Effects
-    //private Dictionary<string, bool> effects;
     private List<Effect> effects;
+    public List<string> immunities;
 
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
@@ -123,7 +123,6 @@ public class Entity : MonoBehaviour {
 
         ResetStats();
         UpdateDisplay();
-        AddAllEffects();
 
         normal = render.color; //Set the normal color to the sprite's starting color
     }
@@ -160,6 +159,8 @@ public class Entity : MonoBehaviour {
         Spd = baseSpd;
 
         ready = false;
+
+        NullifyAllEffects();
     }
 
     /// <summary>
@@ -311,7 +312,7 @@ public class Entity : MonoBehaviour {
     {
         string eff = activeSpecial.effect + "";
 
-        target.SetEffect(eff, activeSpecial.turnTimer + 1); //TurnTimer is decremented immediately after Skill is used
+        target.SetEffect(eff, activeSpecial.turnTimer); 
     }
 
     //Calculations
@@ -563,7 +564,9 @@ public class Entity : MonoBehaviour {
             "STB: " + Stb + "\n\n" +
             "SKL: " + Skl + "\n" +
             "LCK: " + Lck + "\n" +
-            "SPD: " + Spd + "\n";
+            "SPD: " + Spd + "\n" +
+            "\n" +
+            GetAllEffects();
     }
 
     /***BATTLE PROJECTION INFO***/
@@ -785,40 +788,12 @@ public class Entity : MonoBehaviour {
         party.Normalize();
     }
 
-    //Status Effects
-    private struct Effect
-    {
-        public string name;
-        public int turnsRemaining;
-
-        public void TurnTimer()
-        {
-            turnsRemaining--;
-        }
-    }
-
-    private void AddAllEffects()
-    {
-        effects = new List<Effect>();
-        /*
-        effects = new Dictionary<string, bool>();
-
-        effects.Add("OBSCURE", false);
-        */
-    }
-
+    /***STATUS EFFECTS***/
     /// <summary>
     /// Set all possible status effecst to false
     /// </summary>
     public void NullifyAllEffects()
     {
-        /*
-        foreach (KeyValuePair<string, bool> entry in effects)
-        {
-            effects[entry.Key] = false;
-        }
-        */
-
         effects = new List<Effect>();
     }
 
@@ -829,17 +804,9 @@ public class Entity : MonoBehaviour {
     /// <returns></returns>
     public bool CheckEffect(string status)
     {
-        /*
-        bool b;
-
-        effects.TryGetValue(status, out b);
-
-        return b;
-        */
-
         foreach(Effect e in effects)
         {
-            if (e.name == status) return true;
+            if (e.EffectName == status) return true;
         }
 
         return false;
@@ -852,16 +819,14 @@ public class Entity : MonoBehaviour {
     /// <param name="set">Enable or disable</param>
     public void SetEffect(string status, int turns)
     {
-        Effect neff = new Effect();
-        neff.name = status;
-        neff.turnsRemaining = turns;
+        Effect nEff = new Effect(status, turns);
 
         if (CheckEffect(status)) //Effect is already active; reset effect
         {
             DisableEffect(status);
         }
 
-        effects.Add(neff);
+        if (!IsImmune(status)) effects.Add(nEff);
     }
 
     /// <summary>
@@ -870,27 +835,52 @@ public class Entity : MonoBehaviour {
     /// <param name="status">The effect to be nullified</param>
     public void DisableEffect(string status)
     {
+        Effect toRemove = new Effect("", 0);
+        bool removal = false;
+
         foreach (Effect e in effects)
         {
-            if (e.name == status) effects.Remove(e);
+            if (e.EffectName == status)
+            {
+                toRemove = e;
+                removal = true;
+            }
         }
+
+        if (removal) effects.Remove(toRemove);
     }
 
-    //Cycle through effects 
-    public void CycleEffects()
+    //Cycle through effects and remove if expired
+    private void CycleEffects()
     {
         foreach (Effect e in effects)
         {
-            Debug.Log("Effect Active:" + e.name);
-            e.TurnTimer();
+            e.Turn();
 
-            Debug.Log(e.turnsRemaining);
-
-            if (e.turnsRemaining == 0)
+            if (e.TurnTimer == 0)
             {
                 effects.Remove(e);
             }
         }
+    }
+
+    //List all effects in a string
+    private string GetAllEffects()
+    {
+        string ret = "";
+
+        foreach(Effect e in effects)
+        {
+            ret += e.EffectName + ": " + e.TurnTimer + "\n";
+        }
+
+        return ret;
+    }
+
+    //Immunity
+    private bool IsImmune(string status)
+    {
+        return immunities.Contains(status);
     }
 
     //Type Methods
