@@ -35,7 +35,7 @@ public class AnimatedProjectile : MonoBehaviour {
         //If the shot is a miss
         else
         {
-            //Has hit target. Perform spell effect and Destroy game object
+            //Destroy
             if ((Mathf.Abs(position.x - destination.x) <= epsilon)
                 && (Mathf.Abs(position.y - destination.y) <= epsilon))
             {
@@ -82,8 +82,8 @@ public class AnimatedProjectile : MonoBehaviour {
             //If it's a miss, projectile will fly in opposite direction
             if (!accurate)
             {
-                destination = new Vector3(start.x - 10f, start.y, 0);
-                xSpeed *= -1;
+                destination = new Vector3(start.x - 5f, start.y, 0);
+                xSpeed *= -2;
             }
         }
 

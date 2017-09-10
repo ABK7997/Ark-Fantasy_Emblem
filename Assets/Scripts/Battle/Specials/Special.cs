@@ -69,7 +69,10 @@ public class Special : MonoBehaviour {
     /// </summary>
     public enum EFFECT
     {
-        NONE, OBSCURE, EXPOSED
+        NONE, //Not a status effect spell
+        OBSCURE, EXPOSED, //Targeting
+        INTENSE, //Single-turn offensive boost
+        ARMOR //Single-turn defensive boost
     }
     public EFFECT effect;
 

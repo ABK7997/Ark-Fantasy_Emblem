@@ -42,6 +42,18 @@ public class Enemy : Entity {
 
         int selection = Random.Range(0, targets.Count);
 
+        //Exposed Target
+        foreach (Entity e in targets)
+        {
+            if (e.CheckEffect("EXPOSED"))
+            {
+                if (BlowhornEffect())
+                {
+                    return e;
+                }
+            }
+        }
+
         //Obscure Target
         if (targets.Count > 1 && targets[selection].CheckEffect("OBSCURE"))
         {
@@ -63,7 +75,7 @@ public class Enemy : Entity {
     //EFFECT - OBSCURE
     protected Entity ObscureEffect(List<Entity> targets, Entity previousTarget)
     {
-        int chance = 70;
+        int chance = 80;
 
         //Change target
         if (Random.Range(0, 100) <= chance)
@@ -79,5 +91,18 @@ public class Enemy : Entity {
 
         //Chance failed - same target acquired
         else return previousTarget;
+    }
+
+    //EFFECT - BLOWHORN
+    protected bool BlowhornEffect()
+    {
+        int chance = 60;
+
+        if (Random.Range(0, 100) <= chance)
+        {
+            return true;
+        }
+
+        else return false;
     }
 }

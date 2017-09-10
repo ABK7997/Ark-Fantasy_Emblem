@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour {
 
+    private enum STATE
+    {
+        NONE, ATTACK, SPECIAL, EFFECT
+    }
+    private STATE state;
+
     /// <summary>The Battle Manager, mostly just for its GetState() method</summary>
     public BattleManager bm;
 
@@ -86,6 +92,7 @@ public class BattleUI : MonoBehaviour {
 
             case "COMMANDING":
                 SetTargetting(false);
+
                 commandsList.SetActive(true);
                 specialSelection.gameObject.SetActive(false);
                 pauseButton.gameObject.SetActive(false);
@@ -112,14 +119,18 @@ public class BattleUI : MonoBehaviour {
 
             case "SPECIAL_SELECTION":
                 commandsList.SetActive(false);
+                SetTargetting(false);
+                SetProjection(false, "");
                 specialSelection.gameObject.SetActive(true);
                 break;
 
             case "SELECTION":
-                SetTargetting(true);
                 commandsList.SetActive(false);
                 SetProjection(false, "");
+
+                SetTargetting(true);
                 specialSelection.gameObject.SetActive(false);
+
                 break;
 
             case "PLAYER_PROJECTION":
@@ -151,6 +162,8 @@ public class BattleUI : MonoBehaviour {
     /// <param name="crit">% chance to land a critical on target</param>
     public void SetProjectionInfo(bool isPlayer, int atk, int hit, int crit)
     {
+        state = STATE.ATTACK;
+
         string projectionText =
             "ATK: " + atk + "\n" +
             "HIT: " + hit + "%\n" +
@@ -167,6 +180,8 @@ public class BattleUI : MonoBehaviour {
     /// <param name="effect">Amount that the target will be healed for</param>
     public void SetProjectionInfo(bool isPlayer, int effect, int crit)
     {
+        state = STATE.SPECIAL;
+
         string projectionText = 
             "HP Up: " + effect +
             "\nBonus: " + crit + "%";
@@ -182,6 +197,8 @@ public class BattleUI : MonoBehaviour {
     /// <param name="hit">The chance the effect will actually be instilled upon the target</param>
     public void SetProjectionInfo(bool isPlayer, string effect, int hit)
     {
+        state = STATE.EFFECT;
+
         string projectionText =
             effect + "\n" +
             "HIT: " + hit + "%";

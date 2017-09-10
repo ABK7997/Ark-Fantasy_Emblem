@@ -40,6 +40,13 @@ public class InputControls : MonoBehaviour {
     /// </summary>
     public void Cancel()
     {
+        string type = "";
+
+        if (pParty.GetActiveMember().GetSpecial() != null)
+        {
+            type = pParty.GetActiveMember().GetSpecial().type + "";
+        }
+
         switch (bm.GetState())
         {
             case "COMMANDING":
@@ -48,6 +55,13 @@ public class InputControls : MonoBehaviour {
                 break;
 
             case "SELECTION":
+                if (type != "")
+                {
+                    bm.SetState("SPECIAL_SELECTION");
+                }
+                pParty.NullifySpecial();
+                break;
+
             case "SPECIAL_SELECTION":
                 pParty.NullifySpecial();
                 bm.SetState("COMMANDING");
@@ -55,8 +69,11 @@ public class InputControls : MonoBehaviour {
 
             case "PLAYER_PROJECTION":
                 bm.CancelAction();
-                bm.SetState("SELECTION");
                 pParty.CancelTarget();
+
+                if (type == "EFFECT") bm.SetState("SPECIAL_SELECTION");
+                else bm.SetState("SELECTION");
+
                 break;
         }
     }

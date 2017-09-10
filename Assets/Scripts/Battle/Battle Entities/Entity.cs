@@ -316,6 +316,26 @@ public class Entity : MonoBehaviour {
     }
 
     //Calculations
+    
+    /// <summary>
+    /// Physical effect calculation - damage done by physical ATK 
+    /// </summary>
+    public void PhysicalEffectCalculation()
+    {
+        int damage = Atk;
+        int defense = target.Def;
+
+        //Defense Modifiers
+        if (target.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
+
+        physicalDmg = Atk - defense;
+
+        //Attack Modifiers
+        if (CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
+
+        if (physicalDmg < 0) physicalDmg = 0;
+    }
+
     /// <summary>
     /// Magical effect calculation - damage, heal, or none for status ailment
     /// </summary>
@@ -608,8 +628,7 @@ public class Entity : MonoBehaviour {
         if (Random.Range(0, 100) <= critChance) landedCrit = true;
 
         //Physical Attack Calculation
-        physicalDmg = Atk - t.Def;
-        if (physicalDmg < 0) physicalDmg = 0;
+        PhysicalEffectCalculation();
 
         //Magic Attack Calculation
         if (activeSpecial != null) MagicEffectCalculation();
@@ -651,6 +670,11 @@ public class Entity : MonoBehaviour {
 
         if (hit < 0) hit = 0;
         if (hit > 99) hit = 99;
+
+        if (activeSpecial != null)
+        {
+            if (activeSpecial.type == Special.TYPE.EFFECT) return activeSpecial.baseAccuracy;
+        }
 
         return hit;
     }
@@ -845,6 +869,14 @@ public class Entity : MonoBehaviour {
                 toRemove = e;
                 removal = true;
             }
+
+            //Certain effects
+            switch (status)
+            {
+                case "ARMOR": Def = baseDef; break;
+
+                default: break;
+            }
         }
 
         if (removal) effects.Remove(toRemove);
@@ -853,14 +885,21 @@ public class Entity : MonoBehaviour {
     //Cycle through effects and remove if expired
     private void CycleEffects()
     {
+        List<string> toRemove = new List<string>();
+
         foreach (Effect e in effects)
         {
             e.Turn();
 
             if (e.TurnTimer == 0)
             {
-                effects.Remove(e);
+                toRemove.Add(e.EffectName);
             }
+        }
+
+        foreach (string s in toRemove)
+        {
+            DisableEffect(s);
         }
     }
 

@@ -35,6 +35,7 @@ public class PlayerParty : Party {
                     if (e != null && e.Ready && !bm.IsAnimating())
                     {
                         activeMember = e;
+                        activeMember.SetSpecial(0, "NULL");
                         bm.SetState("COMMANDING"); //Pause Game
                     }
                     break;
