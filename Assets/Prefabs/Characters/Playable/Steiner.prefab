@@ -481,7 +481,7 @@ MonoBehaviour:
   baseDef: 5
   baseRes: 8
   baseStb: 9
-  baseSkl: 13
+  baseSkl: 11
   baseLck: 11
   baseSpd: 5
   skills:

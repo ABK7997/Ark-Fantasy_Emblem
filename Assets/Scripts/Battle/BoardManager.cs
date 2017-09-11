@@ -20,6 +20,7 @@ public class BoardManager : MonoBehaviour {
     [HideInInspector] public Vector2[] enemyCoordinates;
 
     private GameObject[] tiles;
+    private Tile[,] board;
 
     //Inherent
     private List<Vector3> gridPositions = new List<Vector3>(); //A precise layout of coordinates set up in advance for placing tiles
@@ -37,6 +38,7 @@ public class BoardManager : MonoBehaviour {
         columns = bi.columns;
         rows = bi.rows;
         tiles = bi.tiles;
+        board = new Tile[rows, columns];
 
         cam.transform.position = new Vector3(2.5f * (columns - 1), 2.5f * (rows - 1), -1); //Center camera
         cam.orthographicSize = scaling + (rows * 1.75f);
@@ -70,7 +72,19 @@ public class BoardManager : MonoBehaviour {
 
                 GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
                 instance.transform.SetParent(boardHolder);
+
+                board[y / scaling, x / scaling] = toInstantiate.GetComponent<Tile>();
             }
         }
+    }
+
+    /// <summary>
+    /// Get a tile on the board at a certain position
+    /// </summary>
+    /// <param name="position">The position to search at</param>
+    /// <returns>The tile at the given position (if it exists)</returns>
+    public Tile GetTile(Vector3 position)
+    {
+        return board[(int)position.y / scaling, (int)position.x / scaling];
     }
 }

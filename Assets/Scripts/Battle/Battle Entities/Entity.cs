@@ -14,6 +14,10 @@ public class Entity : MonoBehaviour {
     //The ID number of this entity in its party
     private int index;
 
+    //Position to rest to
+    private Vector3 originalPosition;
+    private Tile tile;
+
     protected bool hovering = false; //If the mouse if hovering over the entity or not
     protected Party party; //The party this entity belongs to (player or enemy)
 
@@ -138,8 +142,10 @@ public class Entity : MonoBehaviour {
     public virtual void UpdateTime() {
         if (status == STATUS.DEAD) return; //Do nothing if dead
 
+        ResetPosition();
+
         if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier);
-        else ready = true;
+        else Ready = true;
     }
 
     /***STAT METHODS***/
@@ -240,6 +246,9 @@ public class Entity : MonoBehaviour {
         if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
         if (landedHit) target.Hp -= totalDamage; //Hit
 
+        //Miss Animation
+        else Miss();
+
         ResetTimer();
     }
     
@@ -318,6 +327,13 @@ public class Entity : MonoBehaviour {
         string eff = activeSpecial.effect + "";
 
         target.SetEffect(eff, activeSpecial.turnTimer); 
+    }
+
+    //Miss Animation
+    private void Miss()
+    {
+        if (IsRightOf(this, target)) target.SetPosition(2f, 0f);
+        else target.SetPosition(-2f, 0f);
     }
 
     //Calculations
@@ -416,6 +432,193 @@ public class Entity : MonoBehaviour {
         techDmg = (int)baseDamage;
     }
 
+    //Check the effects of the tile a target is standing on and apply them
+    private void TileEffects(Tile.EFFECT e)
+    {
+        switch (e)
+        {
+            //Lose accuracy
+            case Tile.EFFECT.HIDDEN:
+                hitChance -= 35;
+                if (hitChance < 0) hitChance = 0;
+                break; 
+
+            case Tile.EFFECT.OBSCURED:
+                hitChance -= 15;
+                if (hitChance < 0) hitChance = 0;
+                break;
+
+            //Defense
+            case Tile.EFFECT.COVER:
+                physicalDmg -= 3;
+                if (physicalDmg < 0) physicalDmg = 0;
+                break;
+
+            case Tile.EFFECT.FORTIFIED:
+                physicalDmg -= 5;
+                if (physicalDmg < 0) physicalDmg = 0;
+                break;
+
+            //Stability
+            case Tile.EFFECT.GROUNDED:
+                techDmg = (int) (techDmg * 0.65f);
+                if (techDmg < 0) techDmg = 0;
+                break;
+
+            case Tile.EFFECT.SOGGY:
+                techDmg = (int) (techDmg * 2f);
+                break;
+
+            default: break; 
+        }
+    }
+
+    /// <summary>
+    /// Check tile effects at the start of an entity's turn (when the speed gauge is full)
+    /// </summary>
+    /// <param name="e">The effect to be checked</param>
+    public void TileEffectsTurn(Tile.EFFECT e)
+    {
+        Spd = baseSpd;
+
+        switch (e)
+        {
+            //Restore HP
+            case Tile.EFFECT.RECOVERY:
+                Hp += 3;
+                break;
+
+            //Speed
+            case Tile.EFFECT.STUCK:
+                Spd /= 2;
+
+                break;
+        }
+    } 
+
+    private void StatusEffects()
+    {
+        //TODO
+    }
+
+    //Check status effects each turn
+    private void StatusEffectsTurn()
+    {
+        //TODO
+    }
+
+    /// <summary>
+    /// Do battle calculations for all possible moves the entity can make
+    /// </summary>
+    /// <param name="t">The target entity for an action</param>
+    public void SetTemporaryStats(Entity t)
+    {
+        target = t;
+
+        //Calculate hit and crit chance
+        hitChance = HitChance();
+        critChance = CritChance();
+
+        //Physical Attack Calculation
+        PhysicalEffectCalculation();
+
+        //Magic Attack Calculation
+        if (activeSpecial != null) MagicEffectCalculation();
+
+        //Tech Attack Calculation
+        if (activeSpecial != null) TechnicalEffectCalculation();
+
+        if (activeSpecial != null) specialCost = activeSpecial.cost;
+
+        //Tile modifiers
+        TileEffects(target.GetTileEffect1());
+        TileEffects(target.GetTileEffect2());
+
+        //Calculate hit or miss
+        if (Random.Range(0, 100) <= hitChance) landedHit = true;
+        if (Random.Range(0, 100) <= critChance) landedCrit = true;
+    }
+
+    //Accuracy
+    protected int AccuracyCalculation()
+    {
+        int accuracy;
+
+        if (activeSpecial == null) accuracy = 70; //base acc = 70
+        else accuracy = activeSpecial.baseAccuracy;
+
+        accuracy += Skl * 2; // + SKL * 2
+        accuracy += Lck; // + LCK
+
+        //EFFECT - ANGER
+        if (CheckEffect("ANGER")) accuracy -= 35;
+
+        return accuracy;
+    }
+
+    //Evasion
+    protected int EvasionCalculation()
+    {
+        int evade = 0; //base evd = 0
+        evade += target.Spd; // + SPD
+        evade += target.Lck / 2; // + LCK/2
+
+        return evade;
+    }
+
+    //Hit Chance
+    protected int HitChance()
+    {
+        int hit = AccuracyCalculation() - EvasionCalculation();
+
+        if (hit < 0) hit = 0;
+        if (hit > 99) hit = 99;
+
+        if (activeSpecial != null)
+        {
+            if (activeSpecial.type == Special.TYPE.EFFECT) return activeSpecial.baseAccuracy;
+        }
+
+        return hit;
+    }
+
+    //Crit Accuracy
+    protected int CritAccuracyCalculation()
+    {
+        int crit;
+
+        if (activeSpecial == null) crit = 1;
+        else crit = activeSpecial.baseCrit;
+
+        crit += Skl / 2;
+
+        //EFFECT - ANGER
+        if (CheckEffect("ANGER")) crit += 35;
+
+        return crit;
+    }
+
+    //Crit Evasion
+    protected int CritEvasionCalcuation()
+    {
+        if (activeSpecial != null) return 0;
+
+        int evd = 0;
+        evd += target.Lck;
+
+        return evd;
+    }
+
+    //Crit Hit Chance
+    protected int CritChance()
+    {
+        int crit = CritAccuracyCalculation() - CritEvasionCalcuation();
+        if (crit > 99) crit = 99;
+        if (crit < 0) crit = 0;
+
+        return crit;
+    }
+
     //Defense
     /// <summary>
     /// Doubles the user's defensive stats or returns them to normal
@@ -449,6 +652,75 @@ public class Entity : MonoBehaviour {
         }
     }
 
+    /***POSITION and TILES***/
+
+    /// <summary>
+    /// Move entity to temporary position on the battlefield
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    public void SetPosition(float x, float y)
+    {
+        transform.position = new Vector3(transform.position.x + x, transform.position.y + y, 0);
+    }
+
+    /// <summary>
+    /// Reset entity to original position
+    /// </summary>
+    public void ResetPosition()
+    {
+        transform.position = originalPosition;
+    }
+
+    /// <summary>
+    /// Change this entity's reset position
+    /// </summary>
+    /// <param name="x">X coordinate</param>
+    /// <param name="y">Y coordinate</param>
+    public void SetOriginalPosition(float x, float y)
+    {
+        originalPosition = new Vector3(x, y, 0);
+    }
+
+    /// <summary>
+    /// Determines if the target entity is to the right of the user entity
+    /// </summary>
+    /// <param name="user">User entity</param>
+    /// <param name="target">Target entity</param>
+    /// <returns>True - target x is greater than user x; False - otherwise</returns>
+    public bool IsRightOf(Entity user, Entity target)
+    {
+        return user.transform.position.x < target.transform.position.x;
+    }
+
+    /// <summary>
+    /// Set or change the tile this entity is standing on
+    /// </summary>
+    /// <param name="t">The new tile to be set</param>
+    public void SetTile(Tile t)
+    {
+        tile = t;
+        //transform.position = tile.transform.position;
+    }
+
+    /// <summary>
+    /// Get the first status effect of this entity's occupied tile
+    /// </summary>
+    /// <returns>The status effect of the tile</returns>
+    public Tile.EFFECT GetTileEffect1()
+    {
+        return tile.effect1;
+    }
+
+    /// <summary>
+    /// Get the second status effect of this entity's occupied tile. Many tiles do not have a second effect
+    /// </summary>
+    /// <returns>The status effect of the tile</returns>
+    public Tile.EFFECT GetTileEffect2()
+    {
+        return tile.effect2;
+    }
+
     /***GETTER and SETTER METHODS***/
     /// <summary>
     /// Set and get for the index number of this entity in its party
@@ -472,8 +744,6 @@ public class Entity : MonoBehaviour {
     {
         get { return _hp; }
         set {
-            if (status != STATUS.DEFENDING) anim.enabled = true;
-
             _hp = value; //change
 
             if (Hp > maxHP) _hp = maxHP;
@@ -587,7 +857,12 @@ public class Entity : MonoBehaviour {
     public bool Ready
     {
         get { return ready; }
-        set { ready = value; }
+        set {
+            StatusEffectsTurn();
+            TileEffectsTurn(tile.effect1);
+            TileEffectsTurn(tile.effect2);
+            ready = value;
+        }
     }
 
     /// <summary>
@@ -620,8 +895,6 @@ public class Entity : MonoBehaviour {
             GetAllEffects();
     }
 
-    /***BATTLE PROJECTION INFO***/
-
     /// <summary>
     /// Change the entity's color overlay
     /// </summary>
@@ -640,114 +913,6 @@ public class Entity : MonoBehaviour {
 
         render.color = colorChange;
 
-    }
-
-    /// <summary>
-    /// Do battle calculations for all possible moves the entity can make
-    /// </summary>
-    /// <param name="t">The target entity for an action</param>
-    public void SetTemporaryStats(Entity t)
-    {
-        target = t;
-
-        //Calculate hit and crit chance
-        hitChance = HitChance();
-        critChance = CritChance();
-
-        //Calculate hit or miss
-        if (Random.Range(0, 100) <= hitChance) landedHit = true;
-        if (Random.Range(0, 100) <= critChance) landedCrit = true;
-
-        //Physical Attack Calculation
-        PhysicalEffectCalculation();
-
-        //Magic Attack Calculation
-        if (activeSpecial != null) MagicEffectCalculation();
-
-        //Tech Attack Calculation
-        if (activeSpecial != null) TechnicalEffectCalculation();
-
-        if (activeSpecial != null) specialCost = activeSpecial.cost;
-    }
-
-    //Accuracy
-    protected int AccuracyCalculation()
-    {
-        int accuracy;
-
-        if (activeSpecial == null) accuracy = 70; //base acc = 70
-        else accuracy = activeSpecial.baseAccuracy;
-
-        accuracy += Skl * 2; // + SKL * 2
-        accuracy += Lck; // + LCK
-
-        //EFFECT - ANGER
-        if (CheckEffect("ANGER")) accuracy -= 35;
-
-        return accuracy;
-    }
-
-    //Evasion
-    protected int EvasionCalculation()
-    {
-        int evade = 0; //base evd = 0
-        evade += target.Spd; // + SPD
-        evade += target.Lck / 2; // + LCK/2
-
-        return evade;
-    }
-
-    //Hit Chance
-    protected int HitChance()
-    {
-        int hit = AccuracyCalculation() - EvasionCalculation();
-
-        if (hit < 0) hit = 0;
-        if (hit > 99) hit = 99;
-
-        if (activeSpecial != null)
-        {
-            if (activeSpecial.type == Special.TYPE.EFFECT) return activeSpecial.baseAccuracy;
-        }
-
-        return hit;
-    }
-
-    //Crit Accuracy
-    protected int CritAccuracyCalculation()
-    {
-        int crit;
-
-        if (activeSpecial == null) crit = 1;
-        else crit = activeSpecial.baseCrit;
-
-        crit += Skl / 2;
-
-        //EFFECT - ANGER
-        if (CheckEffect("ANGER")) crit += 35;
-
-        return crit;
-    }
-
-    //Crit Evasion
-    protected int CritEvasionCalcuation()
-    {
-        if (activeSpecial != null) return 0;
-
-        int evd = 0;
-        evd += target.Lck;
-
-        return evd;
-    }
-
-    //Crit Hit Chance
-    protected int CritChance()
-    {
-        int crit = CritAccuracyCalculation() - CritEvasionCalcuation();
-        if (crit > 99) crit = 99;
-        if (crit < 0) crit = 0;
-
-        return crit;
     }
 
     //Temporary Stats Getter/Setter

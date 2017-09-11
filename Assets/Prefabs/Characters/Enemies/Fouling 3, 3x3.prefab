@@ -131,7 +131,8 @@ MonoBehaviour:
   - {x: 2, y: 1}
   - {x: 2, y: 2}
   tiles:
-  - {fileID: 1000011534043434, guid: 0214fc627a90cec4caf8eb5c756190bc, type: 2}
+  - {fileID: 1593432158396636, guid: a134ed0e31a357d4c87bfb28f9e2ec26, type: 2}
+  - {fileID: 1222234896665926, guid: 97c305b77e5028340831728885cae61a, type: 2}
 --- !u!114 &114960764081981754
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -144,6 +145,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpeed: 2
+  bi: {fileID: 114252082533101172}
+  ow: {fileID: 0}
   party:
   - {fileID: 114102246407880964, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
   - {fileID: 114102246407880964, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}

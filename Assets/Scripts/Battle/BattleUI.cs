@@ -79,8 +79,6 @@ public class BattleUI : MonoBehaviour {
                 SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
                 pauseButton.gameObject.SetActive(true);
-                bm.pParty.EnableIndeces(true);
-                bm.eParty.EnableIndeces(false);
                 break;
 
             case "ANIMATING":
@@ -93,7 +91,6 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(true);
                 specialSelection.enabled = false;
                 pauseButton.gameObject.SetActive(false);
-                bm.eParty.EnableIndeces(false);
 
                 int timer = bm.pParty.GetActiveMember().TechTimer;
 
@@ -120,8 +117,6 @@ public class BattleUI : MonoBehaviour {
                 SetTargetting(false);
                 SetProjection(false, "");
                 specialSelection.enabled = true;
-                bm.pParty.EnableIndeces(false);
-                bm.eParty.EnableIndeces(false);
                 break;
 
             case "SELECTION":
@@ -130,31 +125,21 @@ public class BattleUI : MonoBehaviour {
 
                 SetTargetting(true);
                 specialSelection.enabled = false;
-
-                bm.pParty.EnableIndeces(true);
-                bm.eParty.EnableIndeces(true);
                 break;
 
             case "PLAYER_PROJECTION":
                 SetTargetting(false);
                 SetTargetting(false);
                 specialSelection.enabled = false;
-
-                bm.pParty.EnableIndeces(false);
-                bm.eParty.EnableIndeces(false);
                 break;
 
             case "ENEMY_PROJECTION":
                 cancelButton.gameObject.SetActive(false);
                 pauseButton.gameObject.SetActive(false);
-
-                bm.pParty.EnableIndeces(false);
-                bm.eParty.EnableIndeces(false);
                 break;
 
             case "PAUSED":
                 pauseScreen.gameObject.SetActive(true);
-                bm.pParty.EnableIndeces(false);
                 break;
 
             default: break;

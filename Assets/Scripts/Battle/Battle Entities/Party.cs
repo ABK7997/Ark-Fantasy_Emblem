@@ -11,6 +11,7 @@ public abstract class Party : MonoBehaviour {
 
     protected BattleManager bm; //Set in the BattleManager class during battle setup
     protected BattleUI ui; //Set in the Battlemanager
+    protected BoardManager board;
 
     /// <summary>List of playable party members</summary>
     public List<Entity> party; //For Enemies or PartyMembers
@@ -58,11 +59,18 @@ public abstract class Party : MonoBehaviour {
         {
             if (i == party.Count) break;
 
+            //Party Member
             Entity e = Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
             party[i] = e;
             party[i].Index = i;
             party[i].indexText.text = (i + 1) + "";
             party[i].SetParty(this);
+            party[i].SetOriginalPosition(coords[i].x * scaling, coords[i].y * scaling);
+
+            //Tile member is instantiated onto
+            Tile t = board.GetTile(party[i].transform.position);
+            party[i].SetTile(t);
+            t.Occupied = true;
         }
     }
 
@@ -137,10 +145,11 @@ public abstract class Party : MonoBehaviour {
     /// Used by the BattleManager class to assign itself to the parties bm variable
     /// </summary>
     /// <param name="manager"></param>
-    public void SetBattleManager(BattleManager manager, BattleUI bui)
+    public void SetBattleManager(BattleManager manager, BattleUI bui, BoardManager brd)
     {
         bm = manager;
         ui = bui;
+        board = brd;
     }
 
     /// <summary>
@@ -232,10 +241,15 @@ public abstract class Party : MonoBehaviour {
         {
             activeMember.ChangeColor("normal");
             activeMember.SetSpecial(-1, null);
+            //activeMember.ResetPosition();
         }
         activeMember = null;
 
-        if (target != null) target.ChangeColor("normal");
+        if (target != null)
+        {
+            target.ChangeColor("normal");
+            //target.ResetPosition();
+        }
         target = null;
     }
 
@@ -262,18 +276,6 @@ public abstract class Party : MonoBehaviour {
     public void Normalize()
     {
         bm.SetState("NORMAL");
-    }
-
-    /// <summary>
-    /// Turn on/off every party entity's index number
-    /// </summary>
-    /// <param name="b">True - enable; False - disable</param>
-    public void EnableIndeces(bool b)
-    {
-        foreach (Entity e in party)
-        {
-            e.indexText.enabled = b;
-        }
     }
 
     /***GET PARTY***/

@@ -62,8 +62,8 @@ public class BattleManager : Manager {
     void Start()
     {
         //Assign manager
-        pParty.SetBattleManager(this, ui);
-        eParty.SetBattleManager(this, ui);
+        pParty.SetBattleManager(this, ui, board);
+        eParty.SetBattleManager(this, ui, board);
 
         //Organize EnemyParty
         ea = ow.encounteredParty;
