@@ -11,6 +11,9 @@ public class Entity : MonoBehaviour {
     /// <summary>Name that will be displayed in battle and stat screens</summary>
     public string Name;
 
+    //The ID number of this entity in its party
+    private int index;
+
     protected bool hovering = false; //If the mouse if hovering over the entity or not
     protected Party party; //The party this entity belongs to (player or enemy)
 
@@ -105,6 +108,8 @@ public class Entity : MonoBehaviour {
     public Canvas overhead;
     /// <summary>HP display</summary>
     public Image hpBar;
+    /// <summary>The textbox which displays the index number of this entity in its party</summary>
+    public Text indexText;
     /// <summary>Length of speed and health bars</summary>
     public float barsLength;
     /// <summary>Height of speed and health bars</summary>
@@ -323,12 +328,16 @@ public class Entity : MonoBehaviour {
     public void PhysicalEffectCalculation()
     {
         int damage = Atk;
+
+        //EFFECT - SWAPPED
+        if (CheckEffect("SWAPPED")) damage = Mag + Vlt;
+
         int defense = target.Def;
 
         //Defense Modifiers
         if (target.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
 
-        physicalDmg = Atk - defense;
+        physicalDmg = damage - defense;
 
         //Attack Modifiers
         if (CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
@@ -343,6 +352,10 @@ public class Entity : MonoBehaviour {
     public void MagicEffectCalculation()
     {
         float baseDamage = Mag;
+
+        //EFFECT - SWAPPED
+        if (CheckEffect("SWAPPED")) baseDamage = Atk;
+
         baseDamage *= activeSpecial.basePwr;
 
         switch (activeSpecial.type)
@@ -374,6 +387,10 @@ public class Entity : MonoBehaviour {
     public void TechnicalEffectCalculation()
     {
         float baseDamage = Vlt;
+
+        //EFFECT - SWAPPED
+        if (CheckEffect("SWAPPED")) baseDamage = Atk;
+
         baseDamage *= activeSpecial.basePwr;
 
         switch (activeSpecial.type)
@@ -433,6 +450,20 @@ public class Entity : MonoBehaviour {
     }
 
     /***GETTER and SETTER METHODS***/
+    /// <summary>
+    /// Set and get for the index number of this entity in its party
+    /// </summary>
+    public int Index
+    {
+        get
+        {
+            return index;
+        }
+        set
+        {
+            index = value;
+        }
+    }
 
     /// <summary>
     /// Set and get for HP value
@@ -650,6 +681,9 @@ public class Entity : MonoBehaviour {
         accuracy += Skl * 2; // + SKL * 2
         accuracy += Lck; // + LCK
 
+        //EFFECT - ANGER
+        if (CheckEffect("ANGER")) accuracy -= 35;
+
         return accuracy;
     }
 
@@ -688,6 +722,9 @@ public class Entity : MonoBehaviour {
         else crit = activeSpecial.baseCrit;
 
         crit += Skl / 2;
+
+        //EFFECT - ANGER
+        if (CheckEffect("ANGER")) crit += 35;
 
         return crit;
     }

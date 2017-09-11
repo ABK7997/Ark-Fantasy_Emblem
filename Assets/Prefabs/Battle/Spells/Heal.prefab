@@ -80,12 +80,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePwr: 1
   cost: 1
+  turnTimer: 0
   baseAccuracy: 100
   baseCrit: 3
-  description: A helpful dose of healing. Does not work on Droids.
+  hitAll: 0
+  description: Restore HP (Does not work on Droids or Magic-Droids)
   animationTime: 2
   classification: 1
   type: 1
+  effect: 0
   projectile: {fileID: 114147984333041134, guid: d9b683477901d424abcecb46b14d8a4a,
     type: 2}
 --- !u!212 &212165899149960916

@@ -157,4 +157,30 @@ public class PlayerParty : Party {
     }
 
     /***MISCELLANEOUS***/
+
+    /// <summary>
+    /// Activate the command list with the first party member available
+    /// </summary>
+    public void GetFirstActive()
+    {
+        foreach (Entity e in party)
+        {
+            if (e.Ready)
+            {
+                activeMember = e;
+                activeMember.SetSpecial(0, "NULL");
+                bm.SetState("COMMANDING"); //Pause Game
+            }
+        }
+    }
+
+    public void ActivateByIndex(int index)
+    {
+        if (index >= party.Count) return;
+        else if (party[index].Hp == 0 || !party[index].Ready) return;
+
+        activeMember = party[index];
+        activeMember.SetSpecial(0, "NULL");
+        bm.SetState("COMMANDING"); //Pause Game
+    }
 }

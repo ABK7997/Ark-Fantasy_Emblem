@@ -22,6 +22,17 @@ public class InputControls : MonoBehaviour {
         CancellationKeys();
         ConfirmationKeys();
         PauseKeys();
+
+        switch (bm.GetState())
+        {
+            case "NORMAL":
+                PartySelectHotkeys();
+                return;
+
+            case "COMMANDING":
+                CommandHotkeys();
+                return;
+        }
 	}
 
     //Cancellation hotkeys
@@ -29,7 +40,10 @@ public class InputControls : MonoBehaviour {
     {
         if (Input.GetKeyDown(KeyCode.Escape) ||
             Input.GetKeyDown(KeyCode.Backspace) ||
-            Input.GetMouseButtonDown(1))
+            Input.GetMouseButtonDown(1) ||
+            Input.GetKeyDown(KeyCode.C) ||
+            Input.GetKeyDown(KeyCode.Keypad0)
+            )
         {
             Cancel();
         }
@@ -55,11 +69,12 @@ public class InputControls : MonoBehaviour {
                 break;
 
             case "SELECTION":
+                pParty.NullifySpecial();
                 if (type != "")
                 {
                     bm.SetState("SPECIAL_SELECTION");
                 }
-                pParty.NullifySpecial();
+                else bm.SetState("COMMANDING");
                 break;
 
             case "SPECIAL_SELECTION":
@@ -81,7 +96,9 @@ public class InputControls : MonoBehaviour {
     //OK or affirmative hotkeys
     private void ConfirmationKeys()
     {
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKeyDown(KeyCode.Return) ||
+            Input.GetKeyDown(KeyCode.V)
+            )
         {
             Confirm();
         }
@@ -94,6 +111,10 @@ public class InputControls : MonoBehaviour {
     {
         switch (bm.GetState())
         {
+            case "NORMAL":
+                pParty.GetFirstActive();
+                break;
+
             case "PLAYER_PROJECTION":
             case "ENEMY_PROJECTION":
                 bm.SetState("NORMAL");
@@ -116,5 +137,26 @@ public class InputControls : MonoBehaviour {
     {
         if (bm.GetState() == "NORMAL") bm.SetState("PAUSED");
         else if (bm.GetState() == "PAUSED") bm.SetState("NORMAL");
+    }
+
+    //Player Selection Hotkeys
+    private void PartySelectHotkeys()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) pParty.ActivateByIndex(0);
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) pParty.ActivateByIndex(1);
+        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.ActivateByIndex(2);
+        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.ActivateByIndex(3);
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.ActivateByIndex(4);
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.ActivateByIndex(5);
+    }
+
+    //Command Hotkeys
+    private void CommandHotkeys()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) pParty.SetCommand("ATTACK"); //1. ATTACK
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) pParty.SetCommand("DEFEND"); //2. DEFEND
+        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.SetCommand("SKILL"); //3. SKILLS
+        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.SetCommand("MAGIC"); //4. MAGIC
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.SetCommand("TECH"); //5. TECHS
     }
 }

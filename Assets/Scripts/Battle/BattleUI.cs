@@ -5,12 +5,6 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour {
 
-    private enum STATE
-    {
-        NONE, ATTACK, SPECIAL, EFFECT
-    }
-    private STATE state;
-
     /// <summary>The Battle Manager, mostly just for its GetState() method</summary>
     public BattleManager bm;
 
@@ -85,6 +79,8 @@ public class BattleUI : MonoBehaviour {
                 SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
                 pauseButton.gameObject.SetActive(true);
+                //bm.pParty.EnableIndeces(true);
+                //bm.eParty.EnableIndeces(false);
                 break;
 
             case "ANIMATING":
@@ -94,24 +90,24 @@ public class BattleUI : MonoBehaviour {
                 SetTargetting(false);
 
                 commandsList.SetActive(true);
-                specialSelection.gameObject.SetActive(false);
+                specialSelection.enabled = false;
                 pauseButton.gameObject.SetActive(false);
 
                 int timer = bm.pParty.GetActiveMember().TechTimer;
 
                 if (timer == 0)
                 {
-                    techButtonText.text = "TECH";
+                    techButtonText.text = "5) TECH";
                     techButtonText.color = Color.black;
                 }
                 else if (timer == 1)
                 {
-                    techButtonText.text = "TECH recharging: " + timer + " turn";
+                    techButtonText.text = "5) TECH recharging: " + timer + " turn";
                     techButtonText.color = Color.gray;
                 }
                 else
                 {
-                    techButtonText.text = "TECH recharging: " + timer + " turns";
+                    techButtonText.text = "5) TECH recharging: " + timer + " turns";
                     techButtonText.color = Color.gray;
                 }
 
@@ -121,7 +117,8 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(false);
                 SetTargetting(false);
                 SetProjection(false, "");
-                specialSelection.gameObject.SetActive(true);
+                specialSelection.enabled = true;
+                //specialSelection.gameObject.SetActive(true);
                 break;
 
             case "SELECTION":
@@ -129,14 +126,14 @@ public class BattleUI : MonoBehaviour {
                 SetProjection(false, "");
 
                 SetTargetting(true);
-                specialSelection.gameObject.SetActive(false);
+                specialSelection.enabled = false;
 
                 break;
 
             case "PLAYER_PROJECTION":
                 SetTargetting(false);
                 SetTargetting(false);
-                specialSelection.gameObject.SetActive(false);
+                specialSelection.enabled = false;
 
                 break;
 
@@ -160,14 +157,13 @@ public class BattleUI : MonoBehaviour {
     /// <param name="atk">Amount of damage that might be done</param>
     /// <param name="hit">% chance to hit target</param>
     /// <param name="crit">% chance to land a critical on target</param>
-    public void SetProjectionInfo(bool isPlayer, int atk, int hit, int crit)
+    public void SetProjectionInfo(bool isPlayer, int atk, int hit, int crit, string description)
     {
-        state = STATE.ATTACK;
-
         string projectionText =
             "ATK: " + atk + "\n" +
             "HIT: " + hit + "%\n" +
-            "CRIT: " + crit + "%\n";
+            "CRIT: " + crit + "%" + "\n\n" +
+            description;
 
         if (isPlayer) SetProjection(true, projectionText);
         else SetEnemyProjection(true, projectionText);
@@ -178,13 +174,12 @@ public class BattleUI : MonoBehaviour {
     /// Projection method for healing or repair spells/techs
     /// </summary>
     /// <param name="effect">Amount that the target will be healed for</param>
-    public void SetProjectionInfo(bool isPlayer, int effect, int crit)
+    public void SetProjectionInfo(bool isPlayer, int effect, int crit, string description)
     {
-        state = STATE.SPECIAL;
-
-        string projectionText = 
+        string projectionText =
             "HP Up: " + effect +
-            "\nBonus: " + crit + "%";
+            "\nBonus: " + crit + "%" + "\n\n" +
+            description;
 
         if (isPlayer) SetProjection(true, projectionText);
         else SetEnemyProjection(true, projectionText);
@@ -195,13 +190,12 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     /// <param name="effect">The status effect in question</param>
     /// <param name="hit">The chance the effect will actually be instilled upon the target</param>
-    public void SetProjectionInfo(bool isPlayer, string effect, int hit)
+    public void SetProjectionInfo(bool isPlayer, string effect, int hit, string description)
     {
-        state = STATE.EFFECT;
-
         string projectionText =
             effect + "\n" +
-            "HIT: " + hit + "%";
+            "Success: " + hit + "%" + "\n\n" +
+            description;
 
         if (isPlayer) SetProjection(true, projectionText);
         else SetEnemyProjection(true, projectionText);

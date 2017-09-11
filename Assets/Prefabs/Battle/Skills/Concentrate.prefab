@@ -84,7 +84,7 @@ MonoBehaviour:
   baseAccuracy: 100
   baseCrit: 0
   hitAll: 0
-  description: Triple ATK for one turn
+  description: Store up energy to attack for triple the usual damage
   animationTime: 1.75
   classification: 0
   type: 3

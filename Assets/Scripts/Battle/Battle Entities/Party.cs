@@ -60,6 +60,8 @@ public abstract class Party : MonoBehaviour {
 
             Entity e = Instantiate(party[i], new Vector2(coords[i].x * scaling, coords[i].y * scaling), Quaternion.identity, transform);
             party[i] = e;
+            party[i].Index = i;
+            party[i].indexText.text = (i + 1) + "";
             party[i].SetParty(this);
         }
     }
@@ -172,20 +174,24 @@ public abstract class Party : MonoBehaviour {
     {
         activeMember.SetTemporaryStats(target);
 
+        string info = "";
+
+        if (activeMember.GetSpecial() != null) info = activeMember.GetSpecial().description;
+
         switch (command)
         {
             case COMMAND.ATTACK:
-                ui.SetProjectionInfo(isPlayer, activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit);
+                ui.SetProjectionInfo(isPlayer, activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit, "Physical Attack");
                 break;
 
             case COMMAND.MAGIC:
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.MagicDmg, activeMember.Hit, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.MagicDmg, activeMember.Hit, activeMember.Crit, info); break;
 
                     case Special.TYPE.HEAL:
-                        ui.SetProjectionInfo(isPlayer, -activeMember.MagicDmg, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, -activeMember.MagicDmg, activeMember.Crit, info); break;
                 }
                 
                 break;
@@ -194,10 +200,10 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.TechDmg, activeMember.Hit, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.TechDmg, activeMember.Hit, activeMember.Crit, info); break;
 
                     case Special.TYPE.REPAIR:
-                        ui.SetProjectionInfo(isPlayer, - activeMember.TechDmg, activeMember.Crit); break;
+                        ui.SetProjectionInfo(isPlayer, - activeMember.TechDmg, activeMember.Crit, info); break;
                 }
 
                 break;
@@ -206,7 +212,7 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.EFFECT:
-                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.Hit); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.Hit, info); break;
                 }
 
                 break;
@@ -256,6 +262,18 @@ public abstract class Party : MonoBehaviour {
     public void Normalize()
     {
         bm.SetState("NORMAL");
+    }
+
+    /// <summary>
+    /// Turn on/off every party entity's index number
+    /// </summary>
+    /// <param name="b">True - enable; False - disable</param>
+    public void EnableIndeces(bool b)
+    {
+        foreach (Entity e in party)
+        {
+            e.indexText.enabled = b;
+        }
     }
 
     /***GET PARTY***/

@@ -71,8 +71,9 @@ public class Special : MonoBehaviour {
     {
         NONE, //Not a status effect spell
         OBSCURE, EXPOSED, //Targeting
-        INTENSE, //Single-turn offensive boost
-        ARMOR //Single-turn defensive boost
+        INTENSE, ANGER, //Single-turn offensive boost
+        ARMOR, //Single-turn defensive boost
+        SWAPPED //Miscellaneous
     }
     public EFFECT effect;
 
