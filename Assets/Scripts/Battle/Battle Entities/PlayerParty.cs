@@ -139,6 +139,23 @@ public class PlayerParty : Party {
     /// </summary>
     public void Special(int specialIndex)
     {
+        switch (command)
+        {
+            case COMMAND.SKILL:
+                if (activeMember.skills.Count <= specialIndex) return;
+                break;
+
+            case COMMAND.MAGIC:
+                if (activeMember.spells.Count <= specialIndex) return;
+                break;
+
+            case COMMAND.TECH:
+                if (activeMember.techs.Count <= specialIndex) return;
+                break;
+
+            default: break;
+        }
+
         activeMember.SetSpecial(specialIndex, command + "");
 
         //Skill selected
@@ -174,6 +191,10 @@ public class PlayerParty : Party {
         }
     }
 
+    /// <summary>
+    /// Activate the command list with the party member associated with the given index
+    /// </summary>
+    /// <param name="index">party index</param>
     public void ActivateByIndex(int index)
     {
         if (index >= party.Count) return;
@@ -182,5 +203,45 @@ public class PlayerParty : Party {
         activeMember = party[index];
         activeMember.SetSpecial(0, "NULL");
         bm.SetState("COMMANDING"); //Pause Game
+    }
+
+    /// <summary>
+    /// Target an enemy by their index number
+    /// </summary>
+    /// <param name="index">party index</param>
+    public void TargetEnemyByIndex(int index)
+    {
+        if (index >= oppositeParty.Count) return;
+
+        target = oppositeParty[index];
+
+        if (target.Hp == 0) return;
+
+        activeMember.ChangeColor("active");
+
+        CalculateAction(); //Battle Projection calculation
+        bm.SetState("PLAYER_PROJECTION");
+
+        ExecuteAction();
+    }
+
+    /// <summary>
+    /// Target an ally by their index number
+    /// </summary>
+    /// <param name="index">party index</param>
+    public void TargetAllyByIndex(int index)
+    {
+        if (index >= oppositeParty.Count) return;
+
+        target = party[index];
+
+        if (target.Hp == 0) return;
+
+        activeMember.ChangeColor("active");
+
+        CalculateAction(); //Battle Projection calculation
+        bm.SetState("PLAYER_PROJECTION");
+
+        ExecuteAction();
     }
 }

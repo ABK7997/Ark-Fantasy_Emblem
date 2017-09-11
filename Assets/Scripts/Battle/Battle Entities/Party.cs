@@ -342,4 +342,5 @@ public abstract class Party : MonoBehaviour {
     {
         return activeMember;
     }
+
 }

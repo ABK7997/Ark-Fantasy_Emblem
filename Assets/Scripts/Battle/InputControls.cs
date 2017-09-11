@@ -32,6 +32,14 @@ public class InputControls : MonoBehaviour {
             case "COMMANDING":
                 CommandHotkeys();
                 return;
+
+            case "SPECIAL_SELECTION":
+                SpecialSelectHotkeys();
+                return;
+
+            case "SELECTION":
+                TargetHotKeys();
+                break;
         }
 	}
 
@@ -97,7 +105,8 @@ public class InputControls : MonoBehaviour {
     private void ConfirmationKeys()
     {
         if (Input.GetKeyDown(KeyCode.Return) ||
-            Input.GetKeyDown(KeyCode.V)
+            Input.GetKeyDown(KeyCode.V) ||
+            Input.GetKeyDown(KeyCode.KeypadEnter)
             )
         {
             Confirm();
@@ -139,6 +148,22 @@ public class InputControls : MonoBehaviour {
         else if (bm.GetState() == "PAUSED") bm.SetState("NORMAL");
     }
 
+    //Special Selection Hotkeys
+    private void SpecialSelectHotkeys()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) pParty.Special(0);
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) pParty.Special(1);
+        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.Special(2);
+        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.Special(3);
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.Special(4);
+        if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6)) pParty.Special(5);
+        if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) pParty.Special(6);
+        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8)) pParty.Special(7);
+        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9)) pParty.Special(8);
+        if (Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.KeypadDivide)) pParty.Special(9);
+        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMultiply)) pParty.Special(10);
+    }
+
     //Player Selection Hotkeys
     private void PartySelectHotkeys()
     {
@@ -158,5 +183,26 @@ public class InputControls : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.SetCommand("SKILL"); //3. SKILLS
         if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.SetCommand("MAGIC"); //4. MAGIC
         if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.SetCommand("TECH"); //5. TECHS
+    }
+
+    //Target Phase hotkeys
+    private void TargetHotKeys()
+    {
+        if (Input.GetKeyDown(KeyCode.Keypad1)) pParty.TargetEnemyByIndex(0);
+        if (Input.GetKeyDown(KeyCode.Keypad2)) pParty.TargetEnemyByIndex(1);
+        if (Input.GetKeyDown(KeyCode.Keypad3)) pParty.TargetEnemyByIndex(2);
+        if (Input.GetKeyDown(KeyCode.Keypad4)) pParty.TargetEnemyByIndex(3);
+        if (Input.GetKeyDown(KeyCode.Keypad5)) pParty.TargetEnemyByIndex(4);
+        if (Input.GetKeyDown(KeyCode.Keypad6)) pParty.TargetEnemyByIndex(5);
+        if (Input.GetKeyDown(KeyCode.Keypad7)) pParty.TargetEnemyByIndex(6);
+        if (Input.GetKeyDown(KeyCode.Keypad8)) pParty.TargetEnemyByIndex(7);
+        if (Input.GetKeyDown(KeyCode.Keypad9)) pParty.TargetEnemyByIndex(8);
+
+        if (Input.GetKeyDown(KeyCode.Alpha1)) pParty.TargetAllyByIndex(0);
+        if (Input.GetKeyDown(KeyCode.Alpha2)) pParty.TargetAllyByIndex(1);
+        if (Input.GetKeyDown(KeyCode.Alpha3)) pParty.TargetAllyByIndex(2);
+        if (Input.GetKeyDown(KeyCode.Alpha4)) pParty.TargetAllyByIndex(3);
+        if (Input.GetKeyDown(KeyCode.Alpha5)) pParty.TargetAllyByIndex(4);
+        if (Input.GetKeyDown(KeyCode.Alpha6)) pParty.TargetAllyByIndex(5);
     }
 }
