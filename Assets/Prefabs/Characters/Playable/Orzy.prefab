@@ -472,7 +472,7 @@ MonoBehaviour:
   baseStb: 7
   baseSkl: 3
   baseLck: 2
-  baseSpd: 3
+  baseSpd: 99
   skills:
   - {fileID: 114514920408392600, guid: 330a902329b10bd40ba0d0b3588fafde, type: 2}
   spells: []

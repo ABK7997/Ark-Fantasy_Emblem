@@ -170,6 +170,10 @@ public class BattleManager : Manager {
                     animationTime = 0f;
                     break;
 
+                case "MOVE":
+                    animationTime = 0.5f;
+                    break;
+
                 default: animationTime = 1.5f; break;
             }
 
@@ -208,7 +212,7 @@ public class BattleManager : Manager {
                 break;
 
             case "MOVE":
-                user.GetParty().MoveMember();
+                user.Move();
                 break;
         }
     }

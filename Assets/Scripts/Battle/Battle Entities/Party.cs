@@ -71,7 +71,7 @@ public abstract class Party : MonoBehaviour {
             //Tile member is instantiated onto
             Tile t = board.GetTile(party[i].transform.position);
             party[i].SetTile(t);
-            t.Occupied = true;
+            //t.Occupied = true;
         }
     }
 

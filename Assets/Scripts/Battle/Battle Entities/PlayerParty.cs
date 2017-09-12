@@ -58,20 +58,24 @@ public class PlayerParty : Party {
                 //Select Tile
                 case "TILE_SELECTION":
 
-                    //if (board.GetHoveringTile() != null)
-                    //{
-                        tileProspect = board.GetHoveringTile();
+                    tileProspect = board.GetHoveringTile(activeMember, party, oppositeParty);
+
+                    if (tileProspect != null)
+                    {
+                        activeMember.SetTileProspect(tileProspect);
 
                         CalculateAction(); //Battle Projection calculation;
                         bm.SetState("PLAYER_PROJECTION");
 
                         ExecuteAction();
-                    //}
+                    }
 
                     break;
 
                 case "PLAYER_PROJECTION":
-                    if (target.IsHovering()) //Double click to perform action immediately
+                    if (target == null) break;
+
+                    else if (target.IsHovering()) //Double click to perform action immediately
                     {
                         activeMember.SetDefending(false);
                         bm.SetState("NORMAL");
@@ -90,13 +94,13 @@ public class PlayerParty : Party {
                 activeMember.ChangeColor("active");
                 break;
 
-            case "SELECTION":
+            case "SELECTION": case "TILE_SELECTION": case "SPECIAL_SELECTION":
                 activeMember.ChangeColor("active");
                 break;
 
             case "PLAYER_PROJECTION":
                 activeMember.ChangeColor("active");
-                target.ChangeColor("target");
+                if (target != null) target.ChangeColor("target");
                 break;
         }
     }

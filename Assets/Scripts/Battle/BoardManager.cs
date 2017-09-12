@@ -21,6 +21,7 @@ public class BoardManager : MonoBehaviour {
 
     private GameObject[] tiles;
     private Tile[,] board;
+    private List<Tile> boardList;
 
     //Inherent
     private List<Vector3> gridPositions = new List<Vector3>(); //A precise layout of coordinates set up in advance for placing tiles
@@ -63,6 +64,7 @@ public class BoardManager : MonoBehaviour {
     void BoardSetup()
     {
         boardHolder = new GameObject("Board").transform;
+        boardList = new List<Tile>();
 
         for (int x = 0; x < columns; x += scaling)
         {
@@ -73,7 +75,10 @@ public class BoardManager : MonoBehaviour {
                 GameObject instance = Instantiate(toInstantiate, new Vector3(x, y, 0f), Quaternion.identity) as GameObject;
                 instance.transform.SetParent(boardHolder);
 
-                board[y / scaling, x / scaling] = toInstantiate.GetComponent<Tile>();
+                board[y / scaling, x / scaling] = instance.GetComponent<Tile>();
+                boardList.Add(instance.GetComponent<Tile>());
+
+                
             }
         }
     }
@@ -85,21 +90,66 @@ public class BoardManager : MonoBehaviour {
     /// <returns>The tile at the given position (if it exists)</returns>
     public Tile GetTile(Vector3 position)
     {
-        return board[(int)position.y / scaling, (int)position.x / scaling];
+        /*
+        if (position.x / scaling < 0) return null;
+        if (position.x / scaling > columns/scaling) return null;
+
+        if (position.y / scaling < 0) return null;
+        if (position.y / scaling > rows/scaling) return null;
+        */
+        try
+        {
+            return board[(int)position.y / scaling, (int)position.x / scaling];
+        } catch (System.Exception e)
+        {
+            return null;
+        }
     }
 
     /// <summary>
     /// Cycle through every tile on the board to get which tile the mouse is hovering over
     /// </summary>
     /// <returns>The tile the player is selecting</returns>
-    public Tile GetHoveringTile()
+    public Tile GetHoveringTile(Entity mover, List<Entity> party1, List<Entity> party2)
     {
-        for (int x = 0; x < rows/scaling; x++)
+        Vector3 position = mover.transform.position;
+
+        //Tiles adjacent to mover
+        List<Tile> moveSpaces = new List<Tile>();
+
+        Tile right = GetTile(new Vector3(position.x + scaling, position.y));
+        Tile left = GetTile(new Vector3(position.x - scaling, position.y));
+        Tile up = GetTile(new Vector3(position.x, position.y + scaling));
+        Tile down = GetTile(new Vector3(position.x, position.y - scaling));
+
+        if (right != null) moveSpaces.Add(right);
+        if (left != null) moveSpaces.Add(left);
+        if (up != null) moveSpaces.Add(up);
+        if (down != null) moveSpaces.Add(down);
+
+        //Disqualify tiles that are occupied by other entities
+        foreach (Entity e in party1)
         {
-            for (int y = 0; y < columns/scaling; y++)
+            Tile t = e.GetTile();
+
+            if (moveSpaces.Contains(t))
             {
-                if (board[y, x].Hovering) return board[y, x];
+                moveSpaces.Remove(t);
             }
+        }
+        foreach (Entity e in party2)
+        {
+            Tile t = e.GetTile();
+
+            if (moveSpaces.Contains(t))
+            {
+                moveSpaces.Remove(t);
+            }
+        }
+
+        foreach (Tile t in boardList)
+        {
+            if (t.Hovering && moveSpaces.Contains(t)) return t;
         }
 
         return null;

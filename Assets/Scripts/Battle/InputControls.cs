@@ -90,10 +90,15 @@ public class InputControls : MonoBehaviour {
                 bm.SetState("COMMANDING");
                 break;
 
+            case "TILE_SELECTION":
+                bm.SetState("COMMANDING");
+                break;
+
             case "PLAYER_PROJECTION":
                 bm.CancelAction();
                 pParty.CancelTarget();
 
+                
                 if (type == "EFFECT") bm.SetState("SPECIAL_SELECTION");
                 else bm.SetState("SELECTION");
 

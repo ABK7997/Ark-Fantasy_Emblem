@@ -16,7 +16,9 @@ public class Entity : MonoBehaviour {
 
     //Position to rest to
     private Vector3 originalPosition;
-    private Tile tile;
+
+    //Tiles
+    private Tile tile, tileProspect;
 
     protected bool hovering = false; //If the mouse if hovering over the entity or not
     protected Party party; //The party this entity belongs to (player or enemy)
@@ -29,6 +31,9 @@ public class Entity : MonoBehaviour {
 
     /// <summary> Inside of the statView, contains all momentary stat information for a character - constantly updated </summary>
     public Text statText;
+
+    //Battle Calculation class
+    private BattleCalculator bc;
 
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
     public enum TYPE
@@ -69,12 +74,14 @@ public class Entity : MonoBehaviour {
     public List<Special> spells;
     public List<Special> techs;
 
+    /*
     //Temporary stats
     private int hitChance, critChance, physicalDmg, magicDmg, techDmg, specialCost;
     private bool landedHit, landedCrit;
     private Entity target;
     private Special activeSpecial;
     private int techTimer = 0; //Turns which remain until a tech can be used again
+    */
 
     //Effects
     private List<Effect> effects;
@@ -125,12 +132,14 @@ public class Entity : MonoBehaviour {
     //Sets base stats, components, and initial display
     protected virtual void Start()
     {
+        bc = new BattleCalculator(this);
+
         statView.enabled = false;
 
         anim = GetComponent<Animator>();
         render = GetComponent<SpriteRenderer>();
 
-        ResetStats();
+        bc.ResetStats();
         UpdateDisplay();
 
         normal = render.color; //Set the normal color to the sprite's starting color
@@ -149,31 +158,6 @@ public class Entity : MonoBehaviour {
     }
 
     /***STAT METHODS***/
-
-    /// <summary>
-    /// Set all active stats back to their base stats; refill hp
-    /// </summary>
-    public void ResetStats()
-    {
-        Hp = maxHP;
-
-        Atk = baseAtk;
-        Mag = baseMag;
-        Vlt = baseVlt;
-
-        Def = baseDef;
-        Res = baseRes;
-        Stb = baseStb;
-
-        Skl = baseSkl;
-        Lck = baseLck;
-        Spd = baseSpd;
-
-        ready = false;
-
-        NullifyAllEffects();
-    }
-
     /// <summary>
     /// Updates the stats canvas on display in battle
     /// </summary>
@@ -237,21 +221,22 @@ public class Entity : MonoBehaviour {
     public void Attack()
     {
         SetDefending(false);
+        FlipTowardsTarget(bc.target);
 
         int totalDamage = 0;
 
-        totalDamage = physicalDmg;
+        totalDamage = bc.physicalDmg;
         anim.SetTrigger("ATTACK");
 
-        if (landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
-        if (landedHit) target.Hp -= totalDamage; //Hit
+        if (bc.landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
+        if (bc.landedHit) bc.target.Hp -= totalDamage; //Hit
 
         //Miss Animation
         else Miss();
 
         ResetTimer();
     }
-    
+
     /// <summary>
     /// Begin the casting of a spell, tech, or skill
     /// </summary>
@@ -259,12 +244,13 @@ public class Entity : MonoBehaviour {
     public void Cast(string type)
     {
         SetDefending(false);
+        FlipTowardsTarget(bc.target);
 
-        if (type == "MAGIC") Hp -= specialCost;
-        else if (type == "TECH") techTimer += specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
+        if (type == "MAGIC") Hp -= bc.specialCost;
+        else if (type == "TECH") bc.techTimer += bc.specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
 
         anim.SetTrigger("SPECIAL");
-        activeSpecial.StartAnimation(this, target, landedHit);
+        bc.activeSpecial.StartAnimation(this, bc.target, bc.landedHit);
         ResetTimer();
     }
 
@@ -273,7 +259,7 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public void SpecialEffect()
     {
-        switch (activeSpecial.type)
+        switch (bc.activeSpecial.type)
         {
             case Special.TYPE.ATTACK: OffensiveSpecial(); break;
             case Special.TYPE.HEAL: HealingSpecial(); break;
@@ -289,188 +275,51 @@ public class Entity : MonoBehaviour {
     //Special Types
     private void OffensiveSpecial()
     {
-        if (!landedHit) return;
+        if (!bc.landedHit) return;
 
         float multiplier = 1f;
-        if (landedCrit) multiplier = 2.25f;
+        if (bc.landedCrit) multiplier = 2.25f;
 
-        switch (activeSpecial.classification)
+        switch (bc.activeSpecial.classification)
         {
             case Special.CLASS.SKILL: break;
-            case Special.CLASS.SPELL: target.Hp -= (int)(magicDmg * multiplier); break;
-            case Special.CLASS.TECH: target.Hp -= (int)(techDmg * multiplier); break;
+            case Special.CLASS.SPELL: bc.target.Hp -= (int)(bc.magicDmg * multiplier); break;
+            case Special.CLASS.TECH: bc.target.Hp -= (int)(bc.techDmg * multiplier); break;
         }
     }
 
     private void HealingSpecial()
     {
-        landedHit = true; //Healing can't miss
+        bc.landedHit = true; //Healing can't miss
 
         float multiplier = 1f;
-        if (landedCrit) multiplier = 1.5f;
+        if (bc.landedCrit) multiplier = 1.5f;
 
-        target.Hp -= (int)(magicDmg * multiplier);
+        bc.target.Hp -= (int)(bc.magicDmg * multiplier);
     }
 
     private void RepairSpecial()
     {
-        landedHit = true; //Repairing can't miss
+        bc.landedHit = true; //Repairing can't miss
 
         float multiplier = 1f;
-        if (landedCrit) multiplier = 1.5f;
+        if (bc.landedCrit) multiplier = 1.5f;
 
-        target.Hp -= (int)(techDmg * multiplier);
+        bc.target.Hp -= (int)(bc.techDmg * multiplier);
     }
 
     private void EffectSpecial()
     {
-        string eff = activeSpecial.effect + "";
+        string eff = bc.activeSpecial.effect + "";
 
-        target.SetEffect(eff, activeSpecial.turnTimer); 
+        bc.target.SetEffect(eff, bc.activeSpecial.turnTimer);
     }
 
     //Miss Animation
     private void Miss()
     {
-        if (IsRightOf(this, target)) target.SetPosition(2f, 0f);
-        else target.SetPosition(-2f, 0f);
-    }
-
-    //Calculations
-    
-    /// <summary>
-    /// Physical effect calculation - damage done by physical ATK 
-    /// </summary>
-    public void PhysicalEffectCalculation()
-    {
-        int damage = Atk;
-
-        //EFFECT - SWAPPED
-        if (CheckEffect("SWAPPED")) damage = Mag + Vlt;
-
-        int defense = target.Def;
-
-        //Defense Modifiers
-        if (target.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
-
-        physicalDmg = damage - defense;
-
-        //Attack Modifiers
-        if (CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
-
-        if (physicalDmg < 0) physicalDmg = 0;
-    }
-
-    /// <summary>
-    /// Magical effect calculation - damage, heal, or none for status ailment
-    /// </summary>
-    /// <param name="spell">The spell about to be used</param>
-    public void MagicEffectCalculation()
-    {
-        float baseDamage = Mag;
-
-        //EFFECT - SWAPPED
-        if (CheckEffect("SWAPPED")) baseDamage = Atk;
-
-        baseDamage *= activeSpecial.basePwr;
-
-        switch (activeSpecial.type)
-        {
-            case Special.TYPE.ATTACK:
-                baseDamage -= target.Res;
-                if (baseDamage < 0) baseDamage = 0;
-                break;
-
-            case Special.TYPE.HEAL:
-                baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
-
-                //Heal spells CANNOT heal Droids that are not also Organic
-                if (!target.IsOrganic() && target.type != TYPE.MAGIC) baseDamage = 0;
-
-                break;
-
-            case Special.TYPE.EFFECT:
-                baseDamage = 0;
-                break; //Status ailments do not immediately do damage
-        }
-
-        magicDmg = (int)baseDamage;
-    }
-
-    /// <summary>
-    /// Technical effect calculation. Determines what a user's Tech ability will do
-    /// </summary>
-    public void TechnicalEffectCalculation()
-    {
-        float baseDamage = Vlt;
-
-        //EFFECT - SWAPPED
-        if (CheckEffect("SWAPPED")) baseDamage = Atk;
-
-        baseDamage *= activeSpecial.basePwr;
-
-        switch (activeSpecial.type)
-        {
-            case Special.TYPE.ATTACK:
-                baseDamage -= target.Stb;
-                if (baseDamage < 0) baseDamage = 0;
-                break;
-
-            case Special.TYPE.REPAIR:
-                baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
-
-                //Repair spells CANNOT heal non-Droids
-                if (!target.IsDroid()) baseDamage = 0;
-
-                break;
-
-            case Special.TYPE.EFFECT:
-                baseDamage = 0;
-                break; //Status ailments do not immediately do damage
-        }
-
-        techDmg = (int)baseDamage;
-    }
-
-    //Check the effects of the tile a target is standing on and apply them
-    private void TileEffects(Tile.EFFECT e)
-    {
-        switch (e)
-        {
-            //Lose accuracy
-            case Tile.EFFECT.HIDDEN:
-                hitChance -= 35;
-                if (hitChance < 0) hitChance = 0;
-                break; 
-
-            case Tile.EFFECT.OBSCURED:
-                hitChance -= 15;
-                if (hitChance < 0) hitChance = 0;
-                break;
-
-            //Defense
-            case Tile.EFFECT.COVER:
-                physicalDmg -= 3;
-                if (physicalDmg < 0) physicalDmg = 0;
-                break;
-
-            case Tile.EFFECT.FORTIFIED:
-                physicalDmg -= 5;
-                if (physicalDmg < 0) physicalDmg = 0;
-                break;
-
-            //Stability
-            case Tile.EFFECT.GROUNDED:
-                techDmg = (int) (techDmg * 0.65f);
-                if (techDmg < 0) techDmg = 0;
-                break;
-
-            case Tile.EFFECT.SOGGY:
-                techDmg = (int) (techDmg * 2f);
-                break;
-
-            default: break; 
-        }
+        if (IsRightOf(bc.target)) bc.target.SetPosition(2f, 0f);
+        else bc.target.SetPosition(-2f, 0f);
     }
 
     /// <summary>
@@ -494,7 +343,7 @@ public class Entity : MonoBehaviour {
 
                 break;
         }
-    } 
+    }
 
     private void StatusEffects()
     {
@@ -508,115 +357,12 @@ public class Entity : MonoBehaviour {
     }
 
     /// <summary>
-    /// Do battle calculations for all possible moves the entity can make
+    /// Set temporary stats in this entity's Battle Calculator class
     /// </summary>
     /// <param name="t">The target entity for an action</param>
     public void SetTemporaryStats(Entity t)
     {
-        target = t;
-
-        //Calculate hit and crit chance
-        hitChance = HitChance();
-        critChance = CritChance();
-
-        //Physical Attack Calculation
-        PhysicalEffectCalculation();
-
-        //Magic Attack Calculation
-        if (activeSpecial != null) MagicEffectCalculation();
-
-        //Tech Attack Calculation
-        if (activeSpecial != null) TechnicalEffectCalculation();
-
-        if (activeSpecial != null) specialCost = activeSpecial.cost;
-
-        //Tile modifiers
-        TileEffects(target.GetTileEffect1());
-        TileEffects(target.GetTileEffect2());
-
-        //Calculate hit or miss
-        if (Random.Range(0, 100) <= hitChance) landedHit = true;
-        if (Random.Range(0, 100) <= critChance) landedCrit = true;
-    }
-
-    //Accuracy
-    protected int AccuracyCalculation()
-    {
-        int accuracy;
-
-        if (activeSpecial == null) accuracy = 70; //base acc = 70
-        else accuracy = activeSpecial.baseAccuracy;
-
-        accuracy += Skl * 2; // + SKL * 2
-        accuracy += Lck; // + LCK
-
-        //EFFECT - ANGER
-        if (CheckEffect("ANGER")) accuracy -= 35;
-
-        return accuracy;
-    }
-
-    //Evasion
-    protected int EvasionCalculation()
-    {
-        int evade = 0; //base evd = 0
-        evade += target.Spd; // + SPD
-        evade += target.Lck / 2; // + LCK/2
-
-        return evade;
-    }
-
-    //Hit Chance
-    protected int HitChance()
-    {
-        int hit = AccuracyCalculation() - EvasionCalculation();
-
-        if (hit < 0) hit = 0;
-        if (hit > 99) hit = 99;
-
-        if (activeSpecial != null)
-        {
-            if (activeSpecial.type == Special.TYPE.EFFECT) return activeSpecial.baseAccuracy;
-        }
-
-        return hit;
-    }
-
-    //Crit Accuracy
-    protected int CritAccuracyCalculation()
-    {
-        int crit;
-
-        if (activeSpecial == null) crit = 1;
-        else crit = activeSpecial.baseCrit;
-
-        crit += Skl / 2;
-
-        //EFFECT - ANGER
-        if (CheckEffect("ANGER")) crit += 35;
-
-        return crit;
-    }
-
-    //Crit Evasion
-    protected int CritEvasionCalcuation()
-    {
-        if (activeSpecial != null) return 0;
-
-        int evd = 0;
-        evd += target.Lck;
-
-        return evd;
-    }
-
-    //Crit Hit Chance
-    protected int CritChance()
-    {
-        int crit = CritAccuracyCalculation() - CritEvasionCalcuation();
-        if (crit > 99) crit = 99;
-        if (crit < 0) crit = 0;
-
-        return crit;
+        bc.SetTemporaryStats(t);
     }
 
     //Defense
@@ -688,9 +434,29 @@ public class Entity : MonoBehaviour {
     /// <param name="user">User entity</param>
     /// <param name="target">Target entity</param>
     /// <returns>True - target x is greater than user x; False - otherwise</returns>
-    public bool IsRightOf(Entity user, Entity target)
+    public bool IsRightOf(Entity target)
     {
-        return user.transform.position.x < target.transform.position.x;
+        return transform.position.x < target.transform.position.x;
+    }
+
+    private bool IsLeftOf(Entity target)
+    {
+        return transform.position.x > target.transform.position.x;
+    }
+
+    //Flip entity if the target is on their opposite side
+    private void FlipTowardsTarget(Entity target)
+    {
+        if (IsRightOf(target))
+        {
+            if (render.flipX) render.flipX = false;
+            if (!target.GetRender().flipX) target.GetRender().flipX = true;
+        }
+        else if (IsLeftOf(target))
+        {
+            if (!render.flipX) render.flipX = true;
+            if (target.GetRender().flipX) target.GetRender().flipX = false;
+        }
     }
 
     /// <summary>
@@ -701,6 +467,38 @@ public class Entity : MonoBehaviour {
     {
         tile = t;
         //transform.position = tile.transform.position;
+    }
+
+    /// <summary>
+    /// The tile this entity is standing on
+    /// </summary>
+    /// <returns>A board tile</returns>
+    public Tile GetTile()
+    {
+        return tile;
+    }
+
+    /// <summary>
+    /// The tile this entity might move to if the player decides to
+    /// </summary>
+    /// <param name="t">The prospective tile</param>
+    public void SetTileProspect(Tile t)
+    {
+        tileProspect = t;
+    }
+
+    /// <summary>
+    /// Change this entity's position and tile on the board
+    /// </summary>
+    public void Move()
+    {
+        tile = tileProspect;
+        tileProspect = null;
+
+        transform.position = new Vector3(tile.transform.localPosition.x, tile.transform.localPosition.y, 0);
+        originalPosition = transform.position;
+
+        ResetTimer();
     }
 
     /// <summary>
@@ -921,8 +719,8 @@ public class Entity : MonoBehaviour {
     /// Physical damage possible; based on ATK
     /// </summary>
     public int PhysicalDmg {
-        get { return physicalDmg; }
-        set { physicalDmg = value; }
+        get { return bc.physicalDmg; }
+        set { bc.physicalDmg = value; }
     }
 
     /// <summary>
@@ -930,8 +728,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public int MagicDmg
     {
-        get { return magicDmg; }
-        set { magicDmg = value; }
+        get { return bc.magicDmg; }
+        set { bc.magicDmg = value; }
     }
 
     /// <summary>
@@ -939,8 +737,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public int TechDmg
     {
-        get { return techDmg; }
-        set { techDmg = value; }
+        get { return bc.techDmg; }
+        set { bc.techDmg = value; }
     }
 
     /// <summary>
@@ -948,8 +746,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public int Hit
     {
-        get { return hitChance; }
-        set { hitChance = value; }
+        get { return bc.hitChance; }
+        set { bc.hitChance = value; }
     }
 
     /// <summary>
@@ -957,8 +755,8 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public int Crit
     {
-        get { return critChance; }
-        set { critChance = value; }
+        get { return bc.critChance; }
+        set { bc.critChance = value; }
     }
 
     /// <summary>
@@ -969,13 +767,13 @@ public class Entity : MonoBehaviour {
     {
         get
         {
-            return techTimer;
+            return bc.techTimer;
         }
         set
         {
-            techTimer = value;
+            bc.techTimer = value;
 
-            if (techTimer < 0) techTimer = 0;
+            if (bc.techTimer < 0) bc.techTimer = 0;
         }
     }
 
@@ -987,11 +785,11 @@ public class Entity : MonoBehaviour {
     {
         switch (type)
         {
-            case "SKILL": activeSpecial = skills[index]; break;
-            case "MAGIC": activeSpecial = spells[index]; break;
-            case "TECH": activeSpecial = techs[index]; break;
+            case "SKILL": bc.activeSpecial = skills[index]; break;
+            case "MAGIC": bc.activeSpecial = spells[index]; break;
+            case "TECH": bc.activeSpecial = techs[index]; break;
 
-            case "NULL": activeSpecial = null; break;
+            case "NULL": bc.activeSpecial = null; break;
 
             default: break;
         }
@@ -1003,7 +801,7 @@ public class Entity : MonoBehaviour {
     /// <returns>The active special ability</returns>
     public Special GetSpecial()
     {
-        return activeSpecial;
+        return bc.activeSpecial;
     }
 
     /// <summary>
@@ -1179,5 +977,10 @@ public class Entity : MonoBehaviour {
     public Party GetParty()
     {
         return party;
+    }
+
+    public SpriteRenderer GetRender()
+    {
+        return render;
     }
 }
