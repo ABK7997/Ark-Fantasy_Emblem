@@ -1169,4 +1169,15 @@ public class Entity : MonoBehaviour {
         anim.SetBool("Dead", false);
         anim.SetBool("Defending", false);
     }
+
+    /***MISCELLANEOUS***/
+
+    /// <summary>
+    /// Get the party class this entity belongs to
+    /// </summary>
+    /// <returns>This entity's party</returns>
+    public Party GetParty()
+    {
+        return party;
+    }
 }

@@ -87,4 +87,21 @@ public class BoardManager : MonoBehaviour {
     {
         return board[(int)position.y / scaling, (int)position.x / scaling];
     }
+
+    /// <summary>
+    /// Cycle through every tile on the board to get which tile the mouse is hovering over
+    /// </summary>
+    /// <returns>The tile the player is selecting</returns>
+    public Tile GetHoveringTile()
+    {
+        for (int x = 0; x < rows/scaling; x++)
+        {
+            for (int y = 0; y < columns/scaling; y++)
+            {
+                if (board[y, x].Hovering) return board[y, x];
+            }
+        }
+
+        return null;
+    }
 }

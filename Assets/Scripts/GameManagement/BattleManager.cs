@@ -31,7 +31,7 @@ public class BattleManager : Manager {
     private enum STATE
     {
         BATTLE_PREP, NORMAL, ANIMATING, SPECIAL_ANIMATING,
-        COMMANDING, SELECTION, SPECIAL_SELECTION, PLAYER_PROJECTION,
+        COMMANDING, SELECTION, SPECIAL_SELECTION, TILE_SELECTION, PLAYER_PROJECTION,
         ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
     private STATE state = STATE.BATTLE_PREP;
@@ -152,7 +152,7 @@ public class BattleManager : Manager {
     }
     
     //Start queued actions
-    private IEnumerator Animate()
+    public IEnumerator Animate()
     {
         while (actions.Count != 0)
         {
@@ -206,6 +206,10 @@ public class BattleManager : Manager {
             case "TECH":
                 user.Cast(type);
                 break;
+
+            case "MOVE":
+                user.GetParty().MoveMember();
+                break;
         }
     }
 
@@ -246,6 +250,9 @@ public class BattleManager : Manager {
 
             case "SELECTION": state = STATE.SELECTION;
                 break;
+
+            case "TILE_SELECTION": state = STATE.TILE_SELECTION;
+                break; 
 
             case "PLAYER_PROJECTION": state = STATE.PLAYER_PROJECTION;
                 break;

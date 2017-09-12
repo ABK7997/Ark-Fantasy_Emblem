@@ -20,6 +20,7 @@ public abstract class Party : MonoBehaviour {
     [HideInInspector] public List<Entity> oppositeParty; //The others
 
     protected Entity activeMember, target; //The acting member and its target respectively
+    protected Tile tileProspect; //Tile the active member may move to
 
     //Organizes the party on startup
     protected virtual void Start () {
@@ -39,7 +40,7 @@ public abstract class Party : MonoBehaviour {
     //The Different moves types an entity can perform
     protected enum COMMAND
     {
-        NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, FLEE
+        NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, MOVE, FLEE
     }
     protected COMMAND command = COMMAND.NONE;
 
@@ -226,6 +227,10 @@ public abstract class Party : MonoBehaviour {
 
                 break;
 
+            case COMMAND.MOVE:
+                ui.SetProjectionInfo(isPlayer, tileProspect);
+                break;
+
             default: break;
         }
     }
@@ -345,4 +350,12 @@ public abstract class Party : MonoBehaviour {
         return activeMember;
     }
 
+    /// <summary>
+    /// Move a party member to the prospective tile
+    /// </summary>
+    public void MoveMember()
+    {
+        activeMember.SetTile(tileProspect);
+        activeMember.SetPosition(tileProspect.transform.position.x, tileProspect.transform.position.y);
+    }
 }

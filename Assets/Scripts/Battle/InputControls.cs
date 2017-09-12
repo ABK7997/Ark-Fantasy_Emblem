@@ -127,6 +127,7 @@ public class InputControls : MonoBehaviour {
             case "PLAYER_PROJECTION":
             case "ENEMY_PROJECTION":
                 bm.SetState("NORMAL");
+                StartCoroutine(bm.Animate());
                 break;
         }
     }
@@ -172,7 +173,7 @@ public class InputControls : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.ActivateByIndex(2);
         if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.ActivateByIndex(3);
         if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.ActivateByIndex(4);
-        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.ActivateByIndex(5);
+        if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6)) pParty.ActivateByIndex(5);
     }
 
     //Command Hotkeys

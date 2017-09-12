@@ -54,12 +54,28 @@ public class PlayerParty : Party {
                         ExecuteAction();
                     }
                     break;
+                
+                //Select Tile
+                case "TILE_SELECTION":
+
+                    //if (board.GetHoveringTile() != null)
+                    //{
+                        tileProspect = board.GetHoveringTile();
+
+                        CalculateAction(); //Battle Projection calculation;
+                        bm.SetState("PLAYER_PROJECTION");
+
+                        ExecuteAction();
+                    //}
+
+                    break;
 
                 case "PLAYER_PROJECTION":
                     if (target.IsHovering()) //Double click to perform action immediately
                     {
                         activeMember.SetDefending(false);
                         bm.SetState("NORMAL");
+                        StartCoroutine(bm.Animate());
                     }
                     break;
 
@@ -128,6 +144,11 @@ public class PlayerParty : Party {
                 bm.SetState("SPECIAL_SELECTION");
                 command = COMMAND.SKILL;
                 ss.SetSpecials(activeMember.skills);
+                break;
+
+            case "MOVE":
+                bm.SetState("TILE_SELECTION");
+                command = COMMAND.MOVE;
                 break;
         }
     }
@@ -244,4 +265,5 @@ public class PlayerParty : Party {
 
         ExecuteAction();
     }
+
 }

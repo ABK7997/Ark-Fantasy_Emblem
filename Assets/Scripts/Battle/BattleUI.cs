@@ -119,6 +119,11 @@ public class BattleUI : MonoBehaviour {
                 specialSelection.enabled = true;
                 break;
 
+            case "TILE_SELECTION":
+                commandsList.SetActive(false);
+                SetProjection(false, "");
+                break;
+
             case "SELECTION":
                 commandsList.SetActive(false);
                 SetProjection(false, "");
@@ -191,6 +196,18 @@ public class BattleUI : MonoBehaviour {
             effect + "\n" +
             "Success: " + hit + "%" + "\n\n" +
             description;
+
+        if (isPlayer) SetProjection(true, projectionText);
+        else SetEnemyProjection(true, projectionText);
+    }
+
+    public void SetProjectionInfo(bool isPlayer, Tile newTile)
+    {
+        string projectionText =
+            "Move To " + newTile.tileName + "\n\nTerrain Effects:";
+
+        if (newTile.effect1 != Tile.EFFECT.NONE) projectionText += "\n" + newTile.effect1;
+        if (newTile.effect2 != Tile.EFFECT.NONE) projectionText += "\n" + newTile.effect2;
 
         if (isPlayer) SetProjection(true, projectionText);
         else SetEnemyProjection(true, projectionText);
