@@ -185,6 +185,10 @@ public class BattleManager : Manager {
         }
     }
 
+    /// <summary>
+    /// Tell if the game is any kind of animation state
+    /// </summary>
+    /// <returns>True - if animating; False - otherwise</returns>
     public bool IsAnimating()
     {
         return (state == STATE.ANIMATING || state == STATE.SPECIAL_ANIMATING);

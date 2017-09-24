@@ -90,13 +90,12 @@ public class BoardManager : MonoBehaviour {
     /// <returns>The tile at the given position (if it exists)</returns>
     public Tile GetTile(Vector3 position)
     {
-        /*
         if (position.x / scaling < 0) return null;
         if (position.x / scaling > columns/scaling) return null;
 
         if (position.y / scaling < 0) return null;
         if (position.y / scaling > rows/scaling) return null;
-        */
+
         try
         {
             return board[(int)position.y / scaling, (int)position.x / scaling];

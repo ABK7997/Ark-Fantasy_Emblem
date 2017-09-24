@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour {
 
+    public static bool moving = false;
+
     /// <summary>The Battle Manager, mostly just for its GetState() method</summary>
     public BattleManager bm;
 
@@ -201,6 +203,11 @@ public class BattleUI : MonoBehaviour {
         else SetEnemyProjection(true, projectionText);
     }
 
+    /// <summary>
+    /// Projection method for moving to a new tile
+    /// </summary>
+    /// <param name="isPlayer">True - the player is making this move; False - it's the enemy's move</param>
+    /// <param name="newTile">The new tile to be moving to</param>
     public void SetProjectionInfo(bool isPlayer, Tile newTile)
     {
         string projectionText =
@@ -211,6 +218,8 @@ public class BattleUI : MonoBehaviour {
 
         if (isPlayer) SetProjection(true, projectionText);
         else SetEnemyProjection(true, projectionText);
+
+        moving = true;
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object

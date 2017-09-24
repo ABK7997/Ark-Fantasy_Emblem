@@ -74,15 +74,6 @@ public class Entity : MonoBehaviour {
     public List<Special> spells;
     public List<Special> techs;
 
-    /*
-    //Temporary stats
-    private int hitChance, critChance, physicalDmg, magicDmg, techDmg, specialCost;
-    private bool landedHit, landedCrit;
-    private Entity target;
-    private Special activeSpecial;
-    private int techTimer = 0; //Turns which remain until a tech can be used again
-    */
-
     //Effects
     private List<Effect> effects;
     public List<string> immunities;
@@ -220,6 +211,8 @@ public class Entity : MonoBehaviour {
     /// <param name="e">Entity to attack - can be friendly</param>
     public void Attack()
     {
+        bc.target.party.ResetPositionAll();
+
         SetDefending(false);
         FlipTowardsTarget(bc.target);
 
@@ -416,6 +409,7 @@ public class Entity : MonoBehaviour {
     public void ResetPosition()
     {
         transform.position = originalPosition;
+        if (render != null) render.color = normal;
     }
 
     /// <summary>

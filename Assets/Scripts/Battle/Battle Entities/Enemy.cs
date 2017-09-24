@@ -12,7 +12,8 @@ public class Enemy : Entity {
     {
         base.Start();
 
-        moveTimer += Random.Range(0.000f, 50.000f);
+        //moveTimer += Random.Range(0.000f, 50.000f);
+        moveTimer += 50f;
     }
 
     /// <summary>

@@ -259,6 +259,17 @@ public abstract class Party : MonoBehaviour {
     }
 
     /// <summary>
+    /// Reset every party member to their regular position
+    /// </summary>
+    public void ResetPositionAll()
+    {
+        foreach (Entity e in party)
+        {
+            e.ResetPosition();
+        }
+    }
+
+    /// <summary>
     /// Similar to ResetState(), but only used to nullify and remove color from a target entity
     /// </summary>
     public void CancelTarget()

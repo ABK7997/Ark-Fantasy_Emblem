@@ -64,10 +64,14 @@ public class InputControls : MonoBehaviour {
     {
         string type = "";
 
-        if (pParty.GetActiveMember().GetSpecial() != null)
+        if (pParty.GetActiveMember() != null)
         {
-            type = pParty.GetActiveMember().GetSpecial().type + "";
+            if (pParty.GetActiveMember().GetSpecial() != null)
+            {
+                type = pParty.GetActiveMember().GetSpecial().type + "";
+            }
         }
+        
 
         switch (bm.GetState())
         {
@@ -95,9 +99,17 @@ public class InputControls : MonoBehaviour {
                 break;
 
             case "PLAYER_PROJECTION":
-                bm.CancelAction();
-                pParty.CancelTarget();
 
+                bm.CancelAction();
+
+                if (BattleUI.moving)
+                {
+                    BattleUI.moving = false;
+                    bm.SetState("TILE_SELECTION");
+                    break;
+                }
+
+                pParty.CancelTarget();
                 
                 if (type == "EFFECT") bm.SetState("SPECIAL_SELECTION");
                 else bm.SetState("SELECTION");

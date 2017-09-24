@@ -1826,6 +1826,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 270488698}
+--- !u!114 &281390942 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114596163044022354, guid: 176fe1f21520aa4479c5c02b7450f14c,
+    type: 2}
+  m_PrefabInternal: {fileID: 1634957544}
+  m_Script: {fileID: 11500000, guid: 185327ae1b4908e418d87cd1c85a0ee7, type: 3}
 --- !u!1 &289562018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2908,6 +2914,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 599705928}
+--- !u!114 &663094973 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114001919405255480, guid: 176fe1f21520aa4479c5c02b7450f14c,
+    type: 2}
+  m_PrefabInternal: {fileID: 1634957544}
+  m_Script: {fileID: 11500000, guid: 185327ae1b4908e418d87cd1c85a0ee7, type: 3}
 --- !u!1 &680573228
 GameObject:
   m_ObjectHideFlags: 0
@@ -7255,7 +7267,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 599705929}
   m_Direction: 0
   m_Value: 0
-  m_Size: 1
+  m_Size: 0.9999998
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -8074,6 +8086,16 @@ Prefab:
       value: 
       objectReference: {fileID: 1593432158396636, guid: a134ed0e31a357d4c87bfb28f9e2ec26,
         type: 2}
+    - target: {fileID: 114471246818334720, guid: 176fe1f21520aa4479c5c02b7450f14c,
+        type: 2}
+      propertyPath: activeEnemies.Array.data[0]
+      value: 
+      objectReference: {fileID: 281390942}
+    - target: {fileID: 114471246818334720, guid: 176fe1f21520aa4479c5c02b7450f14c,
+        type: 2}
+      propertyPath: activeEnemies.Array.data[3]
+      value: 
+      objectReference: {fileID: 663094973}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 176fe1f21520aa4479c5c02b7450f14c, type: 2}
   m_IsPrefabParent: 0
