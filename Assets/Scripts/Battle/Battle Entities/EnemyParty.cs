@@ -28,12 +28,15 @@ public class EnemyParty : Party {
             if (e.Ready && bm.GetState() == "NORMAL")
             {
                 command = COMMAND.ATTACK;
+                otherPartyBody.ResetPositionAll();
                 e.Behavior();
                 bm.SetState("ENEMY_PROJECTION");
                 CalculateAction();
 
                 e.ChangeColor("active");
                 target.ChangeColor("target");
+
+                break; //Exit loop after first entity acts
             }
         }
     }

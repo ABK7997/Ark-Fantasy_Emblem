@@ -93,5 +93,23 @@ public class AnimatedProjectile : MonoBehaviour {
         hit = accurate;
 
         GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
+
+        SetRotation();
+    }
+
+    private void SetRotation()
+    {
+        Vector3 pos = transform.position;
+        Vector3 tPos = target.transform.position;
+
+        Vector3 scale = transform.localScale;
+
+        //Left or Right
+        if (tPos.x < pos.x) scale.x *= -1;
+
+        //Above or Below
+        if (tPos.y > pos.y) scale.y *= -1;
+
+        transform.localScale = scale;
     }
 }

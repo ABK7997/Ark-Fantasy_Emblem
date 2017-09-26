@@ -253,6 +253,49 @@ public class BattleCalculator {
         return crit;
     }
 
+    /***SPECIAL TYPES EFFECT***/
+    public void OffensiveSpecial()
+    {
+        if (!landedHit) return;
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 2.25f;
+
+        switch (activeSpecial.classification)
+        {
+            case Special.CLASS.SKILL: break; // ???
+            case Special.CLASS.SPELL: target.Hp -= (int)(magicDmg * multiplier); break;
+            case Special.CLASS.TECH: target.Hp -= (int)(techDmg * multiplier); break;
+        }
+    }
+
+    public void HealingSpecial()
+    {
+        landedHit = true; //Healing can't miss
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 1.5f;
+
+        target.Hp -= (int)(magicDmg * multiplier);
+    }
+
+    public void RepairSpecial()
+    {
+        landedHit = true; //Repairing can't miss
+
+        float multiplier = 1f;
+        if (landedCrit) multiplier = 1.5f;
+
+        target.Hp -= (int)(techDmg * multiplier);
+    }
+
+    public void EffectSpecial()
+    {
+        string eff = activeSpecial.effect + "";
+
+        target.SetEffect(eff, activeSpecial.turnTimer);
+    }
+
     /***EFFECTS***/
     //Check the effects of the tile a target is standing on and apply them
     private void TileEffects(Tile.EFFECT e)
@@ -294,4 +337,6 @@ public class BattleCalculator {
             default: break;
         }
     }
+
+    
 }

@@ -18,6 +18,7 @@ public abstract class Party : MonoBehaviour {
 
     /// <summary>List of enemies being fought</summary>
     [HideInInspector] public List<Entity> oppositeParty; //The others
+    [HideInInspector] public Party otherPartyBody;
 
     protected Entity activeMember, target; //The acting member and its target respectively
     protected Tile tileProspect; //Tile the active member may move to
@@ -266,6 +267,24 @@ public abstract class Party : MonoBehaviour {
         foreach (Entity e in party)
         {
             e.ResetPosition();
+        }
+    }
+
+    /// <summary>
+    /// Adjust index display when a party member dies or is revived
+    /// </summary>
+    public void UpdateIndeces()
+    {
+        int i = 0;
+        foreach (Entity e in party)
+        {
+            if (e.Hp > 0)
+            {
+                e.Index = i;
+                e.indexText.text = "" + (i + 1);
+                i++;
+            }
+            else e.indexText.text = "";
         }
     }
 

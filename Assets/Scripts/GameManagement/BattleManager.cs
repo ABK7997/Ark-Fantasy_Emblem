@@ -68,6 +68,10 @@ public class BattleManager : Manager {
         //Organize EnemyParty
         ea = ow.encounteredParty;
         eParty.OrganizeParty(false, board.enemyCoordinates, board.scaling, ea.GetParty());
+
+        //Assign opposite party
+        pParty.otherPartyBody = eParty;
+        eParty.otherPartyBody = pParty;
     }
 	
     //Controls the flow of battle with Order Queue

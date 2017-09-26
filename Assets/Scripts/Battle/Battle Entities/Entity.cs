@@ -32,8 +32,9 @@ public class Entity : MonoBehaviour {
     /// <summary> Inside of the statView, contains all momentary stat information for a character - constantly updated </summary>
     public Text statText;
 
-    //Battle Calculation class
+    //Assistant classes
     private BattleCalculator bc;
+    private EffectCalculator ec;
 
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
     public enum TYPE
@@ -117,6 +118,23 @@ public class Entity : MonoBehaviour {
     /// <summary>Height of speed and health bars</summary>
     public float barsHeight;
 
+    //LEVELING UP
+    private int _exp;
+
+    public int l_hp;
+
+    public int l_atk;
+    public int l_mag;
+    public int l_vlt;
+
+    public int l_def;
+    public int l_res;
+    public int l_stb;
+
+    public int l_skl;
+    public int l_spd;
+    public int l_lck;
+
     //Modifers
     private float speedMultiplier = 2f; //Basic multiplier to speed up or slow down all combat
 
@@ -124,6 +142,7 @@ public class Entity : MonoBehaviour {
     protected virtual void Start()
     {
         bc = new BattleCalculator(this);
+        ec = new EffectCalculator(this, bc);
 
         statView.enabled = false;
 
@@ -181,9 +200,7 @@ public class Entity : MonoBehaviour {
         party = belongsTo;
     }
 
-    //<---STATE METHODS**//
-
-    //**AUTOMATIC--->//
+    /***AUTOMATIC***/
     protected void OnMouseOver()
     {
         hovering = true;
@@ -211,8 +228,6 @@ public class Entity : MonoBehaviour {
     /// <param name="e">Entity to attack - can be friendly</param>
     public void Attack()
     {
-        bc.target.party.ResetPositionAll();
-
         SetDefending(false);
         FlipTowardsTarget(bc.target);
 
@@ -254,99 +269,22 @@ public class Entity : MonoBehaviour {
     {
         switch (bc.activeSpecial.type)
         {
-            case Special.TYPE.ATTACK: OffensiveSpecial(); break;
-            case Special.TYPE.HEAL: HealingSpecial(); break;
-            case Special.TYPE.REPAIR: RepairSpecial(); break;
-            case Special.TYPE.EFFECT: EffectSpecial(); break;
+            case Special.TYPE.ATTACK: bc.OffensiveSpecial(); break;
+            case Special.TYPE.HEAL: bc.HealingSpecial(); break;
+            case Special.TYPE.REPAIR: bc.RepairSpecial(); break;
+            case Special.TYPE.EFFECT: bc.EffectSpecial(); break;
 
             default: break;
         }
 
         party.Normalize();
     }
-
-    //Special Types
-    private void OffensiveSpecial()
-    {
-        if (!bc.landedHit) return;
-
-        float multiplier = 1f;
-        if (bc.landedCrit) multiplier = 2.25f;
-
-        switch (bc.activeSpecial.classification)
-        {
-            case Special.CLASS.SKILL: break;
-            case Special.CLASS.SPELL: bc.target.Hp -= (int)(bc.magicDmg * multiplier); break;
-            case Special.CLASS.TECH: bc.target.Hp -= (int)(bc.techDmg * multiplier); break;
-        }
-    }
-
-    private void HealingSpecial()
-    {
-        bc.landedHit = true; //Healing can't miss
-
-        float multiplier = 1f;
-        if (bc.landedCrit) multiplier = 1.5f;
-
-        bc.target.Hp -= (int)(bc.magicDmg * multiplier);
-    }
-
-    private void RepairSpecial()
-    {
-        bc.landedHit = true; //Repairing can't miss
-
-        float multiplier = 1f;
-        if (bc.landedCrit) multiplier = 1.5f;
-
-        bc.target.Hp -= (int)(bc.techDmg * multiplier);
-    }
-
-    private void EffectSpecial()
-    {
-        string eff = bc.activeSpecial.effect + "";
-
-        bc.target.SetEffect(eff, bc.activeSpecial.turnTimer);
-    }
-
+    
     //Miss Animation
     private void Miss()
     {
         if (IsRightOf(bc.target)) bc.target.SetPosition(2f, 0f);
         else bc.target.SetPosition(-2f, 0f);
-    }
-
-    /// <summary>
-    /// Check tile effects at the start of an entity's turn (when the speed gauge is full)
-    /// </summary>
-    /// <param name="e">The effect to be checked</param>
-    public void TileEffectsTurn(Tile.EFFECT e)
-    {
-        Spd = baseSpd;
-
-        switch (e)
-        {
-            //Restore HP
-            case Tile.EFFECT.RECOVERY:
-                Hp += 3;
-                break;
-
-            //Speed
-            case Tile.EFFECT.STUCK:
-                Spd /= 2;
-
-                break;
-        }
-    }
-
-    private void StatusEffects()
-    {
-        //TODO
-    }
-
-    //Check status effects each turn
-    private void StatusEffectsTurn()
-    {
-        //TODO
     }
 
     /// <summary>
@@ -550,6 +488,7 @@ public class Entity : MonoBehaviour {
 
                 AnimationOff();
                 anim.SetBool("Dead", true);
+                party.UpdateIndeces();
             }
 
             UpdateDisplay();
@@ -650,9 +589,9 @@ public class Entity : MonoBehaviour {
     {
         get { return ready; }
         set {
-            StatusEffectsTurn();
-            TileEffectsTurn(tile.effect1);
-            TileEffectsTurn(tile.effect2);
+            ec.StatusEffectsTurn();
+            ec.TileEffectsTurn(tile.effect1);
+            ec.TileEffectsTurn(tile.effect2);
             ready = value;
         }
     }
@@ -956,10 +895,99 @@ public class Entity : MonoBehaviour {
 
     //Animation State
 
+    /// <summary>
+    /// Resets the entity's animation state and disables certain triggers
+    /// </summary>
     public void AnimationOff()
     {
         anim.SetBool("Dead", false);
         anim.SetBool("Defending", false);
+    }
+
+    /***LEVELING UP***/
+
+    /// <summary>
+    /// The number of experience points this entity has towards the next level.
+    /// Maxes out at 100 regardless of level.
+    /// </summary>
+    public int Exp
+    {
+        get { return _exp; }
+        set
+        {
+            //Level and carry over
+            if (_exp > 100)
+            {
+                int leftOver = value - (100 - _exp);
+                LevelUp();
+                _exp = leftOver;
+            }
+            else _exp += value;
+        }
+    }
+
+    private void LevelUp()
+    {
+        level++;
+        int chance = Random.Range(0, 100);
+
+        //HP
+        if (chance < l_hp)
+        {
+            maxHP += 1;
+            Hp += 1;
+        }
+
+        //OFFENSE
+        if (chance < l_atk)
+        {
+            baseAtk += 1;
+            Atk += 1;
+        }
+        if (chance < l_mag)
+        {
+            baseMag += 1;
+            Mag += 1;
+        }
+        if (chance < l_vlt)
+        {
+            baseVlt += 1;
+            Vlt += 1;
+        }
+
+        //DEFENSE
+        if (chance < l_def)
+        {
+            baseDef += 1;
+            Def += 1;
+        }
+        if (chance < l_res)
+        {
+            baseRes += 1;
+            Res += 1;
+        }
+        if (chance < l_stb)
+        {
+            baseStb += 1;
+            Stb += 1;
+        }
+
+        //PERFORMANCE
+        if (chance < l_skl)
+        {
+            baseSkl += 1;
+            Skl += 1;
+        }
+        if (chance < l_spd)
+        {
+            baseSpd += 1;
+            Spd += 1;
+        }
+        if (chance < l_lck)
+        {
+            baseLck += 1;
+            Lck += 1;
+        }
     }
 
     /***MISCELLANEOUS***/
@@ -973,8 +1001,13 @@ public class Entity : MonoBehaviour {
         return party;
     }
 
+    /// <summary>
+    /// Get the sprite renderer of this entity
+    /// </summary>
+    /// <returns>An active renderer</returns>
     public SpriteRenderer GetRender()
     {
         return render;
     }
+
 }
