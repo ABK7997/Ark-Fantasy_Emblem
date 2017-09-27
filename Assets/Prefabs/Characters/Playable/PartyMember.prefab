@@ -186,7 +186,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.24, y: 0.24}
+    oldSize: {x: 2.4, y: 2.4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -418,7 +418,7 @@ MonoBehaviour:
   Name: Party Member
   statView: {fileID: 223500023960571788}
   statText: {fileID: 114535281242680384}
-  type: None
+  type: 0
   maxHP: 25
   baseAtk: 7
   baseMag: 0
@@ -429,9 +429,14 @@ MonoBehaviour:
   baseSkl: 0
   baseLck: 0
   baseSpd: 5
+  skills: []
+  spells: []
+  techs: []
+  immunities: []
   status: 0
   overhead: {fileID: 223074223827897988}
   hpBar: {fileID: 114604511004925548}
+  indexText: {fileID: 0}
   barsLength: 30
   barsHeight: 3
   speedBar: {fileID: 114809989721968990}

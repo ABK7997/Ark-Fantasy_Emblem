@@ -38,6 +38,16 @@ public class BattleUI : MonoBehaviour {
     /// <summary>On-screen button to cancel targetting if the player does not prefer using hotkeys</summary>
     public Button targetCancelButton;
 
+    /// <summary>
+    /// Window which pops up when a character gains enough experience to level up after a move
+    /// </summary>
+    public Image levelUpWindow;
+
+    /// <summary>
+    /// Text to display in the level up window when a character is leveled up
+    /// </summary>
+    public Text levelUpText;
+
     /***BATTLE PROJECTION***/
 
     /// <summary>
@@ -81,6 +91,7 @@ public class BattleUI : MonoBehaviour {
                 SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
                 pauseButton.gameObject.SetActive(true);
+                levelUpWindow.gameObject.SetActive(false);
                 break;
 
             case "ANIMATING":
@@ -132,6 +143,10 @@ public class BattleUI : MonoBehaviour {
 
                 SetTargetting(true);
                 specialSelection.enabled = false;
+                break;
+
+            case "LEVEL_UP":
+                levelUpWindow.gameObject.SetActive(true);
                 break;
 
             case "PLAYER_PROJECTION":
@@ -220,6 +235,16 @@ public class BattleUI : MonoBehaviour {
         else SetEnemyProjection(true, projectionText);
 
         moving = true;
+    }
+
+    /// <summary>
+    /// Enable Level Up window and change text approriately
+    /// </summary>
+    /// <param name="text">The stats of the entity leveling up</param>
+    public void SetLevelUpText(string text)
+    {
+        bm.SetState("LEVEL_UP");
+        levelUpText.text = text;
     }
 
     //Shorthand to enabling/disabling the Battle Projection game object

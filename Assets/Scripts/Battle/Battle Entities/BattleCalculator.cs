@@ -5,10 +5,12 @@ using UnityEngine;
 public class BattleCalculator {
 
     Entity user;
+    EffectCalculator ec;
 
-    public BattleCalculator(Entity u)
+    public BattleCalculator(Entity u, EffectCalculator calc)
     {
         user = u;
+        ec = calc;
     }
 
     //Temporary stats
@@ -40,7 +42,7 @@ public class BattleCalculator {
 
         user.Ready = false;
 
-        user.NullifyAllEffects();
+        ec.NullifyAllEffects();
     }
 
     /***TEMPORARY CALCULATIONS***/
@@ -53,17 +55,17 @@ public class BattleCalculator {
         int damage = user.Atk;
 
         //EFFECT - SWAPPED
-        if (user.CheckEffect("SWAPPED")) damage = user.Mag + user.Vlt;
+        if (ec.CheckEffect("SWAPPED")) damage = user.Mag + user.Vlt;
 
         int defense = target.Def;
 
         //Defense Modifiers
-        if (target.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
+        if (target.ec.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
 
         physicalDmg = damage - defense;
 
         //Attack Modifiers
-        if (user.CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
+        if (ec.CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
 
         if (physicalDmg < 0) physicalDmg = 0;
     }
@@ -77,7 +79,7 @@ public class BattleCalculator {
         float baseDamage = user.Mag;
 
         //EFFECT - SWAPPED
-        if (user.CheckEffect("SWAPPED")) baseDamage = user.Atk;
+        if (ec.CheckEffect("SWAPPED")) baseDamage = user.Atk;
 
         baseDamage *= activeSpecial.basePwr;
 
@@ -112,7 +114,7 @@ public class BattleCalculator {
         float baseDamage = user.Vlt;
 
         //EFFECT - SWAPPED
-        if (user.CheckEffect("SWAPPED")) baseDamage = user.Atk;
+        if (ec.CheckEffect("SWAPPED")) baseDamage = user.Atk;
 
         baseDamage *= activeSpecial.basePwr;
 
@@ -165,8 +167,8 @@ public class BattleCalculator {
         if (activeSpecial != null) specialCost = activeSpecial.cost;
 
         //Tile modifiers
-        TileEffects(target.GetTileEffect1());
-        TileEffects(target.GetTileEffect2());
+        TileEffects(target.pc.GetTileEffect1());
+        TileEffects(target.pc.GetTileEffect2());
 
         //Calculate hit or miss
         if (Random.Range(0, 100) <= hitChance) landedHit = true;
@@ -185,7 +187,7 @@ public class BattleCalculator {
         accuracy += user.Lck; // + LCK
 
         //EFFECT - ANGER
-        if (user.CheckEffect("ANGER")) accuracy -= 35;
+        if (ec.CheckEffect("ANGER")) accuracy -= 35;
 
         return accuracy;
     }
@@ -227,7 +229,7 @@ public class BattleCalculator {
         crit += user.Skl / 2;
 
         //EFFECT - ANGER
-        if (user.CheckEffect("ANGER")) crit += 35;
+        if (ec.CheckEffect("ANGER")) crit += 35;
 
         return crit;
     }
@@ -267,6 +269,11 @@ public class BattleCalculator {
             case Special.CLASS.SPELL: target.Hp -= (int)(magicDmg * multiplier); break;
             case Special.CLASS.TECH: target.Hp -= (int)(techDmg * multiplier); break;
         }
+
+        if (target.Hp == 0)
+        {
+            user.Exp += target.expGain; //Gain EXP
+        }
     }
 
     public void HealingSpecial()
@@ -293,7 +300,7 @@ public class BattleCalculator {
     {
         string eff = activeSpecial.effect + "";
 
-        target.SetEffect(eff, activeSpecial.turnTimer);
+        target.ec.SetEffect(eff, activeSpecial.turnTimer);
     }
 
     /***EFFECTS***/
@@ -338,5 +345,49 @@ public class BattleCalculator {
         }
     }
 
-    
+    /***GETTERS and SETTERS***/
+    /// <summary>
+    /// Physical damage possible; based on ATK
+    /// </summary>
+    public int PhysicalDmg
+    {
+        get { return physicalDmg; }
+        set { physicalDmg = value; }
+    }
+
+    /// <summary>
+    /// Magical effectiveness possible; based on MAG
+    /// </summary>
+    public int MagicDmg
+    {
+        get { return magicDmg; }
+        set { magicDmg = value; }
+    }
+
+    /// <summary>
+    /// Technical effectivenes possibly; based on VLT
+    /// </summary>
+    public int TechDmg
+    {
+        get { return techDmg; }
+        set { techDmg = value; }
+    }
+
+    /// <summary>
+    /// Chance of hitting the intended target
+    /// </summary>
+    public int Hit
+    {
+        get { return hitChance; }
+        set { hitChance = value; }
+    }
+
+    /// <summary>
+    /// Chancing of landing a critical multiplier during an attack
+    /// </summary>
+    public int Crit
+    {
+        get { return critChance; }
+        set { critChance = value; }
+    }
 }

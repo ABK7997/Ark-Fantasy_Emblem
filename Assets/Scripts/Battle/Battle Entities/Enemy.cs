@@ -12,8 +12,12 @@ public class Enemy : Entity {
     {
         base.Start();
 
-        //moveTimer += Random.Range(0.000f, 50.000f);
-        moveTimer += 50f;
+        moveTimer += Random.Range(0.000f, 50.000f);
+
+        for (int i = 1; i < level; i++)
+        {
+            LevelUp();
+        }
     }
 
     /// <summary>
@@ -46,7 +50,7 @@ public class Enemy : Entity {
         //Exposed Target
         foreach (Entity e in targets)
         {
-            if (e.CheckEffect("EXPOSED"))
+            if (e.ec.CheckEffect("EXPOSED"))
             {
                 if (BlowhornEffect())
                 {
@@ -56,7 +60,7 @@ public class Enemy : Entity {
         }
 
         //Obscure Target
-        if (targets.Count > 1 && targets[selection].CheckEffect("OBSCURE"))
+        if (targets.Count > 1 && targets[selection].ec.CheckEffect("OBSCURE"))
         {
             return ObscureEffect(targets, targets[selection]);
         }

@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 /// <summary>
 /// A superclass containing everything similar to Player and Enemy parties
 /// </summary>
 public abstract class Party : MonoBehaviour {
+
+    public Image statsView;
+    public Text statsText;
 
     protected bool isPlayer;
 
@@ -67,11 +71,11 @@ public abstract class Party : MonoBehaviour {
             party[i].Index = i;
             party[i].indexText.text = (i + 1) + "";
             party[i].SetParty(this);
-            party[i].SetOriginalPosition(coords[i].x * scaling, coords[i].y * scaling);
+            party[i].pc.SetOriginalPosition(coords[i].x * scaling, coords[i].y * scaling);
 
             //Tile member is instantiated onto
             Tile t = board.GetTile(party[i].transform.position);
-            party[i].SetTile(t);
+            party[i].pc.SetTile(t);
             //t.Occupied = true;
         }
     }
@@ -183,7 +187,7 @@ public abstract class Party : MonoBehaviour {
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
     protected void CalculateAction()
     {
-        activeMember.SetTemporaryStats(target);
+        activeMember.bc.SetTemporaryStats(target);
 
         string info = "";
 
@@ -192,17 +196,17 @@ public abstract class Party : MonoBehaviour {
         switch (command)
         {
             case COMMAND.ATTACK:
-                ui.SetProjectionInfo(isPlayer, activeMember.PhysicalDmg, activeMember.Hit, activeMember.Crit, "Physical Attack");
+                ui.SetProjectionInfo(isPlayer, activeMember.bc.PhysicalDmg, activeMember.bc.Hit, activeMember.bc.Crit, "Physical Attack");
                 break;
 
             case COMMAND.MAGIC:
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.MagicDmg, activeMember.Hit, activeMember.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.bc.MagicDmg, activeMember.bc.Hit, activeMember.bc.Crit, info); break;
 
                     case Special.TYPE.HEAL:
-                        ui.SetProjectionInfo(isPlayer, -activeMember.MagicDmg, activeMember.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, -activeMember.bc.MagicDmg, activeMember.bc.Crit, info); break;
                 }
                 
                 break;
@@ -211,10 +215,10 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.TechDmg, activeMember.Hit, activeMember.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.bc.TechDmg, activeMember.bc.Hit, activeMember.bc.Crit, info); break;
 
                     case Special.TYPE.REPAIR:
-                        ui.SetProjectionInfo(isPlayer, - activeMember.TechDmg, activeMember.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, - activeMember.bc.TechDmg, activeMember.bc.Crit, info); break;
                 }
 
                 break;
@@ -223,7 +227,7 @@ public abstract class Party : MonoBehaviour {
                 switch (activeMember.GetSpecial().type)
                 {
                     case Special.TYPE.EFFECT:
-                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.Hit, info); break;
+                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.bc.Hit, info); break;
                 }
 
                 break;
@@ -266,7 +270,7 @@ public abstract class Party : MonoBehaviour {
     {
         foreach (Entity e in party)
         {
-            e.ResetPosition();
+            e.pc.ResetPosition();
         }
     }
 
@@ -385,7 +389,42 @@ public abstract class Party : MonoBehaviour {
     /// </summary>
     public void MoveMember()
     {
-        activeMember.SetTile(tileProspect);
-        activeMember.SetPosition(tileProspect.transform.position.x, tileProspect.transform.position.y);
+        activeMember.pc.SetTile(tileProspect);
+        activeMember.pc.SetPosition(tileProspect.transform.position.x, tileProspect.transform.position.y);
+    }
+
+    /***LEVELING***/
+    /// <summary>
+    /// Activate level up window and change text for active member
+    /// </summary>
+    public void SetLevelUpText(bool[] up, Entity e)
+    {
+        string text = e.Name + "\n";
+        text += "Leveled Up\n";
+
+        if (up[0]) text += "\nHP: " + (e.Hp-1) + " + 1";
+
+        //OFFENSIVE
+        if (up[1]) text += "\nATK: " + (e.Atk - 1) + " + 1";
+        if (up[2]) text += "\nMAG: " + (e.Mag - 1) + " + 1";
+        if (up[3]) text += "\nVLT: " + (e.Vlt - 1) + " + 1";
+
+        //DEFENSIVE
+        if (up[4]) text += "\nDEF: " + (e.Def - 1) + " + 1";
+        if (up[5]) text += "\nRES: " + (e.Res - 1) + " + 1";
+        if (up[6]) text += "\nSTB: " + (e.Stb - 1) + " + 1";
+
+        //PERFORMANCE
+        if (up[7]) text += "\nSKL: " + (e.Skl - 1) + " + 1";
+        if (up[8]) text += "\nLCK: " + (e.Lck - 1) + " + 1";
+        if (up[9]) text += "\nSPD: " + (e.Spd - 1) + " + 1";
+
+        ui.SetLevelUpText(text);
+    }
+
+    public void SetStatsView(bool b, string text)
+    {
+        statsView.gameObject.SetActive(b);
+        statsText.text = text;
     }
 }

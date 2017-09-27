@@ -3887,6 +3887,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 870415959}
+--- !u!114 &901167348 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114596163044022354, guid: 176fe1f21520aa4479c5c02b7450f14c,
+    type: 2}
+  m_PrefabInternal: {fileID: 1634957544}
+  m_Script: {fileID: 11500000, guid: 185327ae1b4908e418d87cd1c85a0ee7, type: 3}
 --- !u!1 &919402725
 GameObject:
   m_ObjectHideFlags: 0
@@ -6253,6 +6259,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1303200857}
+--- !u!114 &1332360961 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114001919405255480, guid: 176fe1f21520aa4479c5c02b7450f14c,
+    type: 2}
+  m_PrefabInternal: {fileID: 1634957544}
+  m_Script: {fileID: 11500000, guid: 185327ae1b4908e418d87cd1c85a0ee7, type: 3}
 --- !u!1 &1371720293
 GameObject:
   m_ObjectHideFlags: 0
@@ -7255,7 +7267,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 599705929}
   m_Direction: 0
   m_Value: 0
-  m_Size: 0.9999998
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -7728,7 +7740,7 @@ Prefab:
     - target: {fileID: 114925623451782956, guid: 176fe1f21520aa4479c5c02b7450f14c,
         type: 2}
       propertyPath: tiles.Array.size
-      value: 13
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4051468827397110, guid: 176fe1f21520aa4479c5c02b7450f14c, type: 2}
       propertyPath: m_LocalPosition.x
@@ -8074,6 +8086,16 @@ Prefab:
       value: 
       objectReference: {fileID: 1593432158396636, guid: a134ed0e31a357d4c87bfb28f9e2ec26,
         type: 2}
+    - target: {fileID: 114471246818334720, guid: 176fe1f21520aa4479c5c02b7450f14c,
+        type: 2}
+      propertyPath: activeEnemies.Array.data[0]
+      value: 
+      objectReference: {fileID: 901167348}
+    - target: {fileID: 114471246818334720, guid: 176fe1f21520aa4479c5c02b7450f14c,
+        type: 2}
+      propertyPath: activeEnemies.Array.data[3]
+      value: 
+      objectReference: {fileID: 1332360961}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 176fe1f21520aa4479c5c02b7450f14c, type: 2}
   m_IsPrefabParent: 0

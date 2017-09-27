@@ -146,6 +146,10 @@ public class InputControls : MonoBehaviour {
                 bm.SetState("NORMAL");
                 StartCoroutine(bm.Animate());
                 break;
+
+            case "LEVEL_UP":
+                bm.SetState("NORMAL");
+                break;
         }
     }
 

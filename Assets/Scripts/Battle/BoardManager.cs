@@ -129,7 +129,7 @@ public class BoardManager : MonoBehaviour {
         //Disqualify tiles that are occupied by other entities
         foreach (Entity e in party1)
         {
-            Tile t = e.GetTile();
+            Tile t = e.pc.GetTile();
 
             if (moveSpaces.Contains(t))
             {
@@ -138,7 +138,7 @@ public class BoardManager : MonoBehaviour {
         }
         foreach (Entity e in party2)
         {
-            Tile t = e.GetTile();
+            Tile t = e.pc.GetTile();
 
             if (moveSpaces.Contains(t))
             {

@@ -11,30 +11,24 @@ public class Entity : MonoBehaviour {
     /// <summary>Name that will be displayed in battle and stat screens</summary>
     public string Name;
 
+    /// <summary>
+    /// Amount of experience points to award when this entity is defeated
+    /// </summary>
+    public int expGain;
+
     //The ID number of this entity in its party
     private int index;
-
-    //Position to rest to
-    private Vector3 originalPosition;
-
-    //Tiles
-    private Tile tile, tileProspect;
 
     protected bool hovering = false; //If the mouse if hovering over the entity or not
     protected Party party; //The party this entity belongs to (player or enemy)
 
     /***STATS***/
-    private int level = 1;
-
-    /// <summary> UI showing stats which appears and disappears as the mouse hovers over entities </summary>
-    public Canvas statView;
-
-    /// <summary> Inside of the statView, contains all momentary stat information for a character - constantly updated </summary>
-    public Text statText;
+    public int level = 1;
 
     //Assistant classes
-    private BattleCalculator bc;
-    private EffectCalculator ec;
+    [HideInInspector] public BattleCalculator bc;
+    [HideInInspector] public EffectCalculator ec;
+    [HideInInspector] public PositionCalculator pc;
 
     /// <summary> Organic, Magic, or Droid - can be multityped </summary>
     public enum TYPE
@@ -75,13 +69,8 @@ public class Entity : MonoBehaviour {
     public List<Special> spells;
     public List<Special> techs;
 
-    //Effects
-    private List<Effect> effects;
-    public List<string> immunities;
-
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
-    //Conditions and status effects
     public enum STATUS
     {
         NORMAL, ILL, DEFENDING, DEAD
@@ -119,7 +108,7 @@ public class Entity : MonoBehaviour {
     public float barsHeight;
 
     //LEVELING UP
-    private int _exp;
+    private int _exp = 0;
 
     public int l_hp;
 
@@ -132,22 +121,25 @@ public class Entity : MonoBehaviour {
     public int l_stb;
 
     public int l_skl;
-    public int l_spd;
     public int l_lck;
+    public int l_spd;
 
     //Modifers
-    private float speedMultiplier = 2f; //Basic multiplier to speed up or slow down all combat
+    private float speedMultiplier = 5f; //Basic multiplier to speed up or slow down all combat
+
+    protected virtual void Awake()
+    {
+        anim = GetComponent<Animator>();
+        render = GetComponent<SpriteRenderer>();
+
+        pc = new PositionCalculator(this, render);
+    }
 
     //Sets base stats, components, and initial display
     protected virtual void Start()
     {
-        bc = new BattleCalculator(this);
         ec = new EffectCalculator(this, bc);
-
-        statView.enabled = false;
-
-        anim = GetComponent<Animator>();
-        render = GetComponent<SpriteRenderer>();
+        bc = new BattleCalculator(this, ec);
 
         bc.ResetStats();
         UpdateDisplay();
@@ -161,7 +153,8 @@ public class Entity : MonoBehaviour {
     public virtual void UpdateTime() {
         if (status == STATUS.DEAD) return; //Do nothing if dead
 
-        ResetPosition();
+        pc.ResetPosition();
+        CheckLevel();
 
         if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier);
         else Ready = true;
@@ -186,7 +179,7 @@ public class Entity : MonoBehaviour {
         moveTimer = 0;
         ready = false;
         TechTimer--;
-        CycleEffects();
+        ec.CycleEffects();
 
         UpdateDisplay();
     }
@@ -206,11 +199,7 @@ public class Entity : MonoBehaviour {
         hovering = true;
         ChangeColor("hover");
 
-        //Show statscreen
-        statView.enabled = true;
-
-        //Update stats
-        statText.text = GetAllStats();
+        party.SetStatsView(true, GetAllStats());
     }
 
     protected void OnMouseExit()
@@ -218,7 +207,7 @@ public class Entity : MonoBehaviour {
         hovering = false;
         ChangeColor("normal");
 
-        statView.enabled = false;
+        party.SetStatsView(false, "");
     }
 
     /***BATTLE METHODS***/
@@ -229,7 +218,7 @@ public class Entity : MonoBehaviour {
     public void Attack()
     {
         SetDefending(false);
-        FlipTowardsTarget(bc.target);
+        pc.FlipTowardsTarget(bc.target);
 
         int totalDamage = 0;
 
@@ -237,7 +226,16 @@ public class Entity : MonoBehaviour {
         anim.SetTrigger("ATTACK");
 
         if (bc.landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
-        if (bc.landedHit) bc.target.Hp -= totalDamage; //Hit
+        if (bc.landedHit)
+        {
+            bc.target.Hp -= totalDamage; //Hit
+
+            //Gain EXP if target is defeated
+            if (bc.target.Hp == 0)
+            {
+                Exp += bc.target.expGain;
+            }
+        }
 
         //Miss Animation
         else Miss();
@@ -252,7 +250,7 @@ public class Entity : MonoBehaviour {
     public void Cast(string type)
     {
         SetDefending(false);
-        FlipTowardsTarget(bc.target);
+        pc.FlipTowardsTarget(bc.target);
 
         if (type == "MAGIC") Hp -= bc.specialCost;
         else if (type == "TECH") bc.techTimer += bc.specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
@@ -283,17 +281,8 @@ public class Entity : MonoBehaviour {
     //Miss Animation
     private void Miss()
     {
-        if (IsRightOf(bc.target)) bc.target.SetPosition(2f, 0f);
-        else bc.target.SetPosition(-2f, 0f);
-    }
-
-    /// <summary>
-    /// Set temporary stats in this entity's Battle Calculator class
-    /// </summary>
-    /// <param name="t">The target entity for an action</param>
-    public void SetTemporaryStats(Entity t)
-    {
-        bc.SetTemporaryStats(t);
+        if (pc.IsRightOf(bc.target)) bc.target.pc.SetPosition(2f, 0f);
+        else bc.target.pc.SetPosition(-2f, 0f);
     }
 
     //Defense
@@ -327,128 +316,6 @@ public class Entity : MonoBehaviour {
             status = STATUS.NORMAL;
             anim.SetBool("Defending", false);
         }
-    }
-
-    /***POSITION and TILES***/
-
-    /// <summary>
-    /// Move entity to temporary position on the battlefield
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    public void SetPosition(float x, float y)
-    {
-        transform.position = new Vector3(transform.position.x + x, transform.position.y + y, 0);
-    }
-
-    /// <summary>
-    /// Reset entity to original position
-    /// </summary>
-    public void ResetPosition()
-    {
-        transform.position = originalPosition;
-        if (render != null) render.color = normal;
-    }
-
-    /// <summary>
-    /// Change this entity's reset position
-    /// </summary>
-    /// <param name="x">X coordinate</param>
-    /// <param name="y">Y coordinate</param>
-    public void SetOriginalPosition(float x, float y)
-    {
-        originalPosition = new Vector3(x, y, 0);
-    }
-
-    /// <summary>
-    /// Determines if the target entity is to the right of the user entity
-    /// </summary>
-    /// <param name="user">User entity</param>
-    /// <param name="target">Target entity</param>
-    /// <returns>True - target x is greater than user x; False - otherwise</returns>
-    public bool IsRightOf(Entity target)
-    {
-        return transform.position.x < target.transform.position.x;
-    }
-
-    private bool IsLeftOf(Entity target)
-    {
-        return transform.position.x > target.transform.position.x;
-    }
-
-    //Flip entity if the target is on their opposite side
-    private void FlipTowardsTarget(Entity target)
-    {
-        if (IsRightOf(target))
-        {
-            if (render.flipX) render.flipX = false;
-            if (!target.GetRender().flipX) target.GetRender().flipX = true;
-        }
-        else if (IsLeftOf(target))
-        {
-            if (!render.flipX) render.flipX = true;
-            if (target.GetRender().flipX) target.GetRender().flipX = false;
-        }
-    }
-
-    /// <summary>
-    /// Set or change the tile this entity is standing on
-    /// </summary>
-    /// <param name="t">The new tile to be set</param>
-    public void SetTile(Tile t)
-    {
-        tile = t;
-        //transform.position = tile.transform.position;
-    }
-
-    /// <summary>
-    /// The tile this entity is standing on
-    /// </summary>
-    /// <returns>A board tile</returns>
-    public Tile GetTile()
-    {
-        return tile;
-    }
-
-    /// <summary>
-    /// The tile this entity might move to if the player decides to
-    /// </summary>
-    /// <param name="t">The prospective tile</param>
-    public void SetTileProspect(Tile t)
-    {
-        tileProspect = t;
-    }
-
-    /// <summary>
-    /// Change this entity's position and tile on the board
-    /// </summary>
-    public void Move()
-    {
-        tile = tileProspect;
-        tileProspect = null;
-
-        transform.position = new Vector3(tile.transform.localPosition.x, tile.transform.localPosition.y, 0);
-        originalPosition = transform.position;
-
-        ResetTimer();
-    }
-
-    /// <summary>
-    /// Get the first status effect of this entity's occupied tile
-    /// </summary>
-    /// <returns>The status effect of the tile</returns>
-    public Tile.EFFECT GetTileEffect1()
-    {
-        return tile.effect1;
-    }
-
-    /// <summary>
-    /// Get the second status effect of this entity's occupied tile. Many tiles do not have a second effect
-    /// </summary>
-    /// <returns>The status effect of the tile</returns>
-    public Tile.EFFECT GetTileEffect2()
-    {
-        return tile.effect2;
     }
 
     /***GETTER and SETTER METHODS***/
@@ -590,8 +457,8 @@ public class Entity : MonoBehaviour {
         get { return ready; }
         set {
             ec.StatusEffectsTurn();
-            ec.TileEffectsTurn(tile.effect1);
-            ec.TileEffectsTurn(tile.effect2);
+            ec.TileEffectsTurn(pc.tile.effect1);
+            ec.TileEffectsTurn(pc.tile.effect2);
             ready = value;
         }
     }
@@ -610,7 +477,7 @@ public class Entity : MonoBehaviour {
     /// <returns>A long string with many line breaks to display current statistics</returns>
     public string GetAllStats()
     {
-        return Name + ", Lv. " + level + "\n" +
+        return Name + "\nLv. " + level + ", XP: " + Exp + "\n" +
             "HP: " + Hp + "\n" +
             type + "\n\n" +
             "ATK: " + Atk + "\n" +
@@ -623,7 +490,7 @@ public class Entity : MonoBehaviour {
             "LCK: " + Lck + "\n" +
             "SPD: " + Spd + "\n" +
             "\n" +
-            GetAllEffects();
+            ec.GetAllEffects();
     }
 
     /// <summary>
@@ -646,56 +513,9 @@ public class Entity : MonoBehaviour {
 
     }
 
-    //Temporary Stats Getter/Setter
-
-    /// <summary>
-    /// Physical damage possible; based on ATK
-    /// </summary>
-    public int PhysicalDmg {
-        get { return bc.physicalDmg; }
-        set { bc.physicalDmg = value; }
-    }
-
-    /// <summary>
-    /// Magical effectiveness possible; based on MAG
-    /// </summary>
-    public int MagicDmg
-    {
-        get { return bc.magicDmg; }
-        set { bc.magicDmg = value; }
-    }
-
-    /// <summary>
-    /// Technical effectivenes possibly; based on VLT
-    /// </summary>
-    public int TechDmg
-    {
-        get { return bc.techDmg; }
-        set { bc.techDmg = value; }
-    }
-
-    /// <summary>
-    /// Chance of hitting the intended target
-    /// </summary>
-    public int Hit
-    {
-        get { return bc.hitChance; }
-        set { bc.hitChance = value; }
-    }
-
-    /// <summary>
-    /// Chancing of landing a critical multiplier during an attack
-    /// </summary>
-    public int Crit
-    {
-        get { return bc.critChance; }
-        set { bc.critChance = value; }
-    }
-
     /// <summary>
     /// The number of turns remaining until a Tech ability can be used again
     /// </summary>
-
     public int TechTimer
     {
         get
@@ -743,116 +563,6 @@ public class Entity : MonoBehaviour {
     public void Normalize()
     {
         party.Normalize();
-    }
-
-    /***STATUS EFFECTS***/
-    /// <summary>
-    /// Set all possible status effecst to false
-    /// </summary>
-    public void NullifyAllEffects()
-    {
-        effects = new List<Effect>();
-    }
-
-    /// <summary>
-    /// Check if an entity has a certain status effect active
-    /// </summary>
-    /// <param name="status">The effect to be checked for</param>
-    /// <returns></returns>
-    public bool CheckEffect(string status)
-    {
-        foreach(Effect e in effects)
-        {
-            if (e.EffectName == status) return true;
-        }
-
-        return false;
-    }
-
-    /// <summary>
-    /// Enable or disable a status effect
-    /// </summary>
-    /// <param name="status">The status to be altered</param>
-    /// <param name="set">Enable or disable</param>
-    public void SetEffect(string status, int turns)
-    {
-        Effect nEff = new Effect(status, turns);
-
-        if (CheckEffect(status)) //Effect is already active; reset effect
-        {
-            DisableEffect(status);
-        }
-
-        if (!IsImmune(status)) effects.Add(nEff);
-    }
-
-    /// <summary>
-    /// Nullify a status effect, good or bad
-    /// </summary>
-    /// <param name="status">The effect to be nullified</param>
-    public void DisableEffect(string status)
-    {
-        Effect toRemove = new Effect("", 0);
-        bool removal = false;
-
-        foreach (Effect e in effects)
-        {
-            if (e.EffectName == status)
-            {
-                toRemove = e;
-                removal = true;
-            }
-
-            //Certain effects
-            switch (status)
-            {
-                case "ARMOR": Def = baseDef; break;
-
-                default: break;
-            }
-        }
-
-        if (removal) effects.Remove(toRemove);
-    }
-
-    //Cycle through effects and remove if expired
-    private void CycleEffects()
-    {
-        List<string> toRemove = new List<string>();
-
-        foreach (Effect e in effects)
-        {
-            e.Turn();
-
-            if (e.TurnTimer == 0)
-            {
-                toRemove.Add(e.EffectName);
-            }
-        }
-
-        foreach (string s in toRemove)
-        {
-            DisableEffect(s);
-        }
-    }
-
-    //List all effects in a string
-    private string GetAllEffects()
-    {
-        string ret = "";
-
-        foreach(Effect e in effects)
-        {
-            ret += e.EffectName + ": " + e.TurnTimer + "\n";
-        }
-
-        return ret;
-    }
-
-    //Immunity
-    private bool IsImmune(string status)
-    {
-        return immunities.Contains(status);
     }
 
     //Type Methods
@@ -915,79 +625,109 @@ public class Entity : MonoBehaviour {
         get { return _exp; }
         set
         {
-            //Level and carry over
-            if (_exp > 100)
-            {
-                int leftOver = value - (100 - _exp);
-                LevelUp();
-                _exp = leftOver;
-            }
-            else _exp += value;
+            _exp = value;
         }
     }
 
-    private void LevelUp()
+    protected void CheckLevel()
     {
+
+        if (Exp > 100)
+        {
+            Debug.Log(Exp);
+
+            Exp -= 100;
+
+            //Call party
+            party.SetLevelUpText(LevelUp(), this);
+        }
+    }
+
+    protected bool[] LevelUp()
+    {
+        bool[] ret = new bool[10];
+
         level++;
         int chance = Random.Range(0, 100);
 
         //HP
         if (chance < l_hp)
         {
+            ret[0] = true;
             maxHP += 1;
             Hp += 1;
         }
 
         //OFFENSE
+        chance = Random.Range(0, 100);
         if (chance < l_atk)
         {
+            ret[1] = true;
             baseAtk += 1;
             Atk += 1;
         }
+        chance = Random.Range(0, 100);
         if (chance < l_mag)
         {
+            ret[2] = true;
             baseMag += 1;
             Mag += 1;
         }
+        chance = Random.Range(0, 100);
         if (chance < l_vlt)
         {
+            ret[3] = true;
             baseVlt += 1;
             Vlt += 1;
         }
 
         //DEFENSE
+        chance = Random.Range(0, 100); 
         if (chance < l_def)
         {
+            ret[4] = true;
             baseDef += 1;
             Def += 1;
         }
+        chance = Random.Range(0, 100); 
         if (chance < l_res)
         {
+            ret[5] = true;
             baseRes += 1;
             Res += 1;
         }
+        chance = Random.Range(0, 100);
         if (chance < l_stb)
         {
+            ret[6] = true;
             baseStb += 1;
             Stb += 1;
         }
 
         //PERFORMANCE
+        chance = Random.Range(0, 100);
         if (chance < l_skl)
         {
+            ret[7] = true;
             baseSkl += 1;
             Skl += 1;
         }
+        chance = Random.Range(0, 100);
         if (chance < l_spd)
         {
+            ret[8] = true;
             baseSpd += 1;
             Spd += 1;
         }
+        chance = Random.Range(0, 100);
         if (chance < l_lck)
         {
+            ret[9] = true;
             baseLck += 1;
             Lck += 1;
         }
+
+        return ret;
     }
 
     /***MISCELLANEOUS***/

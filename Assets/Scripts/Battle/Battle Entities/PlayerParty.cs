@@ -62,7 +62,7 @@ public class PlayerParty : Party {
 
                     if (tileProspect != null)
                     {
-                        activeMember.SetTileProspect(tileProspect);
+                        activeMember.pc.SetTileProspect(tileProspect);
 
                         CalculateAction(); //Battle Projection calculation;
                         bm.SetState("PLAYER_PROJECTION");

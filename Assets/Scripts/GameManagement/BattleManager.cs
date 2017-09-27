@@ -31,7 +31,7 @@ public class BattleManager : Manager {
     private enum STATE
     {
         BATTLE_PREP, NORMAL, ANIMATING, SPECIAL_ANIMATING,
-        COMMANDING, SELECTION, SPECIAL_SELECTION, TILE_SELECTION, PLAYER_PROJECTION,
+        COMMANDING, SELECTION, SPECIAL_SELECTION, TILE_SELECTION, PLAYER_PROJECTION, LEVEL_UP,
         ENEMY_PROJECTION, PAUSED, GAME_OVER
     }
     private STATE state = STATE.BATTLE_PREP;
@@ -220,7 +220,7 @@ public class BattleManager : Manager {
                 break;
 
             case "MOVE":
-                user.Move();
+                user.pc.Move();
                 break;
         }
     }
@@ -264,7 +264,10 @@ public class BattleManager : Manager {
                 break;
 
             case "TILE_SELECTION": state = STATE.TILE_SELECTION;
-                break; 
+                break;
+
+            case "LEVEL_UP": state = STATE.LEVEL_UP;
+                break;
 
             case "PLAYER_PROJECTION": state = STATE.PLAYER_PROJECTION;
                 break;
