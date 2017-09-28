@@ -97,6 +97,7 @@ public class AnimatedProjectile : MonoBehaviour {
         SetRotation();
     }
 
+    //Angle towards target
     private void SetRotation()
     {
         Vector3 pos = transform.position;

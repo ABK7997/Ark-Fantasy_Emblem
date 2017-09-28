@@ -206,6 +206,7 @@ MonoBehaviour:
   spells:
   - {fileID: 114493202515641324, guid: 51b0639c9bd28184d97a86d76c67a084, type: 2}
   - {fileID: 114889994196545244, guid: 1d993d78ef6f2f4479625ab4a71c7514, type: 2}
+  - {fileID: 114798406714063870, guid: f83c3f42863024c42b16784ec2568476, type: 2}
   techs: []
   status: 0
   overhead: {fileID: 223919342014007248}

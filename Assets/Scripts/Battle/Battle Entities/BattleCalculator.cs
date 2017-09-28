@@ -283,7 +283,7 @@ public class BattleCalculator {
         float multiplier = 1f;
         if (landedCrit) multiplier = 1.5f;
 
-        target.Hp -= (int)(magicDmg * multiplier);
+        else target.Hp -= (int)(magicDmg * multiplier);
     }
 
     public void RepairSpecial()
@@ -301,6 +301,16 @@ public class BattleCalculator {
         string eff = activeSpecial.effect + "";
 
         target.ec.SetEffect(eff, activeSpecial.turnTimer);
+    }
+
+    private void HitAll(int dmg)
+    {
+        List<Entity> targets = target.GetParty().GetParty();
+
+        foreach (Entity e in targets)
+        {
+            e.Hp -= dmg;
+        }
     }
 
     /***EFFECTS***/
