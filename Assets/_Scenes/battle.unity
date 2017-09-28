@@ -319,7 +319,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -983,7 +983,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1073,11 +1073,11 @@ RectTransform:
   m_Father: {fileID: 919402729}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 125, y: 0}
-  m_Pivot: {x: 0, y: 0.5}
+  m_SizeDelta: {x: 125, y: 300}
+  m_Pivot: {x: 0, y: 1}
 --- !u!114 &145980259
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1668,35 +1668,8 @@ MonoBehaviour:
 
     status
 
-    status
 
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status'
+'
 --- !u!222 &203637124
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2388,7 +2361,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3485,7 +3458,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4786,7 +4759,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5509,7 +5482,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5599,11 +5572,11 @@ RectTransform:
   m_Father: {fileID: 919402729}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 0}
+  m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 125, y: 0}
-  m_Pivot: {x: 1, y: 0.5}
+  m_SizeDelta: {x: 125, y: 300}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &1112077433
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -7597,7 +7570,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8231,7 +8204,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -8786,7 +8759,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9268,7 +9241,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -9595,7 +9568,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1811452820}
-        m_MethodName: Special
+        m_MethodName: SetSpecial
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -10115,36 +10088,6 @@ MonoBehaviour:
 
     s
 
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
-
-    status
 
     status
 

@@ -187,63 +187,8 @@ public abstract class Party : MonoBehaviour {
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
     protected void CalculateAction()
     {
-        Special special = activeMember.GetSpecial();
-        BattleCalculator bc = activeMember.bc;
-
         activeMember.bc.SetTemporaryStats(target);
-
-        switch (command)
-        {
-            //Physical Attack
-            case COMMAND.ATTACK:
-                ui.SetProjectionInfo(isPlayer, bc.PhysicalDmg, bc.Hit, bc.Crit, "Physical Attack");
-                break;
-            
-            //Magic Spell
-            case COMMAND.MAGIC:
-                switch (special.type)
-                {
-                    case Special.TYPE.ATTACK:
-
-                        if (special.hitAll) ui.SetProjectionInfo(isPlayer, (int)(bc.MagicDmg * special.basePwr), special.description);
-                        else ui.SetProjectionInfo(isPlayer, bc.MagicDmg, bc.Hit, bc.Crit, special.description); break;
-
-                    case Special.TYPE.HEAL:
-                        ui.SetProjectionInfo(isPlayer, -bc.MagicDmg, bc.Crit, special.description); break;
-                }
-                
-                break;
-            
-            //Droid Tech
-            case COMMAND.TECH:
-                switch (special.type)
-                {
-                    case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, bc.TechDmg, bc.Hit, bc.Crit, special.description); break;
-
-                    case Special.TYPE.REPAIR:
-                        ui.SetProjectionInfo(isPlayer, -bc.TechDmg, bc.Crit, special.description); break;
-                }
-
-                break;
-
-            //Miscellaneous Personal Skill
-            case COMMAND.SKILL:
-                switch (special.type)
-                {
-                    case Special.TYPE.EFFECT:
-                        ui.SetProjectionInfo(isPlayer, special.effect + "", bc.Hit, special.description); break;
-                }
-
-                break;
-
-            //Moving to a new tile
-            case COMMAND.MOVE:
-                ui.SetProjectionInfo(isPlayer, tileProspect);
-                break;
-
-            default: break;
-        }
+        ui.SetProjectionInfo(isPlayer, command + "", activeMember);
     }
 
     /***COMMANDS***/
@@ -433,6 +378,11 @@ public abstract class Party : MonoBehaviour {
         ui.SetLevelUpText(text);
     }
 
+    /// <summary>
+    /// Enable/Disable the stat window of the entity the mouse is hovering over
+    /// </summary>
+    /// <param name="b"></param>
+    /// <param name="text"></param>
     public void SetStatsView(bool b, string text)
     {
         statsView.gameObject.SetActive(b);

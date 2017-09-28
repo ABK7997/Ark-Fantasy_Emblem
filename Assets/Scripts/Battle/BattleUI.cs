@@ -169,100 +169,153 @@ public class BattleUI : MonoBehaviour {
     }
 
     /// <summary>
-    /// Physical attack projection. Pauses game and display BP window.
-    /// </summary>
-    /// <param name="atk">Amount of damage that might be done</param>
-    /// <param name="hit">% chance to hit target</param>
-    /// <param name="crit">% chance to land a critical on target</param>
-    public void SetProjectionInfo(bool isPlayer, int atk, int hit, int crit, string description)
-    {
-        string projectionText =
-            "ATK: " + atk + "\n" +
-            "HIT: " + hit + "%\n" +
-            "CRIT: " + crit + "%" + "\n\n" +
-            description;
-
-        if (isPlayer) SetProjection(true, projectionText);
-        else SetEnemyProjection(true, projectionText);
-            
-    }
-
-    /// <summary>
     /// Enable battle projection according to move type
     /// </summary>
     /// <param name="isPlayer">If the entity making a move is the player or not</param>
     /// <param name="special">The active special, if one is being used (can be null)</param>
     /// <param name="user">The entity making the move</param>
-    public void SetProjectionInfo(bool isPlayer, Special special, Entity user)
+    public void SetProjectionInfo(bool isPlayer, string command, Entity user)
     {
+        Special special = user.GetSpecial();
 
+        string text = "";
+
+        //Physical Attack
+        if (command == "ATTACK") text = SingleTargetProjection(user, command);
+
+        //Special - Spell, Tech, or Skill
+        else if (special != null)
+        {
+            //Multi-target
+            if (special.hitAll && special.type == Special.TYPE.ATTACK) text = AttackAllProjection(user, command);
+
+            //Healing (single and multiple)
+            else if (special.type == Special.TYPE.HEAL || special.type == Special.TYPE.REPAIR)
+            {
+                text = HealProjection(user, command);
+            }
+
+            //Effects and Skills
+            else if (special.type == Special.TYPE.EFFECT) text = EffectProjection(user);
+
+            //Single-target Offensive
+            else text = SingleTargetProjection(user, command);
+        }
+
+        //Move
+        else
+        {
+            text = MoveProjection(user);
+            moving = true;
+        }
+
+        //Enable Projection Window UI
+        if (isPlayer) SetProjection(true, text);
+        else SetEnemyProjection(true, text);
     }
 
-    /// <summary>
-    /// Projection method for healing or repair spells/techs
-    /// </summary>
-    /// <param name="effect">Amount that the target will be healed for</param>
-    public void SetProjectionInfo(bool isPlayer, int effect, int crit, string description)
+    //Single-Target Offensive Attack
+    private string SingleTargetProjection(Entity user, string command)
     {
-        string projectionText =
-            "HP Up: " + effect +
-            "\nBonus: " + crit + "%" + "\n\n" +
+        BattleCalculator bc = user.bc;
+
+        string ret = "";
+        string description;
+
+        //Set Description
+        if (user.GetSpecial() != null) description = user.GetSpecial().description;
+        else description = "Physical Attack"; 
+
+        //Set Power
+        int damage = 0;
+
+        switch (command)
+        {
+            case "ATTACK": damage = bc.PhysicalDmg; break;
+            case "MAGIC": damage = bc.MagicDmg; break;
+            case "TECH": damage = bc.TechDmg; break;
+        }
+
+        ret =
+            "PWR: " + damage + "\n" +
+            "HIT: " + bc.Hit + "%\n" +
+            "CRIT: " + bc.Crit + "%" + "\n\n" +
             description;
 
-        if (isPlayer) SetProjection(true, projectionText);
-        else SetEnemyProjection(true, projectionText);
+        return ret;
     }
 
-    /// <summary>
-    /// Projection method for status effect actions
-    /// </summary>
-    /// <param name="effect">The status effect in question</param>
-    /// <param name="hit">The chance the effect will actually be instilled upon the target</param>
-    public void SetProjectionInfo(bool isPlayer, string effect, int hit, string description)
+    //Multi-Target Offensive Attack
+    private string AttackAllProjection(Entity user, string command)
     {
-        string projectionText =
-            effect + "\n" +
-            "Success: " + hit + "%" + "\n\n" +
-            description;
+        BattleCalculator bc = user.bc;
 
-        if (isPlayer) SetProjection(true, projectionText);
-        else SetEnemyProjection(true, projectionText);
+        string ret = "";
+
+        //Set Power
+        int damage = 0;
+
+        switch (command)
+        {
+            case "MAGIC": damage = (int)(bc.MagicDmg * user.GetSpecial().basePwr); break;
+            case "TECH": damage = (int)(bc.TechDmg * user.GetSpecial().basePwr); break;
+        }
+
+        ret =
+            "BASE PWR: ~" + damage + "\n\n" +
+            "Damage and hit chance will vary from target to target";
+
+        return ret;
     }
 
-    /// <summary>
-    /// Projection method for moving to a new tile
-    /// </summary>
-    /// <param name="isPlayer">True - the player is making this move; False - it's the enemy's move</param>
-    /// <param name="newTile">The new tile to be moving to</param>
-    public void SetProjectionInfo(bool isPlayer, Tile newTile)
+    //Multi-Target Healing/Repairing
+    private string HealProjection(Entity user, string command)
     {
-        string projectionText =
-            "Move To " + newTile.tileName + "\n\nTerrain Effects:";
+        BattleCalculator bc = user.bc;
 
-        if (newTile.effect1 != Tile.EFFECT.NONE) projectionText += "\n" + newTile.effect1;
-        if (newTile.effect2 != Tile.EFFECT.NONE) projectionText += "\n" + newTile.effect2;
+        string ret = "";
+        int damage = 0;
 
-        if (isPlayer) SetProjection(true, projectionText);
-        else SetEnemyProjection(true, projectionText);
+        switch (command)
+        {
+            case "MAGIC": damage = -bc.MagicDmg; break;
+            case "TECH": damage = -bc.TechDmg; break;
+        }
 
-        moving = true;
+        ret =
+            "PWR: " + damage + "\n" +
+            "BONUS: " + bc.Crit + "%" + "\n\n" +
+            user.GetSpecial().description;
+
+        return ret;
     }
 
-    /// <summary>
-    /// Projection method for multi-target attacks
-    /// </summary>
-    /// <param name="isPlayer"></param>
-    /// <param name="atk"></param>
-    /// <param name="description"></param>
-    public void SetProjectionInfo(bool isPlayer, int atk, string description)
+    //Effect
+    private string EffectProjection(Entity user)
     {
-        string projectionText =
-            "Base ATK: " + atk + "\n" +
-            description + "\n" +
-            "Hit chance and damage vary";
+        string ret = "";
 
-        if (isPlayer) SetProjection(true, projectionText);
-        else SetEnemyProjection(true, projectionText);
+        ret =
+            user.GetSpecial().effect + "\n" +
+            "Success: " + user.bc.Hit + "%" + "\n\n" +
+            user.GetSpecial().description;
+
+        return ret;
+    }
+
+    //Move to Tile
+    private string MoveProjection(Entity user)
+    {
+        string ret;
+        Tile prospect = user.pc.tileProspect;
+
+        ret =
+            "Move To " + prospect.tileName + "\n\nTerrain Effects:";
+
+        if (prospect.effect1 != Tile.EFFECT.NONE) ret += "\n" + prospect.effect1;
+        if (prospect.effect2 != Tile.EFFECT.NONE) ret += "\n" + prospect.effect2;
+
+        return ret;
     }
 
     /// <summary>
