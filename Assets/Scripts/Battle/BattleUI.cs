@@ -188,6 +188,17 @@ public class BattleUI : MonoBehaviour {
     }
 
     /// <summary>
+    /// Enable battle projection according to move type
+    /// </summary>
+    /// <param name="isPlayer">If the entity making a move is the player or not</param>
+    /// <param name="special">The active special, if one is being used (can be null)</param>
+    /// <param name="user">The entity making the move</param>
+    public void SetProjectionInfo(bool isPlayer, Special special, Entity user)
+    {
+
+    }
+
+    /// <summary>
     /// Projection method for healing or repair spells/techs
     /// </summary>
     /// <param name="effect">Amount that the target will be healed for</param>
@@ -235,6 +246,23 @@ public class BattleUI : MonoBehaviour {
         else SetEnemyProjection(true, projectionText);
 
         moving = true;
+    }
+
+    /// <summary>
+    /// Projection method for multi-target attacks
+    /// </summary>
+    /// <param name="isPlayer"></param>
+    /// <param name="atk"></param>
+    /// <param name="description"></param>
+    public void SetProjectionInfo(bool isPlayer, int atk, string description)
+    {
+        string projectionText =
+            "Base ATK: " + atk + "\n" +
+            description + "\n" +
+            "Hit chance and damage vary";
+
+        if (isPlayer) SetProjection(true, projectionText);
+        else SetEnemyProjection(true, projectionText);
     }
 
     /// <summary>

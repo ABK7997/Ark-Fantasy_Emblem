@@ -134,8 +134,8 @@ public class Special : MonoBehaviour {
     /// <summary>
     /// Create special as an animating game object
     /// </summary>
-    /// <param name="user">The entity casting the Special</param>
-    /// <param name="target">The target of the Special</param>
+    /// <param name="user">The entity casting the SetSpecial</param>
+    /// <param name="target">The target of the SetSpecial</param>
     public void StartAnimation(Entity user, Entity target, bool hit)
     {
         AnimatedProjectile p = Instantiate(projectile, user.transform.position, Quaternion.identity);

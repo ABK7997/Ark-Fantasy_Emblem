@@ -256,8 +256,20 @@ public class BattleCalculator {
     }
 
     /***SPECIAL TYPES EFFECT***/
+
+    /// <summary>
+    /// Action of an offensive special
+    /// </summary>
     public void OffensiveSpecial()
     {
+        //Multi-Target attack
+        if (activeSpecial.hitAll)
+        {
+            AttackAll();
+            return;
+        }
+
+        //Single Target
         if (!landedHit) return;
 
         float multiplier = 1f;
@@ -276,6 +288,9 @@ public class BattleCalculator {
         }
     }
 
+    /// <summary>
+    /// Action of a healing spell
+    /// </summary>
     public void HealingSpecial()
     {
         landedHit = true; //Healing can't miss
@@ -283,9 +298,13 @@ public class BattleCalculator {
         float multiplier = 1f;
         if (landedCrit) multiplier = 1.5f;
 
-        else target.Hp -= (int)(magicDmg * multiplier);
+        if (activeSpecial.hitAll) HealAll((int)(magicDmg * multiplier)); //Heal all
+        else target.Hp -= (int)(magicDmg * multiplier); //Heal one
     }
 
+    /// <summary>
+    /// Action of a repairing tech
+    /// </summary>
     public void RepairSpecial()
     {
         landedHit = true; //Repairing can't miss
@@ -293,9 +312,13 @@ public class BattleCalculator {
         float multiplier = 1f;
         if (landedCrit) multiplier = 1.5f;
 
-        target.Hp -= (int)(techDmg * multiplier);
+        if (activeSpecial.hitAll) HealAll((int)(techDmg * multiplier)); //Heal all
+        else target.Hp -= (int)(techDmg * multiplier); //Heal one
     }
 
+    /// <summary>
+    /// Action of a special with some associated status effect
+    /// </summary>
     public void EffectSpecial()
     {
         string eff = activeSpecial.effect + "";
@@ -303,13 +326,63 @@ public class BattleCalculator {
         target.ec.SetEffect(eff, activeSpecial.turnTimer);
     }
 
-    private void HitAll(int dmg)
+    //Heal all members of a party
+    private void HealAll(int dmg)
     {
-        List<Entity> targets = target.GetParty().GetParty();
+        List<Entity> targets = user.GetParty().GetParty();
 
         foreach (Entity e in targets)
         {
-            e.Hp -= dmg;
+            //Heal
+            if (activeSpecial.type == Special.TYPE.HEAL)
+            {
+                //Not a Droid, Droid-Magic, or the caster
+                if (e.type != Entity.TYPE.DROID && e.type != Entity.TYPE.MAGIC_DROID && e.Name != user.Name)
+                {
+                    e.Hp -= dmg;
+                }
+            }
+
+            //Repair
+            else
+            {
+                //Is a Droid, and not the caster
+                if (e.IsDroid() && e.Name != user.Name)
+                {
+                    e.Hp -= dmg;
+                }
+            }    
+
+        }
+    }
+
+    //Attack all members of an enemy party
+    private void AttackAll()
+    {
+        List<Entity> targets = user.GetParty().GetEnemyByIndex(0).GetParty().GetParty(); //Get enemy party
+
+        foreach (Entity e in targets)
+        {
+            SetTemporaryStats(e);
+
+            if (!landedHit) continue;
+
+            float multiplier = 1f;
+            if (landedCrit) multiplier = 2.25f;
+
+            switch (activeSpecial.classification)
+            {
+                case Special.CLASS.SKILL: break; // ???
+
+                case Special.CLASS.SPELL: target.Hp -= (int)(magicDmg * multiplier); break;
+
+                case Special.CLASS.TECH: target.Hp -= (int)(techDmg * multiplier); break;
+            }
+
+            if (e.Hp == 0)
+            {
+                user.Exp += target.expGain; //Gain EXP
+            }
         }
     }
 

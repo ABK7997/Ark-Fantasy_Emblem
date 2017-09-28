@@ -634,7 +634,6 @@ public class Entity : MonoBehaviour {
 
         if (Exp > 100)
         {
-            Debug.Log(Exp);
 
             Exp -= 100;
 

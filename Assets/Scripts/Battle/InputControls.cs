@@ -102,6 +102,7 @@ public class InputControls : MonoBehaviour {
 
                 bm.CancelAction();
 
+                //Moving to tile
                 if (BattleUI.moving)
                 {
                     BattleUI.moving = false;
@@ -109,6 +110,17 @@ public class InputControls : MonoBehaviour {
                     break;
                 }
 
+                //Hit-All special
+                if (pParty.GetActiveMember().GetSpecial() != null)
+                {
+                    if (pParty.GetActiveMember().GetSpecial().hitAll)
+                    {
+                        bm.SetState("SPECIAL_SELECTION");
+                        break;
+                    }
+                }
+                
+                //Other
                 pParty.CancelTarget();
                 
                 if (type == "EFFECT") bm.SetState("SPECIAL_SELECTION");
@@ -170,20 +182,20 @@ public class InputControls : MonoBehaviour {
         else if (bm.GetState() == "PAUSED") bm.SetState("NORMAL");
     }
 
-    //Special Selection Hotkeys
+    //SetSpecial Selection Hotkeys
     private void SpecialSelectHotkeys()
     {
-        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) pParty.Special(0);
-        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) pParty.Special(1);
-        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.Special(2);
-        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.Special(3);
-        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.Special(4);
-        if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6)) pParty.Special(5);
-        if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) pParty.Special(6);
-        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8)) pParty.Special(7);
-        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9)) pParty.Special(8);
-        if (Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.KeypadDivide)) pParty.Special(9);
-        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMultiply)) pParty.Special(10);
+        if (Input.GetKeyDown(KeyCode.Keypad1) || Input.GetKeyDown(KeyCode.Alpha1)) pParty.SetSpecial(0);
+        if (Input.GetKeyDown(KeyCode.Keypad2) || Input.GetKeyDown(KeyCode.Alpha2)) pParty.SetSpecial(1);
+        if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.SetSpecial(2);
+        if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.SetSpecial(3);
+        if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.SetSpecial(4);
+        if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6)) pParty.SetSpecial(5);
+        if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) pParty.SetSpecial(6);
+        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8)) pParty.SetSpecial(7);
+        if (Input.GetKeyDown(KeyCode.Keypad9) || Input.GetKeyDown(KeyCode.Alpha9)) pParty.SetSpecial(8);
+        if (Input.GetKeyDown(KeyCode.Keypad0) || Input.GetKeyDown(KeyCode.KeypadDivide)) pParty.SetSpecial(9);
+        if (Input.GetKeyDown(KeyCode.Minus) || Input.GetKeyDown(KeyCode.KeypadMultiply)) pParty.SetSpecial(10);
     }
 
     //Player Selection Hotkeys

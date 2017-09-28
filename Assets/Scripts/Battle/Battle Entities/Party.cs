@@ -187,51 +187,57 @@ public abstract class Party : MonoBehaviour {
     /// <param name="type"> the kind of action to be performed, such as ATTACK or MAGIC </param>
     protected void CalculateAction()
     {
+        Special special = activeMember.GetSpecial();
+        BattleCalculator bc = activeMember.bc;
+
         activeMember.bc.SetTemporaryStats(target);
-
-        string info = "";
-
-        if (activeMember.GetSpecial() != null) info = activeMember.GetSpecial().description;
 
         switch (command)
         {
+            //Physical Attack
             case COMMAND.ATTACK:
-                ui.SetProjectionInfo(isPlayer, activeMember.bc.PhysicalDmg, activeMember.bc.Hit, activeMember.bc.Crit, "Physical Attack");
+                ui.SetProjectionInfo(isPlayer, bc.PhysicalDmg, bc.Hit, bc.Crit, "Physical Attack");
                 break;
-
+            
+            //Magic Spell
             case COMMAND.MAGIC:
-                switch (activeMember.GetSpecial().type)
+                switch (special.type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.bc.MagicDmg, activeMember.bc.Hit, activeMember.bc.Crit, info); break;
+
+                        if (special.hitAll) ui.SetProjectionInfo(isPlayer, (int)(bc.MagicDmg * special.basePwr), special.description);
+                        else ui.SetProjectionInfo(isPlayer, bc.MagicDmg, bc.Hit, bc.Crit, special.description); break;
 
                     case Special.TYPE.HEAL:
-                        ui.SetProjectionInfo(isPlayer, -activeMember.bc.MagicDmg, activeMember.bc.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, -bc.MagicDmg, bc.Crit, special.description); break;
                 }
                 
                 break;
-
+            
+            //Droid Tech
             case COMMAND.TECH:
-                switch (activeMember.GetSpecial().type)
+                switch (special.type)
                 {
                     case Special.TYPE.ATTACK:
-                        ui.SetProjectionInfo(isPlayer, activeMember.bc.TechDmg, activeMember.bc.Hit, activeMember.bc.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, bc.TechDmg, bc.Hit, bc.Crit, special.description); break;
 
                     case Special.TYPE.REPAIR:
-                        ui.SetProjectionInfo(isPlayer, - activeMember.bc.TechDmg, activeMember.bc.Crit, info); break;
+                        ui.SetProjectionInfo(isPlayer, -bc.TechDmg, bc.Crit, special.description); break;
                 }
 
                 break;
 
+            //Miscellaneous Personal Skill
             case COMMAND.SKILL:
-                switch (activeMember.GetSpecial().type)
+                switch (special.type)
                 {
                     case Special.TYPE.EFFECT:
-                        ui.SetProjectionInfo(isPlayer, activeMember.GetSpecial().effect + "", activeMember.bc.Hit, info); break;
+                        ui.SetProjectionInfo(isPlayer, special.effect + "", bc.Hit, special.description); break;
                 }
 
                 break;
 
+            //Moving to a new tile
             case COMMAND.MOVE:
                 ui.SetProjectionInfo(isPlayer, tileProspect);
                 break;
@@ -382,6 +388,11 @@ public abstract class Party : MonoBehaviour {
     public Entity GetActiveMember()
     {
         return activeMember;
+    }
+
+    public Entity GetEnemyByIndex(int index)
+    {
+        return oppositeParty[index];
     }
 
     /// <summary>

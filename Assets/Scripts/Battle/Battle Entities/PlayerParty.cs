@@ -136,11 +136,9 @@ public class PlayerParty : Party {
 
             case "TECH":
                 if (activeMember.techs.Count == 0 || activeMember.TechTimer > 0) break; //PC is not a Droid
-
                 bm.SetState("SPECIAL_SELECTION");
                 command = COMMAND.TECH;
                 ss.SetSpecials(activeMember.techs);
-
                 break;
 
             case "SKILL":
@@ -162,7 +160,7 @@ public class PlayerParty : Party {
     /// <summary>
     /// Active party member is about to use a special ability
     /// </summary>
-    public void Special(int specialIndex)
+    public void SetSpecial(int specialIndex)
     {
         switch (command)
         {
@@ -195,6 +193,19 @@ public class PlayerParty : Party {
             ExecuteAction();
         }
 
+        //Hit-All SetSpecial
+        else if (activeMember.GetSpecial().hitAll)
+        {
+            if (activeMember.GetSpecial().type != Special.TYPE.ATTACK) target = activeMember;
+            else target = oppositeParty[0];
+
+            CalculateAction(); //Battle Projection calculation
+            bm.SetState("PLAYER_PROJECTION");
+
+            ExecuteAction();
+        }
+
+        //Other
         else bm.SetState("SELECTION");
     }
 

@@ -73,7 +73,7 @@ public class AnimatedProjectile : MonoBehaviour {
         }
 
         //Target is same as user
-        if (Vector3.Distance(u.transform.position, t.transform.position) == 0) {
+        if (Vector3.Distance(u.transform.position, t.transform.position) == 0 || spc.hitAll) {
             destination = new Vector3(start.x + 2.5f, start.y, 0);
 
             xSpeed = ((destination.x - start.x) * Time.deltaTime) / animationTime;
