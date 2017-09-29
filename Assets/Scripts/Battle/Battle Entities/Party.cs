@@ -188,6 +188,9 @@ public abstract class Party : MonoBehaviour {
     protected void CalculateAction()
     {
         activeMember.bc.SetTemporaryStats(target);
+
+        if (command == COMMAND.FLEE) activeMember.bc.CalculateFleeChance();
+
         ui.SetProjectionInfo(isPlayer, command + "", activeMember);
     }
 

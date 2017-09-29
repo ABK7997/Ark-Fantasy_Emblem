@@ -139,6 +139,7 @@ public class PositionCalculator {
         SetOriginalPosition(user.transform.position.x, user.transform.position.y);
 
         user.ResetTimer();
+        user.SetDefending(false);
     }
 
     /// <summary>

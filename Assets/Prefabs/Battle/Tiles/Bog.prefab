@@ -9,32 +9,32 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1640452793071096}
+  m_RootGameObject: {fileID: 1963578989590942}
   m_IsPrefabParent: 1
---- !u!1 &1640452793071096
+--- !u!1 &1963578989590942
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4959013328981632}
-  - component: {fileID: 212878730464484494}
-  - component: {fileID: 114396236798588246}
-  - component: {fileID: 61053082881383742}
+  - component: {fileID: 4289521819647890}
+  - component: {fileID: 212877195272786918}
+  - component: {fileID: 114541826842143142}
+  - component: {fileID: 61090591350511384}
   m_Layer: 0
-  m_Name: Fort
+  m_Name: Bog
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4959013328981632
+--- !u!4 &4289521819647890
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640452793071096}
+  m_GameObject: {fileID: 1963578989590942}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 1}
@@ -42,12 +42,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &61053082881383742
+--- !u!61 &61090591350511384
 BoxCollider2D:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640452793071096}
+  m_GameObject: {fileID: 1963578989590942}
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
@@ -67,26 +67,26 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 6.5, y: 6.5}
   m_EdgeRadius: 0
---- !u!114 &114396236798588246
+--- !u!114 &114541826842143142
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640452793071096}
+  m_GameObject: {fileID: 1963578989590942}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a111fd04c7234a94c87fccca7730f65f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tileName: Fort
-  effect1: 8
-  effect2: 5
---- !u!212 &212878730464484494
+  tileName: Bog
+  effect1: 9
+  effect2: 3
+--- !u!212 &212877195272786918
 SpriteRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1640452793071096}
+  m_GameObject: {fileID: 1963578989590942}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -113,8 +113,8 @@ SpriteRenderer:
   m_SortingLayerID: 203269367
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300012, guid: eac3dfce8b0f9674cb4a18c3d2a21512, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300016, guid: eac3dfce8b0f9674cb4a18c3d2a21512, type: 3}
+  m_Color: {r: 0.7058823, g: 0.5657439, b: 0.5657439, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

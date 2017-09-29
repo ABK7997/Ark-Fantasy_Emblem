@@ -32,7 +32,8 @@ public class BattleManager : Manager {
     {
         BATTLE_PREP, NORMAL, ANIMATING, SPECIAL_ANIMATING,
         COMMANDING, SELECTION, SPECIAL_SELECTION, TILE_SELECTION, PLAYER_PROJECTION, LEVEL_UP,
-        ENEMY_PROJECTION, PAUSED, GAME_OVER, VICTORY
+        ENEMY_PROJECTION, PAUSED, GAME_OVER, VICTORY,
+        FLEE_REPORT
     }
     private STATE state = STATE.BATTLE_PREP;
 
@@ -106,7 +107,10 @@ public class BattleManager : Manager {
     {
         List<Entity> partyMembers = pParty.GetLivingParty();
 
-        if (partyMembers.Count == 0) SceneManager.LoadScene("game_over");
+        if (partyMembers.Count == 0)
+        {
+            SetState("GAME_OVER");
+        }
     }
 
     /// <summary>
@@ -136,6 +140,15 @@ public class BattleManager : Manager {
     {
         ow.activeEnemies.Remove(ea);
         Destroy(ea.gameObject);
+        ow.Activate(true);
+        SceneManager.LoadScene("overworld");
+    }
+
+    /// <summary>
+    /// Load in overworld without deleting enemy party
+    /// </summary>
+    public void Flee()
+    {
         ow.Activate(true);
         SceneManager.LoadScene("overworld");
     }
@@ -174,7 +187,7 @@ public class BattleManager : Manager {
     {
         while (actions.Count != 0)
         {
-            float animationTime;
+            float animationTime = 0f;
 
             switch (actions.Peek().type)
             {
@@ -185,11 +198,13 @@ public class BattleManager : Manager {
 
                 case "MAGIC": case "TECH": case "SKILL":
                     SetState("SPECIAL_ANIMATING");
-                    animationTime = 0f;
                     break;
 
                 case "MOVE":
                     animationTime = 0.5f;
+                    break;
+
+                case "FLEE":
                     break;
 
                 default: animationTime = 1.5f; break;
@@ -222,6 +237,8 @@ public class BattleManager : Manager {
         string type = currentOrder.type;
         Entity user = currentOrder.user;
 
+        user.SetStatus("NORMAL");
+
         //Perform action
         switch (type)
         {
@@ -235,6 +252,14 @@ public class BattleManager : Manager {
 
             case "MOVE":
                 user.pc.Move();
+                break;
+
+            case "FLEE":
+                //Fled successfully
+                if (user.bc.fled) BattleUI.fleeSuccess = true;
+                user.ResetTimer();
+                SetState("FLEE_REPORT");
+
                 break;
         }
     }
@@ -293,6 +318,12 @@ public class BattleManager : Manager {
                 break;
 
             case "VICTORY": state = STATE.VICTORY;
+                break;
+
+            case "GAME_OVER": state = STATE.GAME_OVER;
+                break;
+
+            case "FLEE_REPORT": state = STATE.FLEE_REPORT;
                 break;
 
             default: Debug.Log("Not an existing state: " + newState); break;

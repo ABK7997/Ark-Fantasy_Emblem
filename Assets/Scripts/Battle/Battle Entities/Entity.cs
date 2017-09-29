@@ -73,7 +73,7 @@ public class Entity : MonoBehaviour {
     [HideInInspector]
     public enum STATUS
     {
-        NORMAL, ILL, DEFENDING, DEAD
+        NORMAL, ILL, DEFENDING, DEAD, CRITICAL
     }
 
     /// <summary> Status variable </summary>
@@ -110,18 +110,28 @@ public class Entity : MonoBehaviour {
     //LEVELING UP
     private int _exp = 0;
 
+    /// <summary>Percentage chance of leveling up HP </summary>
     public int l_hp;
 
+    /// <summary>Percentage chance of leveling up ATK </summary>
     public int l_atk;
+    /// <summary>Percentage chance of leveling up MAG </summary>
     public int l_mag;
+    /// <summary>Percentage chance of leveling up VLT </summary>
     public int l_vlt;
 
+    /// <summary>Percentage chance of leveling up DEF</summary>
     public int l_def;
+    /// <summary>Percentage chance of leveling up RES</summary>
     public int l_res;
+    /// <summary>Percentage chance of leveling up STB</summary>
     public int l_stb;
 
+    /// <summary>Percentage chance of leveling up SKL</summary>
     public int l_skl;
+    /// <summary>Percentage chance of leveling up LCK</summary>
     public int l_lck;
+    /// <summary>Percentage chance of leveling up SPD</summary>
     public int l_spd;
 
     //Modifers
@@ -138,7 +148,7 @@ public class Entity : MonoBehaviour {
     //Sets base stats, components, and initial display
     protected virtual void Start()
     {
-        ec = new EffectCalculator(this, bc);
+        ec = new EffectCalculator(this, bc, pc);
         bc = new BattleCalculator(this, ec);
 
         bc.ResetStats();
@@ -155,9 +165,30 @@ public class Entity : MonoBehaviour {
 
         pc.ResetPosition();
         CheckLevel();
+        CheckLowHealth();
 
-        if (moveTimer < 100) moveTimer += Time.deltaTime + (Spd / (25f) * speedMultiplier);
-        else Ready = true;
+        if (moveTimer < 100)
+        {
+            float addTime = Time.deltaTime + (Spd / (25f) * speedMultiplier); //Calculate speed gague incremental increase
+
+            if (pc.GetTileEffect1() == Tile.EFFECT.STUCK) addTime /= 2; //Slow if standing on an impeding tile
+            if (pc.GetTileEffect2() == Tile.EFFECT.STUCK) addTime /= 2;
+
+            moveTimer += addTime;
+
+            if (moveTimer > 100) moveTimer = 100;
+        }
+        else if (moveTimer == 100)
+        {
+            Ready = true;
+
+            //Roll status effects
+            ec.StatusEffectsTurn();
+            ec.TileEffectsTurn(pc.tile.effect1);
+            ec.TileEffectsTurn(pc.tile.effect2);
+
+            moveTimer = 100.1f; //Prevent this block from being executed again before turn is used
+        }
     }
 
     /***STAT METHODS***/
@@ -225,7 +256,11 @@ public class Entity : MonoBehaviour {
         totalDamage = bc.physicalDmg;
         anim.SetTrigger("ATTACK");
 
-        if (bc.landedCrit) totalDamage = (int)(totalDamage * 2.25); //Crit damage
+        if (bc.landedCrit)
+        {
+            totalDamage = (int)(totalDamage * 2.25); //Crit damage
+            bc.target.Critical();
+        }
         if (bc.landedHit)
         {
             bc.target.Hp -= totalDamage; //Hit
@@ -283,6 +318,56 @@ public class Entity : MonoBehaviour {
     {
         if (pc.IsRightOf(bc.target)) bc.target.pc.SetPosition(2f, 0f);
         else bc.target.pc.SetPosition(-2f, 0f);
+    }
+
+    /// <summary>
+    /// Start Critical Hit Animation
+    /// </summary>
+    public void Critical()
+    {
+        anim.SetTrigger("HIT");
+    }
+
+    /// <summary>
+    /// Check for critical status
+    /// </summary>
+    public void CheckLowHealth()
+    {
+        float top = Hp;
+        float bottom = maxHP;
+
+        float percent = (top/bottom) * 100;
+
+        //Critical condition
+        if (percent < 30)
+        {
+            SetStatus("CRITICAL");
+        }
+
+        //Good enough
+        else if (status != STATUS.ILL)
+        {
+            SetStatus("NORMAL");
+        }
+    }
+
+    /// <summary>
+    /// Set to normal state to animate
+    /// </summary>
+    public void SetStatus(string state)
+    {
+        switch(state)
+        {
+            case "NORMAL":
+                status = STATUS.NORMAL;
+                anim.SetBool("Ill", false);
+                break;
+
+            case "CRITICAL":
+                status = STATUS.CRITICAL;
+                anim.SetBool("Ill", true);
+                break;
+        }
     }
 
     //Defense
@@ -348,6 +433,8 @@ public class Entity : MonoBehaviour {
             //Death
             else if (Hp <= 0)
             {
+                anim.SetTrigger("HIT");
+
                 _hp = 0;
                 status = STATUS.DEAD;
                 moveTimer = 0f;
@@ -455,12 +542,7 @@ public class Entity : MonoBehaviour {
     public bool Ready
     {
         get { return ready; }
-        set {
-            ec.StatusEffectsTurn();
-            ec.TileEffectsTurn(pc.tile.effect1);
-            ec.TileEffectsTurn(pc.tile.effect2);
-            ready = value;
-        }
+        set { ready = value; }
     }
 
     /// <summary>

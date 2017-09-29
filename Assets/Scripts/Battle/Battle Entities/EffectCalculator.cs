@@ -6,15 +6,23 @@ public class EffectCalculator {
 
     Entity user;
     BattleCalculator bc;
+    PositionCalculator pc;
 
     //Effects
     private List<Effect> effects;
     public List<string> immunities;
 
-    public EffectCalculator(Entity u, BattleCalculator calc)
+    /// <summary>
+    /// An assistant class for Entity which calculates all tile and status effects
+    /// </summary>
+    /// <param name="u">The entity this caluclator belongs to</param>
+    /// <param name="calc">The Battle Calculator</param>
+    /// <param name="pos">The Position Calculator</param>
+    public EffectCalculator(Entity u, BattleCalculator calc, PositionCalculator pos)
     {
         user = u;
         bc = calc;
+        pc = pos;
 
         effects = new List<Effect>();
         immunities = new List<string>();
@@ -26,8 +34,6 @@ public class EffectCalculator {
     /// <param name="e">The effect to be checked</param>
     public void TileEffectsTurn(Tile.EFFECT e)
     {
-        user.Spd = user.baseSpd;
-
         switch (e)
         {
             //Restore HP
@@ -35,10 +41,9 @@ public class EffectCalculator {
                 user.Hp += 3;
                 break;
 
-            //Speed
-            case Tile.EFFECT.STUCK:
-                user.Spd /= 2;
-
+            //Lose HP
+            case Tile.EFFECT.HAZARD:
+                user.Hp -= 3;
                 break;
         }
     }
@@ -129,7 +134,9 @@ public class EffectCalculator {
         if (removal) effects.Remove(toRemove);
     }
 
-    //Cycle through effects and remove if expired
+    /// <summary>
+    /// Cycle through effects and remove if expired
+    /// </summary>
     public void CycleEffects()
     {
         List<string> toRemove = new List<string>();
@@ -150,7 +157,10 @@ public class EffectCalculator {
         }
     }
 
-    //List all effects in a string
+    /// <summary>
+    /// List all status and tile effects on this entity in a string
+    /// </summary>
+    /// <returns></returns>
     public string GetAllEffects()
     {
         string ret = "";
@@ -160,10 +170,21 @@ public class EffectCalculator {
             ret += e.EffectName + ": " + e.TurnTimer + "\n";
         }
 
+        if (pc.tile.effect1 != Tile.EFFECT.NONE)
+        {
+            ret += pc.tile.effect1;
+
+            if (pc.tile.effect2 != Tile.EFFECT.NONE) ret += "\n" + pc.tile.effect2;
+        }
+
         return ret;
     }
 
-    //Immunity
+    /// <summary>
+    /// Tell if this entity is immune to a certain status effect
+    /// </summary>
+    /// <param name="status">The status effect in question</param>
+    /// <returns></returns>
     public bool IsImmune(string status)
     {
         return immunities.Contains(status);

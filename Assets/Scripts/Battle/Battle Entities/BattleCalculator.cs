@@ -14,8 +14,8 @@ public class BattleCalculator {
     }
 
     //Temporary stats
-    public int hitChance, critChance, physicalDmg, magicDmg, techDmg, specialCost;
-    public bool landedHit, landedCrit;
+    public int hitChance, critChance, fleeChance, physicalDmg, magicDmg, techDmg, specialCost;
+    public bool landedHit, landedCrit, fled;
     public Entity target;
     public Special activeSpecial;
     public int techTimer = 0; //Turns which remain until a tech can be used again
@@ -255,6 +255,36 @@ public class BattleCalculator {
         return crit;
     }
 
+    /// <summary>
+    /// Calculate the odds of successfully fleeing a battle. 
+    /// Enemies with higher levels and greater numbers are harder to run from. 
+    /// High-level party members make it easier to flee. 
+    /// </summary>
+    public void CalculateFleeChance()
+    {
+        int flee = 75;
+
+        List<Entity> enemies = user.GetParty().GetEnemyByIndex(0).GetParty().GetLivingParty(); //Get enemy party
+        List<Entity> allies = user.GetParty().GetLivingParty(); //Get player party
+
+        //Enemy quantity and level decreases chances of successful fleeing
+        foreach (Entity e in enemies)
+        {
+            flee -= (e.level * 2);
+        }
+
+        foreach (Entity e in allies)
+        {
+            flee += e.level;
+        }
+
+        fleeChance = flee;
+
+        int chance = Random.Range(0, 100);
+
+        if (chance < fleeChance) fled = true;
+    }
+
     /***SPECIAL TYPES EFFECT***/
 
     /// <summary>
@@ -273,7 +303,11 @@ public class BattleCalculator {
         if (!landedHit) return;
 
         float multiplier = 1f;
-        if (landedCrit) multiplier = 2.25f;
+        if (landedCrit)
+        {
+            multiplier = 2.25f;
+            target.Critical();
+        }
 
         switch (activeSpecial.classification)
         {
@@ -329,7 +363,7 @@ public class BattleCalculator {
     //Heal all members of a party
     private void HealAll(int dmg)
     {
-        List<Entity> targets = user.GetParty().GetParty();
+        List<Entity> targets = user.GetParty().GetLivingParty();
 
         foreach (Entity e in targets)
         {
@@ -359,7 +393,7 @@ public class BattleCalculator {
     //Attack all members of an enemy party
     private void AttackAll()
     {
-        List<Entity> targets = user.GetParty().GetEnemyByIndex(0).GetParty().GetParty(); //Get enemy party
+        List<Entity> targets = user.GetParty().GetEnemyByIndex(0).GetParty().GetLivingParty(); //Get enemy party
 
         foreach (Entity e in targets)
         {
@@ -472,5 +506,14 @@ public class BattleCalculator {
     {
         get { return critChance; }
         set { critChance = value; }
+    }
+
+    /// <summary>
+    /// Chance of successfully fleeing the battle
+    /// </summary>
+    public int Flee
+    {
+        get { return fleeChance; }
+        set { fleeChance = value; }
     }
 }

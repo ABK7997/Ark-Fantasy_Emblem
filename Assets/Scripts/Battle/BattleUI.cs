@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class BattleUI : MonoBehaviour {
 
     public static bool moving = false;
+    public static bool fleeSuccess = false;
 
     /// <summary>The Battle Manager, mostly just for its GetState() method</summary>
     public BattleManager bm;
@@ -53,6 +54,21 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Image victoryWindow;
 
+    /// <summary>
+    /// Window to display after all party members are dead
+    /// </summary>
+    public Image deathWindow;
+
+    /// <summary>
+    /// Window which reports on if a flee attempt was successful or not
+    /// </summary>
+    public Image fleeReport;
+
+    /// <summary>
+    /// Text saying if fleeing was successful or not
+    /// </summary>
+    public Text fleeText;
+
     /***BATTLE PROJECTION***/
 
     /// <summary>
@@ -97,6 +113,7 @@ public class BattleUI : MonoBehaviour {
                 cancelButton.gameObject.SetActive(true);
                 pauseButton.gameObject.SetActive(true);
                 levelUpWindow.gameObject.SetActive(false);
+                fleeReport.gameObject.SetActive(false);
                 break;
 
             case "ANIMATING":
@@ -158,6 +175,7 @@ public class BattleUI : MonoBehaviour {
                 SetTargetting(false);
                 SetTargetting(false);
                 specialSelection.enabled = false;
+                commandsList.SetActive(false);
                 break;
 
             case "ENEMY_PROJECTION":
@@ -174,6 +192,19 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "GAME_OVER":
+                deathWindow.gameObject.SetActive(true);
+                break;
+
+            case "FLEE_REPORT":
+                fleeReport.gameObject.SetActive(true);
+
+                string text = "";
+
+                if (fleeSuccess) text = "Escaped from battle";
+                else text = "Could not escape!";
+
+                fleeText.text = text;
+
                 break;
 
             default: break;
@@ -212,6 +243,13 @@ public class BattleUI : MonoBehaviour {
 
             //Single-target Offensive
             else text = SingleTargetProjection(user, command);
+        }
+
+        //Flee
+        else if (command == "FLEE")
+        {
+            text = "Flee Chance: " + user.bc.fleeChance + "\n\n" +
+                "Run away from the battle. Strong monsters or large enemy parties are more difficult to flee from.";
         }
 
         //Move

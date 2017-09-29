@@ -155,21 +155,35 @@ public class InputControls : MonoBehaviour {
         switch (bm.GetState())
         {
             case "NORMAL":
-                pParty.GetFirstActive();
+                //pParty.GetFirstActive(); //Select lowest index party member who is ready
                 break;
 
+            //Enable move animation
             case "PLAYER_PROJECTION":
             case "ENEMY_PROJECTION":
                 bm.SetState("NORMAL");
                 StartCoroutine(bm.Animate());
                 break;
-
+            
+            //Continue
             case "LEVEL_UP":
                 bm.SetState("NORMAL");
                 break;
-
+            
+            //Load overworld, battle finished 
             case "VICTORY":
                 bm.LoadOverworld();
+                break;
+            
+            //Party is defeated, load main menu
+            case "GAME_OVER":
+                bm.LoadScene("game_over");
+                break;
+
+            //Flee Attempt
+            case "FLEE_REPORT":
+                if (BattleUI.fleeSuccess) bm.LoadOverworld();
+                else bm.SetState("NORMAL");
                 break;
         }
     }
@@ -226,6 +240,9 @@ public class InputControls : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.SetCommand("SKILL"); //3. SKILLS
         if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.SetCommand("MAGIC"); //4. MAGIC
         if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.SetCommand("TECH"); //5. TECHS
+
+        if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) pParty.SetCommand("MOVE"); //7. MOVE
+        if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8)) pParty.SetCommand("FLEE"); //8. FLEE
     }
 
     //Target Phase hotkeys

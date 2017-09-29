@@ -152,6 +152,13 @@ public class PlayerParty : Party {
                 bm.SetState("TILE_SELECTION");
                 command = COMMAND.MOVE;
                 break;
+
+            case "FLEE":
+                command = COMMAND.FLEE;
+                CalculateAction();
+                ExecuteAction();
+                bm.SetState("PLAYER_PROJECTION");
+                break;
         }
     }
 

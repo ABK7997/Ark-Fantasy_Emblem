@@ -9,8 +9,6 @@ public class Tile : MonoBehaviour {
     /// </summary>
     public string tileName;
 
-    private bool occupied = false;
-
     private bool hovering = false;
 
     /// <summary>
@@ -18,18 +16,9 @@ public class Tile : MonoBehaviour {
     /// </summary>
     public enum EFFECT
     {
-        NONE, SOGGY, GROUNDED, STUCK, OBSCURED, RECOVERY, HIDDEN, COVER, FORTIFIED
+        NONE, SOGGY, GROUNDED, STUCK, OBSCURED, RECOVERY, HIDDEN, COVER, FORTIFIED, HAZARD
     }
     public EFFECT effect1, effect2;
-
-    /// <summary>
-    /// Getter and setter for if this title is occupied by an entity
-    /// </summary>
-    public bool Occupied
-    {
-        get { return occupied; }
-        set { occupied = value; }
-    }
 
     private void OnMouseOver()
     {
