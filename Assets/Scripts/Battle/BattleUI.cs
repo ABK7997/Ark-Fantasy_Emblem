@@ -48,6 +48,11 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Text levelUpText;
 
+    /// <summary>
+    /// Window to display after all enemies are dead
+    /// </summary>
+    public Image victoryWindow;
+
     /***BATTLE PROJECTION***/
 
     /// <summary>
@@ -162,6 +167,13 @@ public class BattleUI : MonoBehaviour {
 
             case "PAUSED":
                 pauseScreen.gameObject.SetActive(true);
+                break;
+
+            case "VICTORY":
+                victoryWindow.gameObject.SetActive(true);
+                break;
+
+            case "GAME_OVER":
                 break;
 
             default: break;

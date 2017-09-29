@@ -199,7 +199,7 @@ public class Entity : MonoBehaviour {
         hovering = true;
         ChangeColor("hover");
 
-        party.SetStatsView(true, GetAllStats());
+        if (status != STATUS.DEAD) party.SetStatsView(true, GetAllStats());
     }
 
     protected void OnMouseExit()
@@ -629,9 +629,12 @@ public class Entity : MonoBehaviour {
         }
     }
 
-    protected void CheckLevel()
+    /// <summary>
+    /// Check if experience points are at least 100.
+    /// If they are, entity levels up.
+    /// </summary>
+    public void CheckLevel()
     {
-
         if (Exp > 100)
         {
 

@@ -13,6 +13,11 @@ public class InputControls : MonoBehaviour {
     public BattleManager bm;
 
     /// <summary>
+    /// Battle UI for combat
+    /// </summary>
+    public BattleUI ui;
+
+    /// <summary>
     /// The player's party of characters
     /// </summary>
     public PlayerParty pParty;
@@ -161,6 +166,10 @@ public class InputControls : MonoBehaviour {
 
             case "LEVEL_UP":
                 bm.SetState("NORMAL");
+                break;
+
+            case "VICTORY":
+                bm.LoadOverworld();
                 break;
         }
     }

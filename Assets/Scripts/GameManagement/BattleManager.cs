@@ -116,14 +116,28 @@ public class BattleManager : Manager {
     {
         List<Entity> partyMembers = eParty.GetLivingParty();
 
+        //All enemies dead
         if (partyMembers.Count == 0)
         {
-            //Revive overworld
-            ow.activeEnemies.Remove(ea);
-            Destroy(ea.gameObject);
-            ow.Activate(true);
-            SceneManager.LoadScene("overworld");
+            SetState("VICTORY");
         }
+
+        //Check for level ups one more time
+        foreach(Entity e in pParty.GetParty())
+        {
+            e.CheckLevel();
+        }
+    }
+
+    /// <summary>
+    /// Load the overworld back in after the end of a battle
+    /// </summary>
+    public void LoadOverworld()
+    {
+        ow.activeEnemies.Remove(ea);
+        Destroy(ea.gameObject);
+        ow.Activate(true);
+        SceneManager.LoadScene("overworld");
     }
 
     /***ACTIONS***/
@@ -276,6 +290,9 @@ public class BattleManager : Manager {
                 break;
 
             case "PAUSED": state = STATE.PAUSED;
+                break;
+
+            case "VICTORY": state = STATE.VICTORY;
                 break;
 
             default: Debug.Log("Not an existing state: " + newState); break;
