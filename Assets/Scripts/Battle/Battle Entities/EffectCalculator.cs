@@ -5,7 +5,7 @@ using UnityEngine;
 public class EffectCalculator {
 
     Entity user;
-    BattleCalculator bc;
+    //BattleCalculator bc;
     PositionCalculator pc;
 
     //Effects
@@ -21,7 +21,7 @@ public class EffectCalculator {
     public EffectCalculator(Entity u, BattleCalculator calc, PositionCalculator pos)
     {
         user = u;
-        bc = calc;
+        //bc = calc;
         pc = pos;
 
         effects = new List<Effect>();

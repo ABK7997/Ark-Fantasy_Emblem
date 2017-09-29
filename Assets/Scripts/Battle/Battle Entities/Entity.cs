@@ -134,9 +134,6 @@ public class Entity : MonoBehaviour {
     /// <summary>Percentage chance of leveling up SPD</summary>
     public int l_spd;
 
-    //Modifers
-    private float speedMultiplier = 5f; //Basic multiplier to speed up or slow down all combat
-
     protected virtual void Awake()
     {
         anim = GetComponent<Animator>();
@@ -169,7 +166,7 @@ public class Entity : MonoBehaviour {
 
         if (moveTimer < 100)
         {
-            float addTime = Time.deltaTime + (Spd / (25f) * speedMultiplier); //Calculate speed gague incremental increase
+            float addTime = Time.deltaTime + (Spd / (25f) * BattleManager.gameSpeed); //Calculate speed gague incremental increase
 
             if (pc.GetTileEffect1() == Tile.EFFECT.STUCK) addTime /= 2; //Slow if standing on an impeding tile
             if (pc.GetTileEffect2() == Tile.EFFECT.STUCK) addTime /= 2;
@@ -339,7 +336,7 @@ public class Entity : MonoBehaviour {
         float percent = (top/bottom) * 100;
 
         //Critical condition
-        if (percent < 30)
+        if (percent < 30 && percent > 0)
         {
             SetStatus("CRITICAL");
         }

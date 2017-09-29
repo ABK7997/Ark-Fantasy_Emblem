@@ -26,7 +26,7 @@ public class InputControls : MonoBehaviour {
 	void Update () {
         CancellationKeys();
         ConfirmationKeys();
-        PauseKeys();
+        GameFlowKeys();
 
         switch (bm.GetState())
         {
@@ -189,10 +189,30 @@ public class InputControls : MonoBehaviour {
     }
 
     //Pausing hotkeys
-    private void PauseKeys()
+    private void GameFlowKeys()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) {
+        //Pause
+        if (Input.GetKeyDown(KeyCode.Space) 
+            || Input.GetKeyDown(KeyCode.DownArrow)) {
             TogglePause();
+        }
+
+        //Reset Speed (speed = 1)
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            bm.ResetSpeed();
+        }
+
+        //Fast Forward (double speed)
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            bm.FastForward();
+        }
+
+        //Slow Down (half speed)
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            bm.SlowDown();
         }
     }
 

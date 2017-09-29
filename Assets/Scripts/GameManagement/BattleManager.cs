@@ -8,6 +8,9 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class BattleManager : Manager {
 
+    //Game Speed
+    public static int gameSpeed = 1;
+
     /***GAME AT LARGE***/
     private Overworld ow;
 
@@ -62,6 +65,9 @@ public class BattleManager : Manager {
     //Constructs both parties and attaches this battle manager to each of them
     void Start()
     {
+        //Reset Battle Speed to normal
+        gameSpeed = 1;
+
         //Assign manager
         pParty.SetBattleManager(this, ui, board);
         eParty.SetBattleManager(this, ui, board);
@@ -339,6 +345,38 @@ public class BattleManager : Manager {
     public string GetState()
     {
         return state + "";
+    }
+
+    /***GAME SPEED***/
+
+    /// <summary>
+    /// Change the game speed - affects speed gagues
+    /// </summary>
+    /// <param name="speed">New game speed to set</param>
+    public void SetGameSpeed(int speed)
+    {
+        gameSpeed = speed;
+    }
+
+    public void ResetSpeed()
+    {
+        if (state == STATE.NORMAL) gameSpeed = 1;
+    }
+
+    /// <summary>
+    /// Double game speed
+    /// </summary>
+    public void FastForward()
+    {
+        if (state == STATE.NORMAL) gameSpeed *= 2;
+    }
+
+    /// <summary>
+    /// Half game speed
+    /// </summary>
+    public void SlowDown()
+    {
+        if (state == STATE.NORMAL) gameSpeed /= 2;
     }
 
     /***MISCELLANEOUS***/

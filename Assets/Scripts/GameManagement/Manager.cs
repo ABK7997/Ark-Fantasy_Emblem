@@ -13,7 +13,7 @@ public class Manager : MonoBehaviour {
         //Instantiate first game manager
         if (CheckSingle<GameManager>() == 1)
         {
-            Debug.Log(SceneManager.GetActiveScene().name + ": Game Manager did not yet exist, so it was created.");
+            //Debug.Log(SceneManager.GetActiveScene().name + ": Game Manager did not yet exist, so it was created.");
             Instantiate(Resources.Load("Game Manager"));
         }
     }
@@ -64,7 +64,7 @@ public class Manager : MonoBehaviour {
         //Object does not exist; instantiate new one
         else if (singleton == null)
         {
-            Debug.Log(sig + "Object does not exist yet.");
+            //Debug.Log(sig + "Object does not exist yet.");
 
             return 1;
         }
@@ -72,7 +72,7 @@ public class Manager : MonoBehaviour {
         //Object already exists
         else
         {
-            Debug.Log(sig + singleton.name + " already exists.");
+            //Debug.Log(sig + singleton.name + " already exists.");
             return -1;
         }
     }

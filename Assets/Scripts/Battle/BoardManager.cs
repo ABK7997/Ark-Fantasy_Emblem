@@ -99,7 +99,7 @@ public class BoardManager : MonoBehaviour {
         try
         {
             return board[(int)position.y / scaling, (int)position.x / scaling];
-        } catch (System.Exception e)
+        } catch (System.Exception)
         {
             return null;
         }

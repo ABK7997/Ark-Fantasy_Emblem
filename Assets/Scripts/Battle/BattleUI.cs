@@ -8,12 +8,17 @@ public class BattleUI : MonoBehaviour {
     public static bool moving = false;
     public static bool fleeSuccess = false;
 
-    /// <summary>The Battle Manager, mostly just for its GetState() method</summary>
+    /// <summary>
+    /// The Battle Manager, mostly just for its GetState() method
+    /// </summary>
     public BattleManager bm;
 
-    /// <summary>The canvas containing all the buttons for issuing player Orders</summary>
+    /// <summary>
+    /// The canvas containing all the buttons for issuing player Orders
+    /// </summary>
     public GameObject commandsList;
 
+    /***SPECIALS***/
     /// <summary>
     /// The text associated with the Tech button on the command list. 
     /// If a Tech timer is above 0, that number is displayed in red on the button.
@@ -25,20 +30,21 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Canvas specialSelection;
 
-    ///<summary>An overlaying, half-transparent image that visually declares to the player when the game is paused or not </summary>
+    /***PAUSING and GAME SPEED***/
+    /// <summary>
+    /// An overlaying, half-transparent image that visually declares to the player when the game is paused or not
+    /// </summary>
     public Canvas pauseScreen;
 
     /// <summary>
-    /// The button which manually pauses the action. Unavailabe in Battle Prep state
+    /// Image containing the pause, fast forward, and slow down buttons
     /// </summary>
-    public Button pauseButton;
+    public Image gameFlow;
 
-    /// <summary>Text which appears when the player is choosing a target</summary>
-    public Text targetingText;
+    /***TARGET SELECTION***/
+    public Image targetingCanvas;
 
-    /// <summary>On-screen button to cancel targetting if the player does not prefer using hotkeys</summary>
-    public Button targetCancelButton;
-
+    /***LEVLE UP***/
     /// <summary>
     /// Window which pops up when a character gains enough experience to level up after a move
     /// </summary>
@@ -49,6 +55,7 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Text levelUpText;
 
+    /***END OF BATTLE***/
     /// <summary>
     /// Window to display after all enemies are dead
     /// </summary>
@@ -59,6 +66,7 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Image deathWindow;
 
+    /***FLEEING***/
     /// <summary>
     /// Window which reports on if a flee attempt was successful or not
     /// </summary>
@@ -93,7 +101,9 @@ public class BattleUI : MonoBehaviour {
 
     /***BUTTONS***/
 
-    /// <summary> The cancel button in the BP window; unavailable if it is an Enemy Projection</summary>
+    /// <summary>
+    ///  The cancel button in the BP window; unavailable if it is an Enemy Projection
+    /// </summary>
     public Button cancelButton;
 
     /***STATES***/
@@ -111,7 +121,7 @@ public class BattleUI : MonoBehaviour {
                 SetProjection(false, "");
                 SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
-                pauseButton.gameObject.SetActive(true);
+                gameFlow.gameObject.SetActive(true);
                 levelUpWindow.gameObject.SetActive(false);
                 fleeReport.gameObject.SetActive(false);
                 break;
@@ -121,11 +131,11 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "COMMANDING":
-                SetTargetting(false);
+                targetingCanvas.gameObject.SetActive(false);
 
                 commandsList.SetActive(true);
                 specialSelection.enabled = false;
-                pauseButton.gameObject.SetActive(false);
+                gameFlow.gameObject.SetActive(false);
 
                 int timer = bm.pParty.GetActiveMember().TechTimer;
 
@@ -149,7 +159,7 @@ public class BattleUI : MonoBehaviour {
 
             case "SPECIAL_SELECTION":
                 commandsList.SetActive(false);
-                SetTargetting(false);
+                targetingCanvas.gameObject.SetActive(false);
                 SetProjection(false, "");
                 specialSelection.enabled = true;
                 break;
@@ -163,7 +173,7 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(false);
                 SetProjection(false, "");
 
-                SetTargetting(true);
+                targetingCanvas.gameObject.SetActive(true);
                 specialSelection.enabled = false;
                 break;
 
@@ -172,15 +182,14 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "PLAYER_PROJECTION":
-                SetTargetting(false);
-                SetTargetting(false);
+                targetingCanvas.gameObject.SetActive(false);
                 specialSelection.enabled = false;
                 commandsList.SetActive(false);
                 break;
 
             case "ENEMY_PROJECTION":
                 cancelButton.gameObject.SetActive(false);
-                pauseButton.gameObject.SetActive(false);
+                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "PAUSED":
@@ -189,14 +198,17 @@ public class BattleUI : MonoBehaviour {
 
             case "VICTORY":
                 victoryWindow.gameObject.SetActive(true);
+                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "GAME_OVER":
                 deathWindow.gameObject.SetActive(true);
+                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "FLEE_REPORT":
                 fleeReport.gameObject.SetActive(true);
+                gameFlow.gameObject.SetActive(false);
 
                 string text = "";
 
@@ -390,12 +402,5 @@ public class BattleUI : MonoBehaviour {
     {
         enemyProjection.gameObject.SetActive(b);
         eProjectionInfo.text = text;
-    }
-
-    //Shorthand to enable/disable targetting UI elements
-    private void SetTargetting(bool b)
-    {
-        targetingText.enabled = b;
-        targetCancelButton.gameObject.SetActive(b);
     }
 }
