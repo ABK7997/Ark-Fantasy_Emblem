@@ -69,6 +69,9 @@ public class Entity : MonoBehaviour {
     public List<Special> spells;
     public List<Special> techs;
 
+    //Immunities
+    public List<string> immunities;
+
     /// <summary> Enum which keeps track of player statuses such as death or negative status effects</summary>
     [HideInInspector]
     public enum STATUS
@@ -152,6 +155,19 @@ public class Entity : MonoBehaviour {
         UpdateDisplay();
 
         normal = render.color; //Set the normal color to the sprite's starting color
+
+        //Innate immunites
+        if (type == TYPE.DROID && type != TYPE.MAGIC_DROID)
+        {
+            immunities.Add("POISON"); //Droids immune to poison
+        }
+
+        if (type != TYPE.DROID)
+        {
+            immunities.Add("CORROSION"); //Non-droids immune to corrosion
+        }
+
+        if (Name == "Oscar") Hp = 0;
     }
 
     /// <summary>
@@ -168,8 +184,13 @@ public class Entity : MonoBehaviour {
         {
             float addTime = Time.deltaTime + (Spd / (25f) * BattleManager.gameSpeed); //Calculate speed gague incremental increase
 
+            //Tile Effect
             if (pc.GetTileEffect1() == Tile.EFFECT.STUCK) addTime /= 2; //Slow if standing on an impeding tile
             if (pc.GetTileEffect2() == Tile.EFFECT.STUCK) addTime /= 2;
+
+            //Status Effect
+            if (ec.CheckEffect("SWIFT")) addTime *= 1.7f; //Increase by 70%
+            else if (ec.CheckEffect("SLOW")) addTime *= 0.5f; //Decrease by half
 
             moveTimer += addTime;
 
@@ -300,8 +321,10 @@ public class Entity : MonoBehaviour {
         switch (bc.activeSpecial.type)
         {
             case Special.TYPE.ATTACK: bc.OffensiveSpecial(); break;
-            case Special.TYPE.HEAL: bc.HealingSpecial(); break;
-            case Special.TYPE.REPAIR: bc.RepairSpecial(); break;
+            case Special.TYPE.HEAL:
+                if (bc.activeSpecial.classification == Special.CLASS.SPELL) bc.HealingSpecial(); //Magical healing
+                else bc.RepairSpecial(); //Technical healing
+                break;
             case Special.TYPE.EFFECT: bc.EffectSpecial(); break;
 
             default: break;
@@ -363,6 +386,11 @@ public class Entity : MonoBehaviour {
             case "CRITICAL":
                 status = STATUS.CRITICAL;
                 anim.SetBool("Ill", true);
+                break;
+
+            case "DEAD":
+                status = STATUS.DEAD;
+                anim.SetBool("Dead", true);
                 break;
         }
     }

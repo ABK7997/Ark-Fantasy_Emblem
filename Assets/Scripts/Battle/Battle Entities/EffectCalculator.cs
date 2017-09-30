@@ -10,7 +10,6 @@ public class EffectCalculator {
 
     //Effects
     private List<Effect> effects;
-    public List<string> immunities;
 
     /// <summary>
     /// An assistant class for Entity which calculates all tile and status effects
@@ -25,7 +24,6 @@ public class EffectCalculator {
         pc = pos;
 
         effects = new List<Effect>();
-        immunities = new List<string>();
     }
 
     /// <summary>
@@ -61,7 +59,9 @@ public class EffectCalculator {
     /// </summary>
     public void StatusEffectsTurn()
     {
-        //TODO
+        //Lose HP
+        if (CheckEffect("POISON")) user.Hp -= 3;
+        if (CheckEffect("CORROSION")) user.Hp -= 4;
     }
 
     /***STATUS EFFECTS***/
@@ -95,6 +95,14 @@ public class EffectCalculator {
     /// <param name="set">Enable or disable</param>
     public void SetEffect(string status, int turns)
     {
+        //Special Exception - Revive
+        if (status == "REVIVE")
+        {
+            user.SetStatus("NORMAL");
+            user.Hp = (int)(user.maxHP * 0.30f);
+            return;
+        }
+
         Effect nEff = new Effect(status, turns);
 
         if (CheckEffect(status)) //Effect is already active; reset effect
@@ -187,7 +195,7 @@ public class EffectCalculator {
     /// <returns></returns>
     public bool IsImmune(string status)
     {
-        return immunities.Contains(status);
+        return user.immunities.Contains(status);
     }
 
 }

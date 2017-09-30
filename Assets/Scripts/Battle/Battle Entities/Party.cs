@@ -45,7 +45,7 @@ public abstract class Party : MonoBehaviour {
     //The Different moves types an entity can perform
     protected enum COMMAND
     {
-        NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, MOVE, FLEE
+        NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, ITEM, MOVE, FLEE
     }
     protected COMMAND command = COMMAND.NONE;
 
@@ -131,8 +131,8 @@ public abstract class Party : MonoBehaviour {
         return null;
     }
 
-    //Iterates through every member of BOTH parties to find if any of them are being hovered over
-    protected Entity GetAnyMember()
+    //Iterates through every living member of BOTH parties to find if any of them are being hovered over
+    protected Entity GetAnyLivingMember()
     {
         foreach (Entity e in party)
         {
@@ -142,6 +142,22 @@ public abstract class Party : MonoBehaviour {
         foreach (Entity e in oppositeParty)
         {
             if (e.IsHovering() && e.GetStatus() != "DEAD") return e;
+        }
+
+        return null;
+    }
+
+    //Iterates through every member of BOTH parties, living or KO, to find if any of them are being hovered over
+    protected Entity GetAnyMember()
+    {
+        foreach (Entity e in party)
+        {
+            if (e.IsHovering()) return e;
+        }
+
+        foreach (Entity e in oppositeParty)
+        {
+            if (e.IsHovering()) return e;
         }
 
         return null;
@@ -338,6 +354,11 @@ public abstract class Party : MonoBehaviour {
         return activeMember;
     }
 
+    /// <summary>
+    /// Get an enemy party member by their index number
+    /// </summary>
+    /// <param name="index">An enemy</param>
+    /// <returns></returns>
     public Entity GetEnemyByIndex(int index)
     {
         return oppositeParty[index];

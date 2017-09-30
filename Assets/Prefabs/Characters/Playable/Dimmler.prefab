@@ -191,7 +191,7 @@ MonoBehaviour:
   expGain: 0
   level: 1
   type: 1
-  maxHP: 17
+  maxHP: 50
   baseAtk: 4
   baseMag: 13
   baseVlt: 0
@@ -204,11 +204,9 @@ MonoBehaviour:
   skills:
   - {fileID: 114811500840411924, guid: c4908b4e4506a3640ad02f9dd6972bb1, type: 2}
   spells:
-  - {fileID: 114493202515641324, guid: 51b0639c9bd28184d97a86d76c67a084, type: 2}
-  - {fileID: 114889994196545244, guid: 1d993d78ef6f2f4479625ab4a71c7514, type: 2}
-  - {fileID: 114798406714063870, guid: f83c3f42863024c42b16784ec2568476, type: 2}
-  - {fileID: 114777146977420918, guid: 8d72b3e9f0031ca43ab6412c975b6631, type: 2}
-  - {fileID: 114370008006470272, guid: 9033c2f5a1c236543ae9519770c45592, type: 2}
+  - {fileID: 114014391688891478, guid: dde7bc3d624f8054ab6b710844f942c6, type: 2}
+  - {fileID: 114228640325169330, guid: 2f002b42d3c7d4e4a90cfe8d37f4fd7c, type: 2}
+  - {fileID: 114519556359078702, guid: 3ac2224e032fc7046a632252be047136, type: 2}
   techs: []
   status: 0
   overhead: {fileID: 223919342014007248}

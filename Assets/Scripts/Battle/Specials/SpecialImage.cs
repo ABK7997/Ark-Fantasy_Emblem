@@ -20,8 +20,6 @@ public class SpecialImage : MonoBehaviour {
     /// </summary>
     public Image img;
 
-    private string info;
-
     /// <summary>
     /// Change this image's sprite
     /// </summary>

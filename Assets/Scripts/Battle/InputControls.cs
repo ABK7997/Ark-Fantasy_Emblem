@@ -193,26 +193,26 @@ public class InputControls : MonoBehaviour {
     {
         //Pause
         if (Input.GetKeyDown(KeyCode.Space) 
-            || Input.GetKeyDown(KeyCode.DownArrow)) {
+            || Input.GetKeyDown(KeyCode.UpArrow)) {
             TogglePause();
         }
 
         //Reset Speed (speed = 1)
-        if (Input.GetKeyDown(KeyCode.UpArrow))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            bm.ResetSpeed();
+            ui.SetGameSpeed(0);
         }
 
         //Fast Forward (double speed)
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            bm.FastForward();
+            ui.SetGameSpeed(1);
         }
 
         //Slow Down (half speed)
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            bm.SlowDown();
+            ui.SetGameSpeed(-1);
         }
     }
 

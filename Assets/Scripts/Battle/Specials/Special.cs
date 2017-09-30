@@ -60,7 +60,7 @@ public class Special : MonoBehaviour {
     /// </summary>
     public enum TYPE
     {
-        ATTACK, HEAL, REPAIR, EFFECT
+        ATTACK, HEAL, EFFECT
     }
     public TYPE type;
 
@@ -73,12 +73,11 @@ public class Special : MonoBehaviour {
         OBSCURE, EXPOSED, //Targeting
         INTENSE, ANGER, //Single-turn offensive boost
         ARMOR, //Single-turn defensive boost
-        SWAPPED //Miscellaneous
+        SWAPPED, REVIVE, //Miscellaneous
+        SLOW, SWIFT, //Speed
+        POISON, CORROSION //Damage over Time
     }
     public EFFECT effect;
-
-    //Componenets
-    private SpriteRenderer render;
 
     //Animation
 

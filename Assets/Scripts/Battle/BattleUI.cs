@@ -41,6 +41,11 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Image gameFlow;
 
+    /// <summary>
+    /// Text telling the player how fast or slow the game is currently running compared to default speed
+    /// </summary>
+    public Text flowText;
+
     /***TARGET SELECTION***/
     public Image targetingCanvas;
 
@@ -127,7 +132,7 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "ANIMATING":
-                
+
                 break;
 
             case "COMMANDING":
@@ -245,16 +250,22 @@ public class BattleUI : MonoBehaviour {
             if (special.hitAll && special.type == Special.TYPE.ATTACK) text = AttackAllProjection(user, command);
 
             //Healing (single and multiple)
-            else if (special.type == Special.TYPE.HEAL || special.type == Special.TYPE.REPAIR)
-            {
-                text = HealProjection(user, command);
-            }
+            else if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
 
             //Effects and Skills
             else if (special.type == Special.TYPE.EFFECT) text = EffectProjection(user);
 
             //Single-target Offensive
             else text = SingleTargetProjection(user, command);
+        }
+
+        //Item
+        else if (command == "ITEM")
+        {
+            Item item = ((PlayerParty)user.GetParty()).GetItem();
+
+            text = "Consume " + item.name + "\n\n" +
+                item.description;
         }
 
         //Flee
@@ -286,7 +297,7 @@ public class BattleUI : MonoBehaviour {
 
         //Set Description
         if (user.GetSpecial() != null) description = user.GetSpecial().description;
-        else description = "Physical Attack"; 
+        else description = "Physical Attack";
 
         //Set Power
         int damage = 0;
@@ -340,7 +351,11 @@ public class BattleUI : MonoBehaviour {
 
         switch (command)
         {
-            case "MAGIC": damage = -bc.MagicDmg; break;
+            case "MAGIC":
+                if (user.bc.target.Name == user.Name && !bc.activeSpecial.hitAll) damage = 0; //Spells cannot heal caster
+                else damage = -bc.MagicDmg;
+                break;
+
             case "TECH": damage = -bc.TechDmg; break;
         }
 
@@ -402,5 +417,23 @@ public class BattleUI : MonoBehaviour {
     {
         enemyProjection.gameObject.SetActive(b);
         eProjectionInfo.text = text;
+    }
+
+    /***BATTLE SPEED***/
+    public void SetGameSpeed(int set)
+    {
+        if (bm.GetState() == "NORMAL" || bm.GetState() == "PAUSED")
+        {
+            //Reset
+            if (set == 0) BattleManager.gameSpeed = 1;
+
+            //Fast Forward
+            else if (set == 1 && BattleManager.gameSpeed < 8) BattleManager.gameSpeed *= 2; //Limit x8
+
+            //Slow Down
+            else if (set == -1 && BattleManager.gameSpeed > 0.125) BattleManager.gameSpeed /= 2; //Limit x(1/8)
+
+            flowText.text = "x" + BattleManager.gameSpeed;
+        }
     }
 }

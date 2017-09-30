@@ -84,7 +84,7 @@ MonoBehaviour:
   baseAccuracy: 100
   baseCrit: 3
   hitAll: 0
-  description: Restore HP (Does not work on Droids or Magic-Droids)
+  description: Restore HP (cannot heal caster)
   animationTime: 2
   classification: 1
   type: 1

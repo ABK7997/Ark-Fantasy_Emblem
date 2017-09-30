@@ -93,8 +93,8 @@ public class BattleCalculator {
             case Special.TYPE.HEAL:
                 baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
 
-                //Heal spells CANNOT heal Droids that are not also Organic
-                if (!target.IsOrganic() && target.type != Entity.TYPE.MAGIC) baseDamage = 0;
+                //Heal spells CANNOT heal the caster
+                if (target.Name == user.Name && !activeSpecial.hitAll) baseDamage = 0;
 
                 break;
 
@@ -125,17 +125,13 @@ public class BattleCalculator {
                 if (baseDamage < 0) baseDamage = 0;
                 break;
 
-            case Special.TYPE.REPAIR:
+            case Special.TYPE.HEAL:
                 baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
-
-                //Repair spells CANNOT heal non-Droids
-                if (!target.IsDroid()) baseDamage = 0;
-
                 break;
 
             case Special.TYPE.EFFECT:
                 baseDamage = 0;
-                break; //Status ailments do not immediately do damage
+                break; //Status effects do not immediately do damage
         }
 
         techDmg = (int)baseDamage;
@@ -368,25 +364,13 @@ public class BattleCalculator {
         foreach (Entity e in targets)
         {
             //Heal
-            if (activeSpecial.type == Special.TYPE.HEAL)
+            if (activeSpecial.classification == Special.CLASS.SPELL)
             {
-                //Not a Droid, Droid-Magic, or the caster
-                if (e.type != Entity.TYPE.DROID && e.type != Entity.TYPE.MAGIC_DROID && e.Name != user.Name)
-                {
-                    e.Hp -= dmg;
-                }
+                if (e.Name != user.Name) e.Hp -= dmg; //Spells cannot heal caster
             }
 
             //Repair
-            else
-            {
-                //Is a Droid, and not the caster
-                if (e.IsDroid() && e.Name != user.Name)
-                {
-                    e.Hp -= dmg;
-                }
-            }    
-
+            else e.Hp -= dmg; 
         }
     }
 
@@ -515,5 +499,15 @@ public class BattleCalculator {
     {
         get { return fleeChance; }
         set { fleeChance = value; }
+    }
+
+    /***ITEMS***/
+
+    /// <summary>
+    /// Use a consumable item in battle
+    /// </summary>
+    public void UseItem()
+    {
+        ((PlayerParty)user.GetParty()).GetItem().Use(target);
     }
 }

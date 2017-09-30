@@ -12,9 +12,14 @@ public class PlayerParty : Party {
     /// </summary>
     public SpecialSelection ss;
 
+    private Inventory it; //items
+    private int itemIndex = -1; //active item
+
     protected override void Start()
     {
         base.Start();
+
+        it = FindObjectOfType<Inventory>();
     }
 
     //Monitors the player's actions in battle
@@ -42,7 +47,19 @@ public class PlayerParty : Party {
 
                 //Select Target
                 case "SELECTION":
+
                     Entity t = GetAnyMember();
+
+                    /*
+                    if (it.items[itemIndex].effect == Item.EFFECT.REVIVE
+                        || activeMember.bc.activeSpecial.effect == Special.EFFECT.REVIVE
+                        )
+                    {
+                        t = GetAnyMember();
+                    }
+                    else t = GetAnyLivingMember();
+                    */
+                    
                     if (t != null)
                     {
                         target = t;
@@ -107,7 +124,7 @@ public class PlayerParty : Party {
 
     /***COMMAND METHODS***/
     /// <summary>
-    /// Called by multiple buttons to dictate the type of Order issued
+    /// Called by multiple buttons in the commands list to dictate the type of Order issued
     /// </summary>
     /// <param name="cmd">String command which convert to correct state</param>
     public void SetCommand(string cmd)
@@ -148,6 +165,13 @@ public class PlayerParty : Party {
                 ss.SetSpecials(activeMember.skills);
                 break;
 
+            case "ITEM":
+                if (it.items.Count == 0) break; //Inventory is empty
+                bm.SetState("SPECIAL_SELECTION");
+                command = COMMAND.ITEM;
+                ss.SetItems(it.items);
+                break;
+
             case "MOVE":
                 bm.SetState("TILE_SELECTION");
                 command = COMMAND.MOVE;
@@ -169,6 +193,20 @@ public class PlayerParty : Party {
     /// </summary>
     public void SetSpecial(int specialIndex)
     {
+        //Using an item, not a special
+        if (command == COMMAND.ITEM)
+        {
+            if (it.items[specialIndex].stock == 0) return; //Item is out of stock
+            else
+            {
+                bm.SetState("SELECTION");
+                itemIndex = specialIndex;
+            }
+
+            return;
+        }
+
+        //Special
         switch (command)
         {
             case COMMAND.SKILL:
@@ -200,7 +238,7 @@ public class PlayerParty : Party {
             ExecuteAction();
         }
 
-        //Hit-All SetSpecial
+        //Hit-All Special
         else if (activeMember.GetSpecial().hitAll)
         {
             if (activeMember.GetSpecial().type != Special.TYPE.ATTACK) target = activeMember;
@@ -286,6 +324,15 @@ public class PlayerParty : Party {
         bm.SetState("PLAYER_PROJECTION");
 
         ExecuteAction();
+    }
+
+    /// <summary>
+    /// The current item to consume
+    /// </summary>
+    /// <returns>A consumable item</returns>
+    public Item GetItem()
+    {
+        return it.items[itemIndex];
     }
 
 }

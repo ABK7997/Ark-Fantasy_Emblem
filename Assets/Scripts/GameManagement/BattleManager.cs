@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 public class BattleManager : Manager {
 
     //Game Speed
-    public static int gameSpeed = 1;
+    public static float gameSpeed = 1;
 
     /***GAME AT LARGE***/
     private Overworld ow;
@@ -207,6 +207,7 @@ public class BattleManager : Manager {
                     break;
 
                 case "MOVE":
+                case "ITEM":
                     animationTime = 0.5f;
                     break;
 
@@ -248,18 +249,27 @@ public class BattleManager : Manager {
         //Perform action
         switch (type)
         {
+            //Physical attack
             case "ATTACK": user.Attack(); break;
 
+            //Cast special
             case "SKILL":
             case "MAGIC":
             case "TECH":
                 user.Cast(type);
                 break;
+            
+            //Consume inventory item
+            case "ITEM":
+                user.bc.UseItem();
+                break;
 
+            //Change tile
             case "MOVE":
                 user.pc.Move();
                 break;
-
+            
+            //Escaep from battle
             case "FLEE":
                 //Fled successfully
                 if (user.bc.fled) BattleUI.fleeSuccess = true;
@@ -356,27 +366,6 @@ public class BattleManager : Manager {
     public void SetGameSpeed(int speed)
     {
         gameSpeed = speed;
-    }
-
-    public void ResetSpeed()
-    {
-        if (state == STATE.NORMAL) gameSpeed = 1;
-    }
-
-    /// <summary>
-    /// Double game speed
-    /// </summary>
-    public void FastForward()
-    {
-        if (state == STATE.NORMAL) gameSpeed *= 2;
-    }
-
-    /// <summary>
-    /// Half game speed
-    /// </summary>
-    public void SlowDown()
-    {
-        if (state == STATE.NORMAL) gameSpeed /= 2;
     }
 
     /***MISCELLANEOUS***/

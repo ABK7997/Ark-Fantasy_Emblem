@@ -84,7 +84,8 @@ MonoBehaviour:
   baseAccuracy: 100
   baseCrit: 0
   hitAll: 1
-  description: Heal all allies slightly (does not work on Droids or Magic-Droids)
+  description: Heal all allies slightly (but not the caster)Heal all allies slightly
+    (but not the caster)
   animationTime: 2
   classification: 1
   type: 1
