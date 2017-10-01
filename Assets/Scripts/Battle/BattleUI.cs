@@ -113,16 +113,6 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Button cancelButton;
 
-    //MISC
-    private void Update()
-    {
-        //Special Selection content view
-        if (bm.GetState() == "SPECIAL_SELECTION")
-        {
-            if (specialHolder.transform.right.x < 0) specialHolder.transform.right = new Vector3(0, 0, 0);
-        }
-    }
-
     /***STATES***/
 
     /// <summary>
@@ -151,7 +141,7 @@ public class BattleUI : MonoBehaviour {
                 targetingCanvas.gameObject.SetActive(false);
 
                 commandsList.SetActive(true);
-                specialSelection.gameObject.SetActive(false);
+                SetSpecialView(false);
                 gameFlow.gameObject.SetActive(false);
                 SetProjection(false, "");
 
@@ -179,7 +169,7 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(false);
                 targetingCanvas.gameObject.SetActive(false);
                 SetProjection(false, "");
-                specialSelection.gameObject.SetActive(true);
+                SetSpecialView(true);
                 break;
 
             case "TILE_SELECTION":
@@ -192,7 +182,7 @@ public class BattleUI : MonoBehaviour {
                 SetProjection(false, "");
 
                 targetingCanvas.gameObject.SetActive(true);
-                specialSelection.gameObject.SetActive(false);
+                SetSpecialView(false);
                 break;
 
             case "LEVEL_UP":
@@ -201,7 +191,7 @@ public class BattleUI : MonoBehaviour {
 
             case "PLAYER_PROJECTION":
                 targetingCanvas.gameObject.SetActive(false);
-                specialSelection.gameObject.SetActive(false);
+                SetSpecialView(false);
                 commandsList.SetActive(false);
                 break;
 
@@ -269,7 +259,10 @@ public class BattleUI : MonoBehaviour {
             if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
 
             //Effects and Skills
-            else if (special.type == Special.TYPE.EFFECT) text = EffectProjection(user);
+            else if (special.type == Special.TYPE.EFFECT)
+            {
+                text = EffectProjection(user);
+            }
 
             //Single-target Offensive
             else text = SingleTargetProjection(user, command);
@@ -388,7 +381,7 @@ public class BattleUI : MonoBehaviour {
         string ret = "";
 
         ret =
-            user.GetSpecial().effect + "\n" +
+            "Effect: " + user.GetSpecial().effect + "\n" +
             "Success: " + user.bc.Hit + "%" + "\n\n" +
             user.GetSpecial().description;
 
@@ -450,5 +443,12 @@ public class BattleUI : MonoBehaviour {
 
             flowText.text = "x" + BattleManager.gameSpeed;
         }
+    }
+
+    //Reset Special View
+    private void SetSpecialView(bool b)
+    {
+        specialSelection.gameObject.SetActive(b);
+        if (b) specialHolder.transform.position = new Vector3(0, specialHolder.transform.position.y, 0);
     }
 }

@@ -5,6 +5,11 @@ using UnityEngine;
 public class SpecialSelection : MonoBehaviour {
 
     /// <summary>
+    /// Content container for specials buttons
+    /// </summary>
+    public RectTransform content;
+
+    /// <summary>
     /// Currently available specials gotten from party members
     /// </summary>
     public List<SpecialImage> choices;
@@ -15,7 +20,9 @@ public class SpecialSelection : MonoBehaviour {
     /// <param name="specials">list of special abilities</param>
 	public void SetSpecials(List<Special> specials)
     {
-        for (int i = 0; i < specials.Count; i++)
+        int containersUsed = 0;
+
+        for (int i = 0; i < specials.Count; i++, containersUsed++)
         {
             choices[i].gameObject.SetActive(true);
             choices[i].SetName(specials[i].GetName());
@@ -28,6 +35,8 @@ public class SpecialSelection : MonoBehaviour {
         {
             choices[i].gameObject.SetActive(false);
         }
+
+        content.sizeDelta = new Vector2(containersUsed * 100, content.sizeDelta.y);
     }
 
     /// <summary>
@@ -36,7 +45,9 @@ public class SpecialSelection : MonoBehaviour {
     /// <param name="items">list of available items</param>
     public void SetItems(List<Item> items)
     {
-        for (int i = 0; i < items.Count; i++)
+        int containersUsed = 0;
+
+        for (int i = 0; i < items.Count; i++, containersUsed++)
         {
             choices[i].gameObject.SetActive(true);
             choices[i].SetName(items[i].itemName);
@@ -49,5 +60,7 @@ public class SpecialSelection : MonoBehaviour {
         {
             choices[i].gameObject.SetActive(false);
         }
+
+        content.sizeDelta = new Vector2(containersUsed * 100, content.sizeDelta.y);
     }
 }

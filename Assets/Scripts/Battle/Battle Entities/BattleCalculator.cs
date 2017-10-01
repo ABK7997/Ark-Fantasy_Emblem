@@ -58,11 +58,11 @@ public class BattleCalculator {
         //EFFECT - SWAPPED
         if (ec.CheckEffect("SWAPPED")) damage = user.Mag + user.Vlt;
 
-        //Defense Modifiers
-        if (target.ec.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
-        if (target.ec.CheckEffect("PROTECT")) defense *= 2; //EFFECT - PROTECT
-
         physicalDmg = damage - defense;
+
+        //Defense Modifiers
+        if (target.ec.CheckEffect("ARMOR")) physicalDmg = 0; //EFFECT - ARMOR
+        if (target.ec.CheckEffect("PROTECT")) physicalDmg /= 2; //EFFECT - PROTECT
 
         //Attack Modifiers
         if (ec.CheckEffect("INTENSE")) physicalDmg *= 3; //EFFECT - INTENSE
@@ -88,10 +88,11 @@ public class BattleCalculator {
         {
             case Special.TYPE.ATTACK:
 
-                //EFFECT - BARRIER
-                if (target.ec.CheckEffect("BARRIER")) resistance *= 2;
-
                 baseDamage -= resistance;
+
+                //EFFECT - BARRIER
+                if (target.ec.CheckEffect("BARRIER")) baseDamage /= 2;
+
                 if (baseDamage < 0) baseDamage = 0;
                 break;
 
@@ -128,10 +129,11 @@ public class BattleCalculator {
         {
             case Special.TYPE.ATTACK:
 
-                //EFFECT - GROUND
-                if (target.ec.CheckEffect("GROUND")) stability *= 2;
-
                 baseDamage -= stability;
+
+                //EFFECT - GROUND
+                if (target.ec.CheckEffect("GROUND")) baseDamage /= 2;
+                
                 if (baseDamage < 0) baseDamage = 0;
                 break;
 
@@ -184,10 +186,8 @@ public class BattleCalculator {
     //Accuracy
     protected int AccuracyCalculation()
     {
-        int accuracy;
-
-        if (activeSpecial == null) accuracy = 70; //base acc = 70
-        else accuracy = activeSpecial.baseAccuracy;
+        int accuracy = 70; //base accuracy
+        if (activeSpecial != null) accuracy = activeSpecial.baseAccuracy;
 
         accuracy += user.Skl * 2; // + SKL * 2
         accuracy += user.Lck; // + LCK
@@ -201,6 +201,11 @@ public class BattleCalculator {
     //Evasion
     protected int EvasionCalculation()
     {
+        if (activeSpecial != null)
+        {
+            if (activeSpecial.type == Special.TYPE.EFFECT) return 0;
+        }
+
         int evade = 0; //base evd = 0
         evade += target.Spd; // + SPD
         evade += target.Lck / 2; // + LCK/2

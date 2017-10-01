@@ -57,6 +57,8 @@ MonoBehaviour:
   items:
   - {fileID: 114786813243102422, guid: ae7742fa236ad3d4e99868af0c096655, type: 2}
   - {fileID: 114614122894062408, guid: 5205f6cca51163c4dae9650380bf96f6, type: 2}
+  - {fileID: 114511293162629864, guid: 268e95373533f054b9b219ad906d8bfb, type: 2}
+  - {fileID: 114267781097035030, guid: f18cb0dbc77d5a54a88467ab9e0e5c8d, type: 2}
 --- !u!114 &114158659049516210
 MonoBehaviour:
   m_ObjectHideFlags: 1

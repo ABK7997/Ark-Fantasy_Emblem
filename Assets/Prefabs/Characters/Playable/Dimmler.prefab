@@ -191,14 +191,14 @@ MonoBehaviour:
   expGain: 0
   level: 1
   type: 1
-  maxHP: 50
+  maxHP: 17
   baseAtk: 4
   baseMag: 13
   baseVlt: 0
   baseDef: 4
   baseRes: 10
   baseStb: 12
-  baseSkl: -50
+  baseSkl: 7
   baseLck: 9
   baseSpd: 5
   skills:

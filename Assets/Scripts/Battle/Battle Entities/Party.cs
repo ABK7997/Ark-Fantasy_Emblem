@@ -76,7 +76,6 @@ public abstract class Party : MonoBehaviour {
             //Tile member is instantiated onto
             Tile t = board.GetTile(party[i].transform.position);
             party[i].pc.SetTile(t);
-            //t.Occupied = true;
         }
     }
 
@@ -304,7 +303,14 @@ public abstract class Party : MonoBehaviour {
     /// <returns>retParty - the members with HP above 0</returns>
     public List<Entity> GetLivingParty()
     {
-        List<Entity> retParty = party;
+        List<Entity> retParty = new List<Entity>();
+
+        //Get original party
+        foreach (Entity e in party)
+        {
+            retParty.Add(e);
+        }
+
         List<Entity> deadParty = new List<Entity>();
 
         foreach (Entity e in retParty)

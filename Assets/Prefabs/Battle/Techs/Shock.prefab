@@ -83,11 +83,12 @@ MonoBehaviour:
   turnTimer: 0
   baseAccuracy: 70
   baseCrit: 0
+  self_target: 0
   hitAll: 0
   description: Delivers an electrical blow
   animationTime: 2
   classification: 2
-  type: 1
+  type: 0
   effect: 0
   projectile: {fileID: 114147984333041134, guid: d9b683477901d424abcecb46b14d8a4a,
     type: 2}

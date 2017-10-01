@@ -56,7 +56,7 @@ MonoBehaviour:
   description: Restore 15 HP
   weight: 0
   cost: 0
-  stock: 2
+  stock: 99
   effect: 0
 --- !u!212 &212335547725020066
 SpriteRenderer:

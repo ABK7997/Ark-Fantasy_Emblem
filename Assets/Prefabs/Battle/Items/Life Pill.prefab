@@ -56,7 +56,7 @@ MonoBehaviour:
   description: Revive fallen ally
   weight: 0
   cost: 0
-  stock: 1
+  stock: 95
   effect: 1
 --- !u!212 &212476134868968980
 SpriteRenderer:

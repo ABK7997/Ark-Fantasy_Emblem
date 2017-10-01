@@ -329,6 +329,7 @@ MonoBehaviour:
   - {fileID: 114173094436446046, guid: fca262d64e94da7449934d9f308f3c1b, type: 2}
   spells: []
   techs: []
+  immunities: []
   status: 0
   overhead: {fileID: 223977011082131890}
   hpBar: {fileID: 114143545317962452}

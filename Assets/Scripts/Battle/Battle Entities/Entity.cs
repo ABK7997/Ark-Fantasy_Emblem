@@ -76,7 +76,7 @@ public class Entity : MonoBehaviour {
     [HideInInspector]
     public enum STATUS
     {
-        NORMAL, ILL, DEFENDING, DEAD, CRITICAL
+        NORMAL, ILL, DEAD, DEFENDING, CRITICAL
     }
 
     /// <summary> Status variable </summary>
@@ -166,17 +166,20 @@ public class Entity : MonoBehaviour {
         {
             immunities.Add("CORROSION"); //Non-droids immune to corrosion
         }
-
-        //if (Name == "Oscar") Hp = 0;
     }
 
     /// <summary>
     /// Manages speed bars
     /// </summary>
     public virtual void UpdateTime() {
-        if (status == STATUS.DEAD) return; //Do nothing if dead
-
         pc.ResetPosition();
+
+        if (status == STATUS.DEAD)
+        {
+            ResetTimer();
+            return; //Do nothing if dead
+        }
+
         CheckLevel();
         CheckLowHealth();
 
@@ -309,7 +312,10 @@ public class Entity : MonoBehaviour {
         pc.FlipTowardsTarget(bc.target);
 
         if (type == "MAGIC") Hp -= bc.specialCost;
-        else if (type == "TECH") bc.techTimer += bc.specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
+        else if (type == "TECH")
+        {
+            if (bc.specialCost != 0) bc.techTimer += bc.specialCost + 1; //Add 1 because 1 turn will immediately be reducted after the turn ends
+        }
 
         anim.SetTrigger("SPECIAL");
         bc.activeSpecial.StartAnimation(this, bc.target, bc.landedHit);
@@ -384,6 +390,7 @@ public class Entity : MonoBehaviour {
             case "NORMAL":
                 status = STATUS.NORMAL;
                 anim.SetBool("Ill", false);
+                anim.SetBool("Dead", false);
                 break;
 
             case "CRITICAL":
@@ -465,7 +472,7 @@ public class Entity : MonoBehaviour {
 
                 _hp = 0;
                 status = STATUS.DEAD;
-                moveTimer = 0f;
+                ResetTimer();
                 ready = false;
 
                 AnimationOff();
@@ -601,6 +608,24 @@ public class Entity : MonoBehaviour {
             "SPD: " + Spd + "\n" +
             "\n" +
             ec.GetAllEffects();
+
+        //Alternate
+        /*
+        return Name + "\nLv. " + level + ", XP: " + Exp + "\n" +
+            "HP: " + Hp + "\n" +
+            type + "\n\n" +
+            "ATK: " + Atk + "  " +
+            "MAG: " + Mag + "  " +
+            "VLT: " + Vlt + "\n" +
+            "DEF: " + Def + "  " +
+            "RES: " + Res + "  " +
+            "STB: " + Stb + "\n" +
+            "SKL: " + Skl + "  " +
+            "LCK: " + Lck + "  " +
+            "SPD: " + Spd + "\n" +
+            "\n" +
+            ec.GetAllEffects();
+        */
     }
 
     /// <summary>

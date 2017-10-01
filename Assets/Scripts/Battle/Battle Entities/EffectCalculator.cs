@@ -95,19 +95,25 @@ public class EffectCalculator {
     /// <param name="set">Enable or disable</param>
     public void SetEffect(string status, int turns)
     {
-        //Special Exception - Revive
-        if (status == "REVIVE")
+        switch (status)
         {
-            user.SetStatus("NORMAL");
-            user.Hp = (int)(user.maxHP * 0.30f);
-            return;
-        }
+            //Unique Case - Revive
+            case "REVIVE":
+                user.SetStatus("NORMAL");
+                user.Hp += (int)(user.maxHP * 0.33f);
+                return;
 
-        //Special Exception - Clear
-        else if (status == "RESET")
-        {
-            NullifyAllEffects();
-            user.bc.ResetStats();
+            //Unique Case - Reset
+            case "RESET":
+                NullifyAllEffects();
+                user.bc.ResetStats();
+                return;
+
+            //Swift absolves Slow
+            case "SWIFT": DisableEffect("SLOW"); break;
+
+            //Slow eliminates Swift
+            case "SLOW": DisableEffect("SWIFT"); break;
         }
 
         Effect nEff = new Effect(status, turns);
