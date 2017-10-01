@@ -27,7 +27,7 @@ public class BattleUI : MonoBehaviour {
     /// <summary>
     /// The window containing the active party member's special abilties for selection
     /// </summary>
-    public Canvas specialSelection;
+    public ScrollRect specialSelection;
 
     /// <summary>
     /// The content tab of the Special Selection scroll view
@@ -151,7 +151,7 @@ public class BattleUI : MonoBehaviour {
                 targetingCanvas.gameObject.SetActive(false);
 
                 commandsList.SetActive(true);
-                specialSelection.enabled = false;
+                specialSelection.gameObject.SetActive(false);
                 gameFlow.gameObject.SetActive(false);
                 SetProjection(false, "");
 
@@ -179,7 +179,7 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(false);
                 targetingCanvas.gameObject.SetActive(false);
                 SetProjection(false, "");
-                specialSelection.enabled = true;
+                specialSelection.gameObject.SetActive(true);
                 break;
 
             case "TILE_SELECTION":
@@ -192,7 +192,7 @@ public class BattleUI : MonoBehaviour {
                 SetProjection(false, "");
 
                 targetingCanvas.gameObject.SetActive(true);
-                specialSelection.enabled = false;
+                specialSelection.gameObject.SetActive(false);
                 break;
 
             case "LEVEL_UP":
@@ -201,7 +201,7 @@ public class BattleUI : MonoBehaviour {
 
             case "PLAYER_PROJECTION":
                 targetingCanvas.gameObject.SetActive(false);
-                specialSelection.enabled = false;
+                specialSelection.gameObject.SetActive(false);
                 commandsList.SetActive(false);
                 break;
 
