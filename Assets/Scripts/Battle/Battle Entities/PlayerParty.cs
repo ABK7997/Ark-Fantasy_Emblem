@@ -49,16 +49,6 @@ public class PlayerParty : Party {
                 case "SELECTION":
 
                     Entity t = GetAnyMember();
-
-                    /*
-                    if (it.items[itemIndex].effect == Item.EFFECT.REVIVE
-                        || activeMember.bc.activeSpecial.effect == Special.EFFECT.REVIVE
-                        )
-                    {
-                        t = GetAnyMember();
-                    }
-                    else t = GetAnyLivingMember();
-                    */
                     
                     if (t != null)
                     {
@@ -81,6 +71,7 @@ public class PlayerParty : Party {
                     {
                         activeMember.pc.SetTileProspect(tileProspect);
 
+                        board.SetColliders(false); //Disable colliders again
                         CalculateAction(); //Battle Projection calculation;
                         bm.SetState("PLAYER_PROJECTION");
 
@@ -175,6 +166,7 @@ public class PlayerParty : Party {
             case "MOVE":
                 bm.SetState("TILE_SELECTION");
                 command = COMMAND.MOVE;
+                board.SetColliders(true);
                 break;
 
             case "FLEE":

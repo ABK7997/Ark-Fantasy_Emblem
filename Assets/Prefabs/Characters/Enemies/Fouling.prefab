@@ -126,7 +126,7 @@ BoxCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -183,7 +183,7 @@ MonoBehaviour:
   baseStb: 3
   baseSkl: 2
   baseLck: 2
-  baseSpd: 2
+  baseSpd: 0
   skills: []
   spells: []
   techs: []

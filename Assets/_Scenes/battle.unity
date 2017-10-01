@@ -1091,7 +1091,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.734}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5040,6 +5040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bm: {fileID: 1083597054}
+  board: {fileID: 1083597055}
   commandsList: {fileID: 1266410190}
   techButtonText: {fileID: 1184456184}
   specialSelection: {fileID: 1745807885}
@@ -6098,6 +6099,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bm: {fileID: 1083597054}
   ui: {fileID: 919402730}
+  board: {fileID: 1083597055}
   pParty: {fileID: 1811452820}
 --- !u!1 &1109118322
 GameObject:
@@ -6365,7 +6367,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.734}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

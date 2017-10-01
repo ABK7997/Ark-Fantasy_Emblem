@@ -84,6 +84,18 @@ public class BoardManager : MonoBehaviour {
     }
 
     /// <summary>
+    /// En/Disable all tile colliders
+    /// </summary>
+    /// <param name="b">True - enable; False - disable</param>
+    public void SetColliders(bool b)
+    {
+        foreach (Tile t in board)
+        {
+            t.collider.enabled = b;
+        }
+    }
+
+    /// <summary>
     /// Get a tile on the board at a certain position
     /// </summary>
     /// <param name="position">The position to search at</param>

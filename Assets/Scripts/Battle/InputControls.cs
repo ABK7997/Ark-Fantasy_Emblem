@@ -18,6 +18,11 @@ public class InputControls : MonoBehaviour {
     public BattleUI ui;
 
     /// <summary>
+    /// Board Manager, contains all data for tile and battle board
+    /// </summary>
+    public BoardManager board;
+
+    /// <summary>
     /// The player's party of characters
     /// </summary>
     public PlayerParty pParty;
@@ -104,6 +109,7 @@ public class InputControls : MonoBehaviour {
 
             case "TILE_SELECTION":
                 bm.SetState("COMMANDING");
+                board.SetColliders(false);
                 break;
 
             case "PLAYER_PROJECTION":

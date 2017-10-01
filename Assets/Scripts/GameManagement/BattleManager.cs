@@ -319,6 +319,7 @@ public class BattleManager : Manager {
                 break;
 
             case "TILE_SELECTION": state = STATE.TILE_SELECTION;
+                board.SetColliders(true);
                 break;
 
             case "LEVEL_UP": state = STATE.LEVEL_UP;

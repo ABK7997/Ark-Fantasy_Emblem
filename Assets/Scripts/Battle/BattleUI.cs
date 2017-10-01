@@ -13,6 +13,11 @@ public class BattleUI : MonoBehaviour {
     public BattleManager bm;
 
     /// <summary>
+    /// The Board Manager, which contains all tile and battle board info
+    /// </summary>
+    public BoardManager board;
+
+    /// <summary>
     /// The canvas containing all the buttons for issuing player Orders
     /// </summary>
     public GameObject commandsList;

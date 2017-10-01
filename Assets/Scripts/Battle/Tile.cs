@@ -9,7 +9,17 @@ public class Tile : MonoBehaviour {
     /// </summary>
     public string tileName;
 
+    /// <summary>
+    /// The box collider for this object
+    /// </summary>
+    public Collider2D collider;
+
     private bool hovering = false;
+
+    private void Start()
+    {
+        collider = GetComponent<Collider2D>();
+    }
 
     /// <summary>
     /// The types of status effects a tile can have on a player
