@@ -91,7 +91,7 @@ public class BoardManager : MonoBehaviour {
     {
         foreach (Tile t in board)
         {
-            t.collider.enabled = b;
+            t.coll.enabled = b;
         }
     }
 

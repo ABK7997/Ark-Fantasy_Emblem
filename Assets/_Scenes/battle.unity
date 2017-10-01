@@ -1320,7 +1320,7 @@ GameObject:
   - component: {fileID: 174475965}
   - component: {fileID: 174475964}
   m_Layer: 5
-  m_Name: Target Cancel Button
+  m_Name: Generic Cancel Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5048,7 +5048,8 @@ MonoBehaviour:
   pauseScreen: {fileID: 508652415}
   gameFlow: {fileID: 901071779}
   flowText: {fileID: 1971793188}
-  targetingCanvas: {fileID: 1895894021}
+  genericCanvas: {fileID: 1895894021}
+  genericText: {fileID: 940760452}
   levelUpWindow: {fileID: 1978680526}
   levelUpText: {fileID: 1359778429}
   victoryWindow: {fileID: 441219905}
@@ -5071,7 +5072,7 @@ GameObject:
   - component: {fileID: 940760453}
   - component: {fileID: 940760452}
   m_Layer: 5
-  m_Name: Targeting Text
+  m_Name: Generic
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11309,7 +11310,7 @@ GameObject:
   - component: {fileID: 1895894022}
   - component: {fileID: 1895894021}
   m_Layer: 5
-  m_Name: Targeting Canvas
+  m_Name: Generic Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

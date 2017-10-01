@@ -55,8 +55,16 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Text flowText;
 
-    /***TARGET SELECTION***/
-    public Image targetingCanvas;
+    /***GENERIC UI***/
+    /// <summary>
+    /// A small canvas usable for different stages of the battle
+    /// </summary>
+    public Image genericCanvas;
+
+    /// <summary>
+    /// Text that can be manipulated for different stages of the battle
+    /// </summary>
+    public Text genericText;
 
     /***LEVEL UP***/
     /// <summary>
@@ -151,35 +159,16 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "COMMANDING":
-                targetingCanvas.gameObject.SetActive(false);
-
                 commandsList.SetActive(true);
                 SetSpecialView(false);
                 SetProjection(false, "");
 
-                int timer = bm.pParty.GetActiveMember().TechTimer;
-
-                if (timer == 0)
-                {
-                    techButtonText.text = "5) TECH";
-                    techButtonText.color = Color.black;
-                }
-                else if (timer == 1)
-                {
-                    techButtonText.text = "5) TECH recharging: " + timer + " turn";
-                    techButtonText.color = Color.gray;
-                }
-                else
-                {
-                    techButtonText.text = "5) TECH recharging: " + timer + " turns";
-                    techButtonText.color = Color.gray;
-                }
+                SetTechTimer();
 
                 break;
 
             case "SPECIAL_SELECTION":
                 commandsList.SetActive(false);
-                targetingCanvas.gameObject.SetActive(false);
                 SetProjection(false, "");
                 SetSpecialView(true);
                 break;
@@ -192,8 +181,6 @@ public class BattleUI : MonoBehaviour {
             case "SELECTION":
                 commandsList.SetActive(false);
                 SetProjection(false, "");
-
-                targetingCanvas.gameObject.SetActive(true);
                 SetSpecialView(false);
                 break;
 
@@ -202,7 +189,6 @@ public class BattleUI : MonoBehaviour {
                 break;
 
             case "PLAYER_PROJECTION":
-                targetingCanvas.gameObject.SetActive(false);
                 SetSpecialView(false);
                 commandsList.SetActive(false);
                 break;
@@ -226,7 +212,7 @@ public class BattleUI : MonoBehaviour {
             case "FLEE_REPORT":
                 fleeReport.gameObject.SetActive(true);
 
-                string text = "";
+                string text;
 
                 if (escaped) text = "Escaped from battle";
                 else text = "Could not escape!";
@@ -237,10 +223,12 @@ public class BattleUI : MonoBehaviour {
 
             default: break;
         }
+
+        SetGenericView();
     }
 
     /// <summary>
-    /// Enable battle projection according to move type
+    /// Enable battle projection and set text according to move type
     /// </summary>
     /// <param name="isPlayer">If the entity making a move is the player or not</param>
     /// <param name="special">The active special, if one is being used (can be null)</param>
@@ -458,5 +446,54 @@ public class BattleUI : MonoBehaviour {
     {
         specialSelection.gameObject.SetActive(b);
         if (b) specialHolder.transform.position = new Vector3(0, specialHolder.transform.position.y, 0);
+    }
+
+    //Generic View - most often used for selections
+    private void SetGenericView()
+    {
+        bool enabled = true;
+        string text = "";
+
+        switch (bm.GetState())
+        {
+            case "SELECTION":
+                text = "SELECT TARGET";
+                break;
+
+            case "TILE_SELECTION":
+                text = "SELECT TILE";
+                break;
+
+            case "SPECIAL_SELECTION":
+                text = "SELECT ABILITY";
+                break;
+
+            default: enabled = false; break;
+        }
+
+        genericCanvas.gameObject.SetActive(enabled);
+        genericText.text = text;
+    }
+
+    //Tech Timer
+    private void SetTechTimer()
+    {
+        int timer = bm.pParty.GetActiveMember().TechTimer;
+
+        if (timer == 0)
+        {
+            techButtonText.text = "5) TECH";
+            techButtonText.color = Color.black;
+        }
+        else if (timer == 1)
+        {
+            techButtonText.text = "5) TECH recharging: " + timer + " turn";
+            techButtonText.color = Color.gray;
+        }
+        else
+        {
+            techButtonText.text = "5) TECH recharging: " + timer + " turns";
+            techButtonText.color = Color.gray;
+        }
     }
 }

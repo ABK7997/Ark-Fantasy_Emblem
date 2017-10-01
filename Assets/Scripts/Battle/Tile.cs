@@ -12,13 +12,13 @@ public class Tile : MonoBehaviour {
     /// <summary>
     /// The box collider for this object
     /// </summary>
-    public Collider2D collider;
+    public Collider2D coll;
 
     private bool hovering = false;
 
     private void Start()
     {
-        collider = GetComponent<Collider2D>();
+        coll = GetComponent<Collider2D>();
     }
 
     /// <summary>
