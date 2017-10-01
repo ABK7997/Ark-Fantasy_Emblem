@@ -53,14 +53,14 @@ public class BattleCalculator {
     public void PhysicalEffectCalculation()
     {
         int damage = user.Atk;
+        int defense = target.Def;
 
         //EFFECT - SWAPPED
         if (ec.CheckEffect("SWAPPED")) damage = user.Mag + user.Vlt;
 
-        int defense = target.Def;
-
         //Defense Modifiers
         if (target.ec.CheckEffect("ARMOR")) defense = 999; //EFFECT - ARMOR
+        if (target.ec.CheckEffect("PROTECT")) defense *= 2; //EFFECT - PROTECT
 
         physicalDmg = damage - defense;
 
@@ -77,6 +77,7 @@ public class BattleCalculator {
     public void MagicEffectCalculation()
     {
         float baseDamage = user.Mag;
+        int resistance = target.Res;
 
         //EFFECT - SWAPPED
         if (ec.CheckEffect("SWAPPED")) baseDamage = user.Atk;
@@ -86,7 +87,11 @@ public class BattleCalculator {
         switch (activeSpecial.type)
         {
             case Special.TYPE.ATTACK:
-                baseDamage -= target.Res;
+
+                //EFFECT - BARRIER
+                if (target.ec.CheckEffect("BARRIER")) resistance *= 2;
+
+                baseDamage -= resistance;
                 if (baseDamage < 0) baseDamage = 0;
                 break;
 
@@ -112,6 +117,7 @@ public class BattleCalculator {
     public void TechnicalEffectCalculation()
     {
         float baseDamage = user.Vlt;
+        int stability = user.Stb;
 
         //EFFECT - SWAPPED
         if (ec.CheckEffect("SWAPPED")) baseDamage = user.Atk;
@@ -121,7 +127,11 @@ public class BattleCalculator {
         switch (activeSpecial.type)
         {
             case Special.TYPE.ATTACK:
-                baseDamage -= target.Stb;
+
+                //EFFECT - GROUND
+                if (target.ec.CheckEffect("GROUND")) stability *= 2;
+
+                baseDamage -= stability;
                 if (baseDamage < 0) baseDamage = 0;
                 break;
 
@@ -206,11 +216,6 @@ public class BattleCalculator {
         if (hit < 0) hit = 0;
         if (hit > 99) hit = 99;
 
-        if (activeSpecial != null)
-        {
-            if (activeSpecial.type == Special.TYPE.EFFECT) return activeSpecial.baseAccuracy;
-        }
-
         return hit;
     }
 
@@ -227,6 +232,9 @@ public class BattleCalculator {
         //EFFECT - ANGER
         if (ec.CheckEffect("ANGER")) crit += 35;
 
+        if (crit < 0) crit = 0;
+        if (crit > 99) crit = 99;
+
         return crit;
     }
 
@@ -237,6 +245,9 @@ public class BattleCalculator {
 
         int evd = 0;
         evd += target.Lck;
+
+        if (evd < 0) evd = 0;
+        if (evd > 99) evd = 99;
 
         return evd;
     }
@@ -353,7 +364,7 @@ public class BattleCalculator {
     {
         string eff = activeSpecial.effect + "";
 
-        target.ec.SetEffect(eff, activeSpecial.turnTimer);
+        if (landedHit) target.ec.SetEffect(eff, activeSpecial.turnTimer);
     }
 
     //Heal all members of a party
@@ -509,5 +520,6 @@ public class BattleCalculator {
     public void UseItem()
     {
         ((PlayerParty)user.GetParty()).GetItem().Use(target);
+        user.ResetTimer();
     }
 }

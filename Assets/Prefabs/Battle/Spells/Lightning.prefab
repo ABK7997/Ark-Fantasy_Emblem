@@ -83,6 +83,7 @@ MonoBehaviour:
   turnTimer: 0
   baseAccuracy: 95
   baseCrit: -5
+  self_target: 0
   hitAll: 0
   description: Call down a thunderbolt. Accurate and powerful
   animationTime: 2

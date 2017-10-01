@@ -58,7 +58,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.6, y: 1.6}
+    oldSize: {x: 6.4, y: 6.4}
     newSize: {x: 1.6, y: 1.6}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -83,12 +83,13 @@ MonoBehaviour:
   turnTimer: 1
   baseAccuracy: 100
   baseCrit: 0
+  self_target: 1
   hitAll: 0
   description: Briefly makes the user invulnerable to physical damage
   animationTime: 1.75
   classification: 0
-  type: 3
-  effect: 4
+  type: 2
+  effect: 5
   projectile: {fileID: 114147984333041134, guid: d9b683477901d424abcecb46b14d8a4a,
     type: 2}
 --- !u!212 &212468363706291140
@@ -123,7 +124,7 @@ SpriteRenderer:
   m_SortingLayerID: 894910205
   m_SortingLayer: 3
   m_SortingOrder: 0
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300030, guid: de721f286f8d1c74883e966025bafceb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -131,5 +132,5 @@ SpriteRenderer:
   m_Size: {x: 1.6, y: 1.6}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0

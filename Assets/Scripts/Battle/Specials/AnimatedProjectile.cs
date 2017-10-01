@@ -10,16 +10,18 @@ public class AnimatedProjectile : MonoBehaviour {
     private float xSpeed, ySpeed;
 
     private Vector3 destination;
+    private Vector3 enemyPosition;
 
-    private float epsilon = 0.05f;
+    private float epsilon = 0.25f;
 
     private bool hit = true;
+    private bool dodgePlayed = false;
+    private bool targetIsUser = false;
 	
 	// Update is called once per frame
 	void Update () {
         Vector3 position = transform.position;
         Vector3 newPosition = new Vector3(0f, 0f, 0f);
-        Vector3 enemyPosition = target.transform.position;
 
         if (hit)
         {
@@ -35,17 +37,23 @@ public class AnimatedProjectile : MonoBehaviour {
         //If the shot is a miss
         else
         {
-            //Destroy
-            if ((Mathf.Abs(position.x - destination.x) <= epsilon)
-                && (Mathf.Abs(position.y - destination.y) <= epsilon))
+            //Miss
+            if ((Mathf.Abs(position.x - enemyPosition.x) <= 5f)
+                && (Mathf.Abs(position.y - enemyPosition.y) <= 5f)
+                && !dodgePlayed
+                && !targetIsUser)
             {
-                Destroy(gameObject);
+                Miss();
+                dodgePlayed = true;
+
             }
 
-            if ((Mathf.Abs(position.x - enemyPosition.x) <= 0.25f)
-                && (Mathf.Abs(position.y - enemyPosition.y) <= 0.25f))
+            //Destroy
+            if ((Mathf.Abs(position.x - destination.x) <= 0.25f)
+                && (Mathf.Abs(position.y - destination.y) <= 0.25f))
             {
                 user.SpecialEffect();
+                Destroy(gameObject);
             }
         }
 
@@ -69,11 +77,12 @@ public class AnimatedProjectile : MonoBehaviour {
         //Spell will miss - flies past target
         if (!accurate)
         {
-            destination *= 2;
+            //destination = new Vector3(destination.x * 1.5f, destination.y * 1.5f);
         }
 
         //Target is same as user
         if (Vector3.Distance(u.transform.position, t.transform.position) == 0 || spc.hitAll) {
+            targetIsUser = true;
             destination = new Vector3(start.x + 2.5f, start.y, 0);
 
             xSpeed = ((destination.x - start.x) * Time.deltaTime) / animationTime;
@@ -93,6 +102,7 @@ public class AnimatedProjectile : MonoBehaviour {
         hit = accurate;
 
         GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
+        enemyPosition = target.transform.position;
 
         SetRotation();
     }
@@ -112,5 +122,12 @@ public class AnimatedProjectile : MonoBehaviour {
         if (tPos.y > pos.y) scale.y *= -1;
 
         transform.localScale = scale;
+    }
+
+    //Miss animation
+    private void Miss()
+    {
+        if (user.pc.IsRightOf(target)) target.pc.SetPosition(2f, 0f);
+        else target.pc.SetPosition(-2f, 0f);
     }
 }

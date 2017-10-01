@@ -167,7 +167,7 @@ public class Entity : MonoBehaviour {
             immunities.Add("CORROSION"); //Non-droids immune to corrosion
         }
 
-        if (Name == "Oscar") Hp = 0;
+        //if (Name == "Oscar") Hp = 0;
     }
 
     /// <summary>
@@ -189,8 +189,11 @@ public class Entity : MonoBehaviour {
             if (pc.GetTileEffect2() == Tile.EFFECT.STUCK) addTime /= 2;
 
             //Status Effect
-            if (ec.CheckEffect("SWIFT")) addTime *= 1.7f; //Increase by 70%
-            else if (ec.CheckEffect("SLOW")) addTime *= 0.5f; //Decrease by half
+            if (ec != null)
+            {
+                if (ec.CheckEffect("SWIFT")) addTime *= 1.7f; //Increase by 70%
+                else if (ec.CheckEffect("SLOW")) addTime *= 0.5f; //Decrease by half
+            }
 
             moveTimer += addTime;
 

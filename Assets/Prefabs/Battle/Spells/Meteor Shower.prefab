@@ -79,9 +79,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basePwr: 1.25
-  cost: 2
+  cost: 9
   turnTimer: 0
-  baseAccuracy: 70
+  baseAccuracy: 80
   baseCrit: 1
   hitAll: 1
   description: Attack all enemies

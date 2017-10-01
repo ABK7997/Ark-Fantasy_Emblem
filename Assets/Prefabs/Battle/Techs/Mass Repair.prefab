@@ -78,7 +78,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5426633d4d42c4646887c5f6cbe0b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePwr: 0.8
+  basePwr: 1.25
   cost: 3
   turnTimer: 0
   baseAccuracy: 100

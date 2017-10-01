@@ -103,6 +103,13 @@ public class EffectCalculator {
             return;
         }
 
+        //Special Exception - Clear
+        else if (status == "RESET")
+        {
+            NullifyAllEffects();
+            user.bc.ResetStats();
+        }
+
         Effect nEff = new Effect(status, turns);
 
         if (CheckEffect(status)) //Effect is already active; reset effect

@@ -208,7 +208,7 @@ public class BattleManager : Manager {
 
                 case "MOVE":
                 case "ITEM":
-                    animationTime = 0.5f;
+                    animationTime = 0f; //Doesn't actuall run
                     break;
 
                 case "FLEE":
@@ -272,7 +272,7 @@ public class BattleManager : Manager {
             //Escaep from battle
             case "FLEE":
                 //Fled successfully
-                if (user.bc.fled) BattleUI.fleeSuccess = true;
+                if (user.bc.fled) BattleUI.escaped = true;
                 user.ResetTimer();
                 SetState("FLEE_REPORT");
 

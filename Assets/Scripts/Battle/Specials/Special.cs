@@ -32,6 +32,11 @@ public class Special : MonoBehaviour {
     public int baseCrit;
 
     /// <summary>
+    /// True if the special only affects the caster
+    /// </summary>
+    public bool self_target;
+
+    /// <summary>
     /// Scope of the special ability: single target or all enemies / friendlies?
     /// </summary>
     public bool hitAll;
@@ -75,7 +80,9 @@ public class Special : MonoBehaviour {
         ARMOR, //Single-turn defensive boost
         SWAPPED, REVIVE, //Miscellaneous
         SLOW, SWIFT, //Speed
-        POISON, CORROSION //Damage over Time
+        POISON, CORROSION, //Damage over Time
+        PROTECT, BARRIER, GROUND, //Defensive
+        RESET //Dispel effects, reset stats
     }
     public EFFECT effect;
 

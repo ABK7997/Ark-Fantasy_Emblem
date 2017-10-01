@@ -76,21 +76,24 @@ public class InputControls : MonoBehaviour {
                 type = pParty.GetActiveMember().GetSpecial().type + "";
             }
         }
-        
 
         switch (bm.GetState())
         {
             case "COMMANDING":
-            case "PAUSED":
                 bm.SetState("NORMAL");
                 break;
 
             case "SELECTION":
                 pParty.NullifySpecial();
-                if (type != "")
+
+                if (pParty.command == Party.COMMAND.MAGIC 
+                    || pParty.command == Party.COMMAND.TECH
+                    || pParty.command == Party.COMMAND.SKILL
+                    || pParty.command == Party.COMMAND.ITEM)
                 {
                     bm.SetState("SPECIAL_SELECTION");
                 }
+
                 else bm.SetState("COMMANDING");
                 break;
 
@@ -108,21 +111,32 @@ public class InputControls : MonoBehaviour {
                 bm.CancelAction();
 
                 //Moving to tile
-                if (BattleUI.moving)
+                if (pParty.command == Party.COMMAND.MOVE)
                 {
-                    BattleUI.moving = false;
                     bm.SetState("TILE_SELECTION");
                     break;
                 }
 
-                //Hit-All special
-                if (pParty.GetActiveMember().GetSpecial() != null)
+                //Fleeing
+                else if (pParty.command == Party.COMMAND.FLEE)
                 {
-                    if (pParty.GetActiveMember().GetSpecial().hitAll)
-                    {
-                        bm.SetState("SPECIAL_SELECTION");
-                        break;
-                    }
+                    bm.SetState("COMMANDING");
+                    break;
+                }
+
+                //Item target
+                else if (pParty.command == Party.COMMAND.ITEM)
+                {
+                    bm.SetState("SELECTION");
+                    break;
+                }
+
+                //Hit-all, self-targetting
+                else if (BattleUI.hitAll || BattleUI.selfTarget)
+                {
+                    BattleUI.hitAll = BattleUI.selfTarget = false;
+                    bm.SetState("SPECIAL_SELECTION");
+                    break;
                 }
                 
                 //Other
@@ -182,7 +196,7 @@ public class InputControls : MonoBehaviour {
 
             //Flee Attempt
             case "FLEE_REPORT":
-                if (BattleUI.fleeSuccess) bm.LoadOverworld();
+                if (BattleUI.escaped) bm.LoadOverworld();
                 else bm.SetState("NORMAL");
                 break;
         }
@@ -260,7 +274,7 @@ public class InputControls : MonoBehaviour {
         if (Input.GetKeyDown(KeyCode.Keypad3) || Input.GetKeyDown(KeyCode.Alpha3)) pParty.SetCommand("SKILL"); //3. SKILLS
         if (Input.GetKeyDown(KeyCode.Keypad4) || Input.GetKeyDown(KeyCode.Alpha4)) pParty.SetCommand("MAGIC"); //4. MAGIC
         if (Input.GetKeyDown(KeyCode.Keypad5) || Input.GetKeyDown(KeyCode.Alpha5)) pParty.SetCommand("TECH"); //5. TECHS
-
+        if (Input.GetKeyDown(KeyCode.Keypad6) || Input.GetKeyDown(KeyCode.Alpha6)) pParty.SetCommand("ITEM"); //6. ITEMS
         if (Input.GetKeyDown(KeyCode.Keypad7) || Input.GetKeyDown(KeyCode.Alpha7)) pParty.SetCommand("MOVE"); //7. MOVE
         if (Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.Alpha8)) pParty.SetCommand("FLEE"); //8. FLEE
     }

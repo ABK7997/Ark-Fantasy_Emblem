@@ -79,7 +79,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   basePwr: 1.5
-  cost: 2
+  cost: 1
   turnTimer: 0
   baseAccuracy: 70
   baseCrit: 0

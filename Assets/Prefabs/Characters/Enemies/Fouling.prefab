@@ -183,10 +183,11 @@ MonoBehaviour:
   baseStb: 3
   baseSkl: 2
   baseLck: 2
-  baseSpd: 2
+  baseSpd: 0
   skills: []
   spells: []
   techs: []
+  immunities: []
   status: 0
   overhead: {fileID: 223101204964993824}
   hpBar: {fileID: 114300647946785628}

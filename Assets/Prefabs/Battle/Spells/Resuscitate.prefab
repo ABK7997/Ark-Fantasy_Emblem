@@ -78,11 +78,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5426633d4d42c4646887c5f6cbe0b436, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePwr: 0.6
+  basePwr: 0
   cost: 5
   turnTimer: 0
   baseAccuracy: 100
-  baseCrit: 1
+  baseCrit: 0
   hitAll: 0
   description: Restore HP (cannot heal caster)
   animationTime: 2

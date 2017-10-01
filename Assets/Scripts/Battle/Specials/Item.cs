@@ -9,7 +9,7 @@ public class Item : MonoBehaviour {
 
     public enum EFFECT
     {
-        HEAL, REVIVE
+        HEAL, REVIVE, ANTIODTE, POLISH
     }
     public EFFECT effect;
 
@@ -40,6 +40,9 @@ public class Item : MonoBehaviour {
                 target.Hp += (int)(target.maxHP * 0.33);
 
                 break;
+
+            case EFFECT.ANTIODTE: target.ec.DisableEffect("POISON"); break;
+            case EFFECT.POLISH: target.ec.DisableEffect("CORROSION"); break;
         }
 
         stock--;

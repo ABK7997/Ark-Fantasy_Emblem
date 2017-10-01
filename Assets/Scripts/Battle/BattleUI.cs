@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class BattleUI : MonoBehaviour {
 
-    public static bool moving = false;
-    public static bool fleeSuccess = false;
+    public static bool escaped = false, hitAll = false, selfTarget = false;
 
     /// <summary>
     /// The Battle Manager, mostly just for its GetState() method
@@ -30,6 +29,11 @@ public class BattleUI : MonoBehaviour {
     /// </summary>
     public Canvas specialSelection;
 
+    /// <summary>
+    /// The content tab of the Special Selection scroll view
+    /// </summary>
+    public GameObject specialHolder;
+
     /***PAUSING and GAME SPEED***/
     /// <summary>
     /// An overlaying, half-transparent image that visually declares to the player when the game is paused or not
@@ -49,7 +53,7 @@ public class BattleUI : MonoBehaviour {
     /***TARGET SELECTION***/
     public Image targetingCanvas;
 
-    /***LEVLE UP***/
+    /***LEVEL UP***/
     /// <summary>
     /// Window which pops up when a character gains enough experience to level up after a move
     /// </summary>
@@ -83,7 +87,6 @@ public class BattleUI : MonoBehaviour {
     public Text fleeText;
 
     /***BATTLE PROJECTION***/
-
     /// <summary>
     /// A box which is used to display the battle projection stats
     /// </summary>
@@ -105,11 +108,20 @@ public class BattleUI : MonoBehaviour {
     public Text eProjectionInfo;
 
     /***BUTTONS***/
-
     /// <summary>
     ///  The cancel button in the BP window; unavailable if it is an Enemy Projection
     /// </summary>
     public Button cancelButton;
+
+    //MISC
+    private void Update()
+    {
+        //Special Selection content view
+        if (bm.GetState() == "SPECIAL_SELECTION")
+        {
+            if (specialHolder.transform.right.x < 0) specialHolder.transform.right = new Vector3(0, 0, 0);
+        }
+    }
 
     /***STATES***/
 
@@ -141,6 +153,7 @@ public class BattleUI : MonoBehaviour {
                 commandsList.SetActive(true);
                 specialSelection.enabled = false;
                 gameFlow.gameObject.SetActive(false);
+                SetProjection(false, "");
 
                 int timer = bm.pParty.GetActiveMember().TechTimer;
 
@@ -217,7 +230,7 @@ public class BattleUI : MonoBehaviour {
 
                 string text = "";
 
-                if (fleeSuccess) text = "Escaped from battle";
+                if (escaped) text = "Escaped from battle";
                 else text = "Could not escape!";
 
                 fleeText.text = text;
@@ -246,11 +259,14 @@ public class BattleUI : MonoBehaviour {
         //Special - Spell, Tech, or Skill
         else if (special != null)
         {
-            //Multi-target
-            if (special.hitAll && special.type == Special.TYPE.ATTACK) text = AttackAllProjection(user, command);
+            selfTarget = special.self_target;
+            hitAll = special.hitAll;
+
+            //Multi-target attack
+            if (hitAll && special.type == Special.TYPE.ATTACK) AttackAllProjection(user, command);
 
             //Healing (single and multiple)
-            else if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
+            if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
 
             //Effects and Skills
             else if (special.type == Special.TYPE.EFFECT) text = EffectProjection(user);
@@ -279,7 +295,6 @@ public class BattleUI : MonoBehaviour {
         else
         {
             text = MoveProjection(user);
-            moving = true;
         }
 
         //Enable Projection Window UI

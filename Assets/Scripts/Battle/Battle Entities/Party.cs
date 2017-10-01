@@ -43,11 +43,11 @@ public abstract class Party : MonoBehaviour {
     }
 
     //The Different moves types an entity can perform
-    protected enum COMMAND
+    public enum COMMAND
     {
         NONE, ATTACK, SKILL, MAGIC, TECH, DEFEND, ITEM, MOVE, FLEE
     }
-    protected COMMAND command = COMMAND.NONE;
+    public COMMAND command = COMMAND.NONE;
 
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)

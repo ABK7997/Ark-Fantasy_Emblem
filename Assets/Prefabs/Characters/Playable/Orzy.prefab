@@ -303,8 +303,18 @@ MonoBehaviour:
   spells: []
   techs:
   - {fileID: 114161810696810686, guid: 97918590e9b1d124f99fb0e33722c13d, type: 2}
+  - {fileID: 114425003260267748, guid: 129270b18c2f32843bbd68ce28c5035f, type: 2}
+  - {fileID: 114563829868404782, guid: 038455259cd0e274a8dbfbdbd8082fc0, type: 2}
+  - {fileID: 114026408199306084, guid: 76e4a0d1a142b9943a4ac83e04cabeb0, type: 2}
   - {fileID: 114204611830792758, guid: 36ae37017075430459a60e76be10aae1, type: 2}
   - {fileID: 114629342131456110, guid: 4448d9137d849404087fc07f03f686bb, type: 2}
+  - {fileID: 114382130219556974, guid: f97103660258464469ed313ae460d315, type: 2}
+  - {fileID: 114313863496751664, guid: a3c481940c80f334abf68b8284d3ebd2, type: 2}
+  - {fileID: 114057646849986528, guid: c7c65c4ca68315b49b28ff5c1ebd2053, type: 2}
+  - {fileID: 114555160871050782, guid: 82da58ec3daea694eaf179db3bd94101, type: 2}
+  - {fileID: 114319376070443430, guid: 8eb8fafcabac01244ab007f5f639ed4d, type: 2}
+  - {fileID: 114959626557959412, guid: 1d013d9f68297784c939791eeadcdf66, type: 2}
+  immunities: []
   status: 0
   overhead: {fileID: 223379118872263508}
   hpBar: {fileID: 114756141874922392}
