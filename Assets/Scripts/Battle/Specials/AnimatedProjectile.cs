@@ -17,6 +17,7 @@ public class AnimatedProjectile : MonoBehaviour {
     private bool hit = true;
     private bool dodgePlayed = false;
     private bool targetIsUser = false;
+    public bool duplicate = false;
 	
 	// Update is called once per frame
 	void Update () {
@@ -29,7 +30,7 @@ public class AnimatedProjectile : MonoBehaviour {
             if ((Mathf.Abs(position.x - destination.x) <= epsilon)
                 && (Mathf.Abs(position.y - destination.y) <= epsilon))
             {
-                user.SpecialEffect();
+                if (!duplicate) user.SpecialEffect();
                 Destroy(gameObject);
             }
         }
@@ -80,8 +81,8 @@ public class AnimatedProjectile : MonoBehaviour {
             //destination = new Vector3(destination.x * 1.5f, destination.y * 1.5f);
         }
 
-        //Target is same as user
-        if (Vector3.Distance(u.transform.position, t.transform.position) == 0 || spc.hitAll) {
+        //Target is the user
+        if (Vector3.Distance(u.transform.position, t.transform.position) == 0) {
             targetIsUser = true;
             destination = new Vector3(start.x + 2.5f, start.y, 0);
 
@@ -101,7 +102,9 @@ public class AnimatedProjectile : MonoBehaviour {
 
         hit = accurate;
 
-        GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
+        if (hit) GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
+        else GetComponent<SpriteRenderer>().sprite = null;
+
         enemyPosition = target.transform.position;
 
         SetRotation();

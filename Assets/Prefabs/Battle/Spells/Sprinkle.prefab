@@ -83,9 +83,9 @@ MonoBehaviour:
   turnTimer: 0
   baseAccuracy: 100
   baseCrit: 0
+  self_target: 0
   hitAll: 1
-  description: Heal all allies slightly (but not the caster)Heal all allies slightly
-    (but not the caster)
+  description: Heal all allies slightly (but not the caster)
   animationTime: 2
   classification: 1
   type: 1

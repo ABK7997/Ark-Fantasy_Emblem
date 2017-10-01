@@ -174,13 +174,14 @@ public class BattleCalculator {
 
         if (activeSpecial != null) specialCost = activeSpecial.cost;
 
+
         //Tile modifiers
         TileEffects(target.pc.GetTileEffect1());
         TileEffects(target.pc.GetTileEffect2());
 
         //Calculate hit or miss
         if (Random.Range(0, 100) <= hitChance) landedHit = true;
-        if (Random.Range(0, 100) <= critChance) landedCrit = true;
+        if (Random.Range(0, 100) <= critChance && landedHit) landedCrit = true;
     }
 
     //Accuracy
@@ -203,7 +204,7 @@ public class BattleCalculator {
     {
         if (activeSpecial != null)
         {
-            if (activeSpecial.type == Special.TYPE.EFFECT) return 0;
+            if (activeSpecial.self_target) return 0;
         }
 
         int evade = 0; //base evd = 0
@@ -399,7 +400,11 @@ public class BattleCalculator {
         {
             SetTemporaryStats(e);
 
-            if (!landedHit) continue;
+            if (!landedHit)
+            {
+                user.Miss(e);
+                continue;
+            }
 
             float multiplier = 1f;
             if (landedCrit) multiplier = 2.25f;
@@ -428,12 +433,22 @@ public class BattleCalculator {
         {
             //Lose accuracy
             case Tile.EFFECT.HIDDEN:
-                hitChance -= 35;
+                if (activeSpecial != null)
+                {
+                    if (!activeSpecial.self_target) hitChance -= 35; //Self-targeting moves don't suffer aim penalties
+                }
+                else hitChance -= 35;
+
                 if (hitChance < 0) hitChance = 0;
                 break;
 
             case Tile.EFFECT.OBSCURED:
-                hitChance -= 15;
+                if (activeSpecial != null)
+                {
+                    if (!activeSpecial.self_target) hitChance -= 15; //Self-targeting moves don't suffer aim penalties
+                }
+                else hitChance -= 35;
+
                 if (hitChance < 0) hitChance = 0;
                 break;
 

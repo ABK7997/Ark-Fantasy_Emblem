@@ -171,10 +171,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Fouling
-  expGain: 100
+  expGain: 30
   level: 1
   type: 0
-  maxHP: 100
+  maxHP: 50
   baseAtk: 12
   baseMag: 0
   baseVlt: 0
@@ -183,7 +183,7 @@ MonoBehaviour:
   baseStb: 3
   baseSkl: 2
   baseLck: 2
-  baseSpd: 0
+  baseSpd: 2
   skills: []
   spells: []
   techs: []

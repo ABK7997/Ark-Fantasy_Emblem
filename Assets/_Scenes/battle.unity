@@ -3578,6 +3578,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 599705928}
+--- !u!114 &612319093 stripped
+MonoBehaviour:
+  m_PrefabParentObject: {fileID: 114001919405255480, guid: 176fe1f21520aa4479c5c02b7450f14c,
+    type: 2}
+  m_PrefabInternal: {fileID: 1634957544}
+  m_Script: {fileID: 11500000, guid: 185327ae1b4908e418d87cd1c85a0ee7, type: 3}
 --- !u!1 &643700468
 GameObject:
   m_ObjectHideFlags: 0
@@ -9998,7 +10004,7 @@ Prefab:
         type: 2}
       propertyPath: activeEnemies.Array.data[0]
       value: 
-      objectReference: {fileID: 281390942}
+      objectReference: {fileID: 612319093}
     - target: {fileID: 114471246818334720, guid: 176fe1f21520aa4479c5c02b7450f14c,
         type: 2}
       propertyPath: activeEnemies.Array.data[3]

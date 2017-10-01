@@ -144,9 +144,28 @@ public class Special : MonoBehaviour {
     /// <param name="target">The target of the SetSpecial</param>
     public void StartAnimation(Entity user, Entity target, bool hit)
     {
-        AnimatedProjectile p = Instantiate(projectile, user.transform.position, Quaternion.identity);
+        //Create multiple projectiles for multiple targets 
+        if (hitAll)
+        {
+            List<Entity> party = target.GetParty().GetParty();
+            bool first = true;
 
-        p.StartAnimation(this, user, target, animationTime, hit);
+            foreach (Entity e in party)
+            {
+                AnimatedProjectile p = Instantiate(projectile, user.transform.position, Quaternion.identity);
+
+                p.StartAnimation(this, user, e, animationTime, hit);
+                if (!first) p.duplicate = true; //Prevent effect from being added multiple times per target
+
+                first = false;
+            }
+        }
+
+        else
+        {
+            AnimatedProjectile p = Instantiate(projectile, user.transform.position, Quaternion.identity);
+            p.StartAnimation(this, user, target, animationTime, hit);
+        }
     }
 
 }

@@ -297,7 +297,7 @@ public class Entity : MonoBehaviour {
         }
 
         //Miss Animation
-        else Miss();
+        else Miss(bc.target);
 
         ResetTimer();
     }
@@ -343,7 +343,7 @@ public class Entity : MonoBehaviour {
     }
     
     //Miss Animation
-    private void Miss()
+    public void Miss(Entity target)
     {
         if (pc.IsRightOf(bc.target)) bc.target.pc.SetPosition(2f, 0f);
         else bc.target.pc.SetPosition(-2f, 0f);

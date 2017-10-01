@@ -114,6 +114,15 @@ public class BattleUI : MonoBehaviour {
     public Button cancelButton;
 
     /***STATES***/
+    private void Update()
+    {
+        if (bm.GetState() != "NORMAL" 
+            && bm.GetState() != "PAUSED")
+        {
+            gameFlow.gameObject.SetActive(false);
+        }
+        else gameFlow.gameObject.SetActive(true);
+    }
 
     /// <summary>
     /// Determines which UI elements to turn on or off depending on the game state
@@ -128,7 +137,6 @@ public class BattleUI : MonoBehaviour {
                 SetProjection(false, "");
                 SetEnemyProjection(false, "");
                 cancelButton.gameObject.SetActive(true);
-                gameFlow.gameObject.SetActive(true);
                 levelUpWindow.gameObject.SetActive(false);
                 fleeReport.gameObject.SetActive(false);
                 break;
@@ -142,7 +150,6 @@ public class BattleUI : MonoBehaviour {
 
                 commandsList.SetActive(true);
                 SetSpecialView(false);
-                gameFlow.gameObject.SetActive(false);
                 SetProjection(false, "");
 
                 int timer = bm.pParty.GetActiveMember().TechTimer;
@@ -197,7 +204,6 @@ public class BattleUI : MonoBehaviour {
 
             case "ENEMY_PROJECTION":
                 cancelButton.gameObject.SetActive(false);
-                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "PAUSED":
@@ -206,17 +212,14 @@ public class BattleUI : MonoBehaviour {
 
             case "VICTORY":
                 victoryWindow.gameObject.SetActive(true);
-                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "GAME_OVER":
                 deathWindow.gameObject.SetActive(true);
-                gameFlow.gameObject.SetActive(false);
                 break;
 
             case "FLEE_REPORT":
                 fleeReport.gameObject.SetActive(true);
-                gameFlow.gameObject.SetActive(false);
 
                 string text = "";
 
@@ -253,10 +256,10 @@ public class BattleUI : MonoBehaviour {
             hitAll = special.hitAll;
 
             //Multi-target attack
-            if (hitAll && special.type == Special.TYPE.ATTACK) AttackAllProjection(user, command);
+            if (hitAll && special.type == Special.TYPE.ATTACK) text = AttackAllProjection(user, command);
 
             //Healing (single and multiple)
-            if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
+            else if (special.type == Special.TYPE.HEAL) text = HealProjection(user, command);
 
             //Effects and Skills
             else if (special.type == Special.TYPE.EFFECT)
@@ -344,7 +347,7 @@ public class BattleUI : MonoBehaviour {
 
         ret =
             "BASE PWR: ~" + damage + "\n\n" +
-            "Damage and hit chance will vary from target to target";
+            "Damage, hit chance, and effects will vary from target to target";
 
         return ret;
     }
