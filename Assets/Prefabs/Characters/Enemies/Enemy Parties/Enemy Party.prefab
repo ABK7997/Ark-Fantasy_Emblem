@@ -51,8 +51,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c5d4d1ac52026149aaf3c813456b031, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  statsView: {fileID: 0}
+  statsText: {fileID: 0}
   party:
-  - {fileID: 114146434124917008, guid: e11d324c053706a47ae9c3c02e6746ed, type: 2}
-  - {fileID: 114146434124917008, guid: e11d324c053706a47ae9c3c02e6746ed, type: 2}
-  - {fileID: 114146434124917008, guid: e11d324c053706a47ae9c3c02e6746ed, type: 2}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   oppositeParty: []
+  otherPartyBody: {fileID: 0}
+  command: 0

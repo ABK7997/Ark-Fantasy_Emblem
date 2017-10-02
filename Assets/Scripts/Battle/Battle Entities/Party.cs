@@ -220,14 +220,12 @@ public abstract class Party : MonoBehaviour {
         {
             activeMember.ChangeColor("normal");
             activeMember.SetSpecial(-1, null);
-            //activeMember.ResetPosition();
         }
         activeMember = null;
 
         if (target != null)
         {
             target.ChangeColor("normal");
-            //target.ResetPosition();
         }
         target = null;
     }
