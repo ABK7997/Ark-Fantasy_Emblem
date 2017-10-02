@@ -102,8 +102,9 @@ public class AnimatedProjectile : MonoBehaviour {
 
         hit = accurate;
 
-        if (hit) GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
-        else GetComponent<SpriteRenderer>().sprite = null;
+        //A self-targeting skill that misses will simply whif and not appear at all
+        if (!hit && spc.classification == Special.CLASS.SKILL && spc.type == Special.TYPE.EFFECT) GetComponent<SpriteRenderer>().sprite = null;
+        else GetComponent<SpriteRenderer>().sprite = spc.GetSprite();
 
         enemyPosition = target.transform.position;
 

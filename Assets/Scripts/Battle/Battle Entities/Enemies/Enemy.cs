@@ -7,20 +7,6 @@ using System.Collections.Generic;
 /// </summary>
 public class Enemy : Entity {
 
-    //Permanent codes for choosing Spells / Techs
-    protected const int ETHEREAL_ARROW = 0, SHOCK = 0;
-    protected const int SOUL_SPEAR = 1, FLAMETHROWER = 1;
-    protected const int THRASH = 2, PULSE = 2;
-    protected const int LIGHTNING = 3, LASER = 3;
-    protected const int COMET = 4, REPAIR = 4;
-    protected const int METEOR_SHOWER = 5, MASS_REPAIR = 5;
-    protected const int HEAL = 6, SHIELD = 6;
-    protected const int MEND = 7, BARRIER = 7;
-    protected const int SPRINKLE = 8, GROUND = 8;
-    protected const int RESUSCITATE = 9, SLOW = 9;
-    protected const int POISON = 10, HASTEN = 10;
-    protected const int RUST = 11, REBOOT = 11;
-
     //Keep track of turn number for certain behavior patterns
     protected int turn = 0;
 
@@ -50,10 +36,9 @@ public class Enemy : Entity {
     /// </summary>
     public virtual void Behavior()
     {
-        string command = "ATTACK";
         Entity target = GetRandomPlayer();
 
-        party.ExecuteAction(command, this, target);
+        party.ExecuteAction(Party.COMMAND.ATTACK, this, target);
         ResetTimer();
     }
 
@@ -154,7 +139,9 @@ public class Enemy : Entity {
     //Get ally with the lowest HP (probably to heal)
     protected Entity GetAllyLowHP()
     {
-        Entity ret = null;
+        if (party.GetLivingParty().Count == 1) return null; //Caster is the only party member left
+
+        Entity ret = party.GetLivingParty()[0];
 
         foreach (Entity e in party.GetLivingParty())
         {

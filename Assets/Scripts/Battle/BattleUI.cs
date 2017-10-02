@@ -355,10 +355,7 @@ public class BattleUI : MonoBehaviour {
 
         switch (command)
         {
-            case "MAGIC":
-                if (user.bc.target.Name == user.Name && !bc.activeSpecial.hitAll) damage = 0; //Spells cannot heal caster
-                else damage = -bc.MagicDmg;
-                break;
+            case "MAGIC": damage = -bc.MagicDmg; break;
 
             case "TECH": damage = -bc.TechDmg; break;
         }

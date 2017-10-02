@@ -174,7 +174,7 @@ MonoBehaviour:
   expGain: 30
   level: 1
   type: 0
-  maxHP: 50
+  maxHP: 12
   baseAtk: 12
   baseMag: 0
   baseVlt: 0
@@ -183,17 +183,16 @@ MonoBehaviour:
   baseStb: 3
   baseSkl: 2
   baseLck: 2
-  baseSpd: 0
+  baseSpd: 2
   skills: []
   spells: []
   techs: []
   immunities: []
   status: 0
+  normal: {r: 0, g: 0, b: 0, a: 0}
   overhead: {fileID: 223101204964993824}
   hpBar: {fileID: 114300647946785628}
   indexText: {fileID: 114212566682658984}
-  barsLength: 15
-  barsHeight: 1.5
   l_hp: 25
   l_atk: 40
   l_mag: 0

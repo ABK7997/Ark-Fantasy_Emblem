@@ -86,8 +86,7 @@ public class Entity : MonoBehaviour {
     //Target Color
     protected Color targeted = Color.red;
     protected Color active = Color.green;
-    protected Color normal;
-    protected Color hover = Color.gray;
+    [HideInInspector] public Color normal;
 
     //Speed
     protected float moveTimer = 0f; //Counts up to 100 over time, and then the entity can act
@@ -106,9 +105,9 @@ public class Entity : MonoBehaviour {
     /// <summary>The textbox which displays the index number of this entity in its party</summary>
     public Text indexText;
     /// <summary>Length of speed and health bars</summary>
-    public float barsLength;
+    protected float barsLength = 15f;
     /// <summary>Height of speed and health bars</summary>
-    public float barsHeight;
+    protected float barsHeight = 1.5f;
 
     //LEVELING UP
     private int _exp = 0;
@@ -252,7 +251,6 @@ public class Entity : MonoBehaviour {
     protected void OnMouseOver()
     {
         hovering = true;
-        ChangeColor("hover");
 
         if (status != STATUS.DEAD) party.SetStatsView(true, GetAllStats());
     }
@@ -260,7 +258,6 @@ public class Entity : MonoBehaviour {
     protected void OnMouseExit()
     {
         hovering = false;
-        ChangeColor("normal");
 
         party.SetStatsView(false, "");
     }
@@ -640,12 +637,10 @@ public class Entity : MonoBehaviour {
             case "target": colorChange = targeted; break;
             case "active": colorChange = active; break;
             case "normal": colorChange = normal; break;
-            case "hover": colorChange = hover; break;
             default: Debug.Log("Not a valid color code: " + code); return;
         }
 
         render.color = colorChange;
-
     }
 
     /// <summary>
@@ -887,4 +882,8 @@ public class Entity : MonoBehaviour {
         return render;
     }
 
+    public bool SameEntity(Entity e1, Entity e2)
+    {
+        return e1.Name == e2.Name && e1.Index == e2.Index;
+    }
 }

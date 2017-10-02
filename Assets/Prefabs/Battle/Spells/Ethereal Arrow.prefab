@@ -80,12 +80,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basePwr: 1
   cost: 1
-  baseAccuracy: 80
+  turnTimer: 0
+  baseAccuracy: 50
   baseCrit: 1
+  self_target: 0
+  hitAll: 0
   description: Strike with the power of the forest spirits
   animationTime: 2
   classification: 1
   type: 0
+  effect: 0
   projectile: {fileID: 114147984333041134, guid: d9b683477901d424abcecb46b14d8a4a,
     type: 2}
 --- !u!212 &212830713233620462

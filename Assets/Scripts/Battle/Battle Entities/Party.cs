@@ -187,9 +187,11 @@ public abstract class Party : MonoBehaviour {
     /// <param name="cmd"></param>
     /// <param name="user"></param>
     /// <param name="trgt"></param>
-    public void ExecuteAction(string cmd, Entity user, Entity trgt)
+    public void ExecuteAction(COMMAND cmd, Entity user, Entity trgt)
     {
-        bm.IssueOrder(cmd, user, trgt);
+        command = cmd;
+
+        bm.IssueOrder(cmd + "", user, trgt);
         target = trgt;
         activeMember = user;
     }

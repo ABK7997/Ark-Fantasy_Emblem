@@ -219,11 +219,10 @@ MonoBehaviour:
   techs: []
   immunities: []
   status: 0
+  normal: {r: 0, g: 0, b: 0, a: 0}
   overhead: {fileID: 223919342014007248}
   hpBar: {fileID: 114842254985391698}
   indexText: {fileID: 114545018076701892}
-  barsLength: 15
-  barsHeight: 1.5
   l_hp: 35
   l_atk: 25
   l_mag: 70

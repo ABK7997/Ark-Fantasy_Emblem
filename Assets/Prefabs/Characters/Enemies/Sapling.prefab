@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61428847053636374}
   - component: {fileID: 95613135044263866}
   - component: {fileID: 212827890920411844}
-  - component: {fileID: 114079003526216276}
+  - component: {fileID: 114573352091239394}
   m_Layer: 0
   m_Name: Sapling
   m_TagString: Untagged
@@ -91,7 +91,7 @@ Transform:
   m_GameObject: {fileID: 1037723510050600}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -1, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 224345686415401556}
   m_Father: {fileID: 0}
@@ -159,75 +159,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114079003526216276
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1037723510050600}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6089265bbf400b4408786f472987e55e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Sapling
-  expGain: 30
-  level: 1
-  type: 1
-  maxHP: 12
-  baseAtk: 0
-  baseMag: 11
-  baseVlt: 0
-  baseDef: 2
-  baseRes: 4
-  baseStb: 5
-  baseSkl: 3
-  baseLck: 2
-  baseSpd: 2
-  skills: []
-  spells:
-  - {fileID: 114493202515641324, guid: 51b0639c9bd28184d97a86d76c67a084, type: 2}
-  - {fileID: 114798406714063870, guid: f83c3f42863024c42b16784ec2568476, type: 2}
-  - {fileID: 114014391688891478, guid: dde7bc3d624f8054ab6b710844f942c6, type: 2}
-  - {fileID: 114228640325169330, guid: 2f002b42d3c7d4e4a90cfe8d37f4fd7c, type: 2}
-  - {fileID: 114519556359078702, guid: 3ac2224e032fc7046a632252be047136, type: 2}
-  - {fileID: 114370008006470272, guid: 9033c2f5a1c236543ae9519770c45592, type: 2}
-  - {fileID: 114889994196545244, guid: 1d993d78ef6f2f4479625ab4a71c7514, type: 2}
-  - {fileID: 114885251656112326, guid: d323d12aa312f10488bbb1c4261d5c14, type: 2}
-  - {fileID: 114777146977420918, guid: 8d72b3e9f0031ca43ab6412c975b6631, type: 2}
-  - {fileID: 114498061170567600, guid: 2d2824f284f357848abe0533e1790215, type: 2}
-  - {fileID: 114409733736155610, guid: 6396f223db241cb478bc560d503853fa, type: 2}
-  - {fileID: 114079916701946590, guid: 77a19918e4f14ec4c8781e27dc2bee7e, type: 2}
-  techs:
-  - {fileID: 114161810696810686, guid: 97918590e9b1d124f99fb0e33722c13d, type: 2}
-  - {fileID: 114425003260267748, guid: 129270b18c2f32843bbd68ce28c5035f, type: 2}
-  - {fileID: 114563829868404782, guid: 038455259cd0e274a8dbfbdbd8082fc0, type: 2}
-  - {fileID: 114026408199306084, guid: 76e4a0d1a142b9943a4ac83e04cabeb0, type: 2}
-  - {fileID: 114204611830792758, guid: 36ae37017075430459a60e76be10aae1, type: 2}
-  - {fileID: 114629342131456110, guid: 4448d9137d849404087fc07f03f686bb, type: 2}
-  - {fileID: 114382130219556974, guid: f97103660258464469ed313ae460d315, type: 2}
-  - {fileID: 114313863496751664, guid: a3c481940c80f334abf68b8284d3ebd2, type: 2}
-  - {fileID: 114057646849986528, guid: c7c65c4ca68315b49b28ff5c1ebd2053, type: 2}
-  - {fileID: 114555160871050782, guid: 82da58ec3daea694eaf179db3bd94101, type: 2}
-  - {fileID: 114319376070443430, guid: 8eb8fafcabac01244ab007f5f639ed4d, type: 2}
-  - {fileID: 114959626557959412, guid: 1d013d9f68297784c939791eeadcdf66, type: 2}
-  immunities: []
-  status: 0
-  overhead: {fileID: 223935357337431824}
-  hpBar: {fileID: 114881495561465746}
-  indexText: {fileID: 114876553624016782}
-  barsLength: 15
-  barsHeight: 1.5
-  l_hp: 50
-  l_atk: 0
-  l_mag: 40
-  l_vlt: 0
-  l_def: 25
-  l_res: 30
-  l_stb: 30
-  l_skl: 10
-  l_lck: 10
-  l_spd: 20
 --- !u!114 &114490676351347116
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -265,6 +196,52 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114573352091239394
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1037723510050600}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29c6be5608928314c979ebc7c8b56f83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Sapling
+  expGain: 30
+  level: 1
+  type: 1
+  maxHP: 10
+  baseAtk: 0
+  baseMag: 11
+  baseVlt: 0
+  baseDef: 2
+  baseRes: 4
+  baseStb: 5
+  baseSkl: 3
+  baseLck: 2
+  baseSpd: 2
+  skills: []
+  spells:
+  - {fileID: 114493202515641324, guid: 51b0639c9bd28184d97a86d76c67a084, type: 2}
+  - {fileID: 114889994196545244, guid: 1d993d78ef6f2f4479625ab4a71c7514, type: 2}
+  techs: []
+  immunities: []
+  status: 0
+  normal: {r: 0, g: 0, b: 0, a: 0}
+  overhead: {fileID: 223935357337431824}
+  hpBar: {fileID: 114881495561465746}
+  indexText: {fileID: 114876553624016782}
+  l_hp: 50
+  l_atk: 0
+  l_mag: 40
+  l_vlt: 0
+  l_def: 25
+  l_res: 30
+  l_stb: 30
+  l_skl: 10
+  l_lck: 10
+  l_spd: 20
 --- !u!114 &114876553624016782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -359,7 +336,7 @@ SpriteRenderer:
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300002, guid: 9cc0fbc2d5e398b40b66ace1da14c936, type: 3}
   m_Color: {r: 0, g: 0.38235295, b: 0.12920897, a: 1}
-  m_FlipX: 0
+  m_FlipX: 1
   m_FlipY: 0
   m_DrawMode: 0
   m_Size: {x: 1, y: 1}
@@ -407,7 +384,7 @@ RectTransform:
   m_GameObject: {fileID: 1877626311956948}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: -0.2, y: 0.2, z: 0}
+  m_LocalScale: {x: 0.2, y: 0.2, z: 0}
   m_Children:
   - {fileID: 224454185612491630}
   - {fileID: 224739398224210564}

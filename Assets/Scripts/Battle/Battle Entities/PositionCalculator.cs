@@ -45,7 +45,7 @@ public class PositionCalculator {
     public void ResetPosition()
     {
         user.transform.position = originalPosition;
-        if (render != null) render.color = Color.white;
+        if (render != null) render.color = user.normal;
     }
 
     /// <summary>

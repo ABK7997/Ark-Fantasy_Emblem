@@ -7,9 +7,10 @@ using UnityEngine;
 /// </summary>
 public class Sapling : Enemy {
 
+    private const int ETHEREAL_ARROW = 0, HEAL = 1;
+
     public override void Behavior()
     {
-        string command = "MAGIC";
         int spell;
         Entity target;
 
@@ -40,7 +41,7 @@ public class Sapling : Enemy {
         }
 
         SetSpecial(spell, Special.CLASS.SPELL);
-        party.ExecuteAction(command, this, target);
+        party.ExecuteAction(Party.COMMAND.MAGIC, this, target);
         ResetTimer();
     }
 

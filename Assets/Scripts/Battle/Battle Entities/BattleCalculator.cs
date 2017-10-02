@@ -100,7 +100,7 @@ public class BattleCalculator {
                 baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
 
                 //Heal spells CANNOT heal the caster
-                if (target.Name == user.Name && !activeSpecial.hitAll) baseDamage = 0;
+                if (user.SameEntity(user, target)) baseDamage = 0;
 
                 break;
 
@@ -179,9 +179,12 @@ public class BattleCalculator {
         TileEffects(target.pc.GetTileEffect1());
         TileEffects(target.pc.GetTileEffect2());
 
-        //Calculate hit or miss
-        if (Random.Range(0, 100) <= hitChance) landedHit = true;
+        //Calculate hit or miss and critical hit or miss
+        if ((Random.Range(0, 100) <= hitChance)) landedHit = true;
+        else landedHit = false;
+
         if (Random.Range(0, 100) <= critChance && landedHit) landedCrit = true;
+        else landedCrit = false;
     }
 
     //Accuracy
