@@ -171,7 +171,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: Drone
-  expGain: 30
+  expGain: 40
   level: 1
   type: 2
   maxHP: 15
@@ -183,7 +183,7 @@ MonoBehaviour:
   baseStb: 2
   baseSkl: 1
   baseLck: 0
-  baseSpd: 1
+  baseSpd: 2
   skills: []
   spells: []
   techs:

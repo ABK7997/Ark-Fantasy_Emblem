@@ -8,8 +8,7 @@ using UnityEngine;
 /// </summary>
 public class BoardInfo : MonoBehaviour {
 
-    public int numPlayers;
-    public int numEnemies;
+    public int enemyLevel = 1;
 
     /// <summary>X and Y sizese respectively</summary>
     public int columns, rows;

@@ -59,7 +59,7 @@ public class BattleManager : Manager {
         board.BoardInit(ow.encounteredParty.bi);
 
         //Number of PCs allowed in battle
-        numPartyMembers = ow.encounteredParty.bi.numPlayers;
+        numPartyMembers = ow.encounteredParty.bi.playerCoordinates.Length;
     }
 
     //Constructs both parties and attaches this battle manager to each of them
@@ -74,11 +74,13 @@ public class BattleManager : Manager {
 
         //Organize EnemyParty
         ea = ow.encounteredParty;
-        eParty.OrganizeParty(false, board.enemyCoordinates, board.scaling, ea.GetParty());
+        eParty.OrganizeParty(false, board.enemyCoordinates, board.scaling, ea.GetParty(), ea.addLevel);
 
         //Assign opposite party
         pParty.otherPartyBody = eParty;
         eParty.otherPartyBody = pParty;
+
+        Destroy(ow.gameObject);
     }
 	
     //Controls the flow of battle with Order Queue
@@ -99,7 +101,7 @@ public class BattleManager : Manager {
     public void InstantiatePlayerParty(List<Entity> partyMembers)
     {
         //Configure PlayerParty
-        pParty.OrganizeParty(true, board.playerCoordinates, board.scaling, partyMembers);
+        pParty.OrganizeParty(true, board.playerCoordinates, board.scaling, partyMembers, 0);
 
         //Assign opposite parties
         pParty.ConstructOppositeParty(eParty.party);

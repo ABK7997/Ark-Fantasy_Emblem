@@ -193,8 +193,8 @@ public class InputControls : MonoBehaviour {
             
             //Load overworld, battle finished 
             case "VICTORY":
-                bm.LoadOverworld(); //Normal exit
-                //SceneManager.LoadScene("");
+                //bm.LoadOverworld(); //Normal exit
+                SceneManager.LoadScene("demo_menu"); //Demo exit
                 break;
             
             //Party is defeated, load main menu

@@ -3,6 +3,9 @@ using System.Collections;
 
 public class Avatar : MonoBehaviour {
 
+    //Level Boost
+    public int addLevel = 0;
+
     //Movement and Animation
     public float movementSpeed;
     protected int direction = 0; protected bool walking = false; //For animator

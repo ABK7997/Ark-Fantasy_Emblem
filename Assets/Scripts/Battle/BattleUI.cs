@@ -240,7 +240,10 @@ public class BattleUI : MonoBehaviour {
         string text = "";
 
         //Physical Attack
-        if (command == "ATTACK") text = SingleTargetProjection(user, command);
+        if (command == "ATTACK")
+        {
+            text = SingleTargetProjection(user, command);
+        }
 
         //Special - Spell, Tech, or Skill
         else if (special != null)

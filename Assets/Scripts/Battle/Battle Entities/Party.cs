@@ -52,7 +52,7 @@ public abstract class Party : MonoBehaviour {
     /// <summary>
     /// Loads the party properly with either partyMembers or Enemies (defined in subclasses)
     /// </summary>
-    public void OrganizeParty(bool isPlayer, Vector2[] coords, int scaling, List<Entity> newParty)
+    public void OrganizeParty(bool isPlayer, Vector2[] coords, int scaling, List<Entity> newParty, int levelBoost)
     {
         this.isPlayer = isPlayer;
 

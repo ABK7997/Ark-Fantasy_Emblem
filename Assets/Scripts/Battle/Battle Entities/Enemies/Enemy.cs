@@ -19,8 +19,10 @@ public class Enemy : Entity {
 
         for (int i = 1; i < level; i++)
         {
-            LevelUp();
+            //SoftLevel();
         }
+
+        bc.ResetStats();
     }
 
     /// <summary>

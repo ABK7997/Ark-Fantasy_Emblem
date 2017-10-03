@@ -6,20 +6,41 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/_Scenes/demo/demo_menu.unity
+    guid: 7afb0b2fa764d104cb3448f0b0a919fb
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_1.unity
+    guid: 3bb14d41e3198374d97fd9c7d3231148
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_2.unity
+    guid: ce5861135db0b4f47a6b4c955fee472f
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_3.unity
+    guid: 2845d3a1845acc045b6aedccefeab99a
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_4.unity
+    guid: f7fff4fd7e9b57f468f5a7dac761a47e
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_5.unity
+    guid: 33aeecf00277d8444bf7a2ded94b7960
+  - enabled: 1
+    path: Assets/_Scenes/demo/demo_battle_6.unity
+    guid: c371942c4c8b0b04d8a4ceb9af2a98f1
+  - enabled: 0
     path: Assets/_Scenes/init_screen.unity
     guid: 2d38a4df560f23b4da9d7de03eb16cef
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/main_menu.unity
     guid: 377b20bcc63a7924e9d827d0d9812ace
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/cutscene.unity
     guid: d0490383761000d439ef7cc27849dbf3
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/overworld.unity
     guid: f5d9077852430464b88a75cb217b692b
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/battle.unity
     guid: 174a09f3c0ad55741a8b993f217099a3
-  - enabled: 1
+  - enabled: 0
     path: Assets/_Scenes/game_over.unity
     guid: d1facad64ffdd5043a7e3c3cbe7099e4

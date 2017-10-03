@@ -337,6 +337,7 @@ public class Entity : MonoBehaviour {
         }
 
         party.Normalize();
+        bc.activeSpecial = null;
     }
     
     //Miss Animation
@@ -767,7 +768,7 @@ public class Entity : MonoBehaviour {
     /// </summary>
     public void CheckLevel()
     {
-        if (Exp > 100)
+        if (Exp >= 100)
         {
 
             Exp -= 100;
@@ -862,6 +863,40 @@ public class Entity : MonoBehaviour {
         }
 
         return ret;
+    }
+
+    //For enemies
+    protected void SoftLevel()
+    {
+        level++;
+        int chance = Random.Range(0, 100);
+
+        //HP
+        if (chance < l_hp) maxHP += 1;
+
+        //OFFENSE
+        //chance = Random.Range(0, 100);
+        if (chance < l_atk) baseAtk += 1; 
+        //chance = Random.Range(0, 100);
+        if (chance < l_mag) baseMag += 1;
+        //chance = Random.Range(0, 100);
+        if (chance < l_vlt) baseVlt += 1;
+
+        //DEFENSE
+        //chance = Random.Range(0, 100);
+        if (chance < l_def) baseDef += 1;
+        //chance = Random.Range(0, 100);
+        if (chance < l_res) baseRes += 1;
+        //chance = Random.Range(0, 100);
+        if (chance < l_stb) baseStb += 1;
+
+        //PERFORMANCE
+        //chance = Random.Range(0, 100);
+        if (chance < l_skl) baseSkl += 1;
+        //chance = Random.Range(0, 100);
+        if (chance < l_spd) baseSpd += 1;
+        //chance = Random.Range(0, 100);
+        if (chance < l_lck) baseLck += 1;
     }
 
     /***MISCELLANEOUS***/
