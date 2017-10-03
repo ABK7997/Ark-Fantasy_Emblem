@@ -183,7 +183,7 @@ MonoBehaviour:
   baseStb: 2
   baseSkl: 1
   baseLck: 0
-  baseSpd: 2
+  baseSpd: 3
   skills: []
   spells: []
   techs:

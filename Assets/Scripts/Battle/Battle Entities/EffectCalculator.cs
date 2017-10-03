@@ -101,6 +101,7 @@ public class EffectCalculator {
             case "REVIVE":
                 user.SetStatus("NORMAL");
                 user.Hp += (int)(user.maxHP * 0.33f);
+                user.GetParty().UpdateIndeces();
                 return;
 
             //Unique Case - Reset

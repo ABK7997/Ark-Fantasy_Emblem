@@ -69,9 +69,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   party:
-  - {fileID: 114351014467298466, guid: 285ff3874fa899e48bc52b9794b11db6, type: 2}
+  - {fileID: 114351014467298466, guid: 8615a336f342766468022c2385b5c839, type: 2}
   - {fileID: 114275551226271744, guid: 17b6daa9320a0ae45a890bada02de13e, type: 2}
-  - {fileID: 114560260779192872, guid: 1ae6d13c03dac4c4290a497459cfd249, type: 2}
+  - {fileID: 114560260779192872, guid: 75d9c2578ddb7ce43baf1d25c2d24f2f, type: 2}
   - {fileID: 114679454541101914, guid: 25071173b8b18fa49991c78294d5f464, type: 2}
   - {fileID: 114411361598208498, guid: 7d76079ab0392ea45935ed62d593d5eb, type: 2}
   - {fileID: 114145006426532424, guid: 3e44ce65f0175824f9afeae028454d39, type: 2}

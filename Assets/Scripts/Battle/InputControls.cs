@@ -199,7 +199,8 @@ public class InputControls : MonoBehaviour {
             
             //Party is defeated, load main menu
             case "GAME_OVER":
-                bm.LoadScene("game_over");
+                //bm.LoadScene("game_over"); //Normal game over
+                SceneManager.LoadScene("demo_menu");
                 break;
 
             //Flee Attempt

@@ -251,7 +251,7 @@ public abstract class Party : MonoBehaviour {
         int i = 0;
         foreach (Entity e in party)
         {
-            if (e.Hp > 0)
+            if (e.status != Entity.STATUS.DEAD)
             {
                 e.Index = i;
                 e.indexText.text = "" + (i + 1);
