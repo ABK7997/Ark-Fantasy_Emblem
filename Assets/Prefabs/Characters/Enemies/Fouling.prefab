@@ -40,7 +40,7 @@ GameObject:
   - component: {fileID: 61570640973678950}
   - component: {fileID: 95748986084029638}
   - component: {fileID: 212482880991375926}
-  - component: {fileID: 114102246407880964}
+  - component: {fileID: 114812032420646066}
   m_Layer: 0
   m_Name: Fouling
   m_TagString: Untagged
@@ -159,50 +159,6 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
---- !u!114 &114102246407880964
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1304976461743420}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6089265bbf400b4408786f472987e55e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Name: Fouling
-  expGain: 30
-  level: 1
-  type: 0
-  maxHP: 12
-  baseAtk: 12
-  baseMag: 0
-  baseVlt: 0
-  baseDef: 0
-  baseRes: 2
-  baseStb: 3
-  baseSkl: 2
-  baseLck: 2
-  baseSpd: 2
-  skills: []
-  spells: []
-  techs: []
-  immunities: []
-  status: 0
-  normal: {r: 0, g: 0, b: 0, a: 0}
-  overhead: {fileID: 223101204964993824}
-  hpBar: {fileID: 114300647946785628}
-  indexText: {fileID: 114212566682658984}
-  l_hp: 25
-  l_atk: 40
-  l_mag: 0
-  l_vlt: 0
-  l_def: 25
-  l_res: 25
-  l_stb: 25
-  l_skl: 10
-  l_lck: 20
-  l_spd: 40
 --- !u!114 &114212566682658984
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -300,6 +256,50 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &114812032420646066
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1304976461743420}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80a99c8ef4606694897a17dbc7a3d276, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Fouling
+  expGain: 30
+  level: 1
+  type: 0
+  maxHP: 12
+  baseAtk: 13
+  baseMag: 0
+  baseVlt: 0
+  baseDef: 0
+  baseRes: 2
+  baseStb: 3
+  baseSkl: 2
+  baseLck: 2
+  baseSpd: 3
+  skills: []
+  spells: []
+  techs: []
+  immunities: []
+  status: 0
+  normal: {r: 0, g: 0, b: 0, a: 0}
+  overhead: {fileID: 223101204964993824}
+  hpBar: {fileID: 114300647946785628}
+  indexText: {fileID: 114212566682658984}
+  l_hp: 25
+  l_atk: 40
+  l_mag: 0
+  l_vlt: 0
+  l_def: 25
+  l_res: 25
+  l_stb: 25
+  l_skl: 10
+  l_lck: 20
+  l_spd: 40
 --- !u!212 &212482880991375926
 SpriteRenderer:
   m_ObjectHideFlags: 1

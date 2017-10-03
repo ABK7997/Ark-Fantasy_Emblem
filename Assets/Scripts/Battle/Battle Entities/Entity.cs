@@ -344,6 +344,8 @@ public class Entity : MonoBehaviour {
     {
         if (pc.IsRightOf(bc.target)) bc.target.pc.SetPosition(2f, 0f);
         else bc.target.pc.SetPosition(-2f, 0f);
+
+        target.SetStatus("NORMAL");
     }
 
     /// <summary>

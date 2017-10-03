@@ -3603,7 +3603,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   encounteredParty: {fileID: 0}
   activeEnemies:
-  - {fileID: 114265730354123872, guid: c36ad7e6cbefdb34ea2c51052c033f52, type: 2}
+  - {fileID: 114299234135930562, guid: fb978d038bc4a8c4da751a350b7faddf, type: 2}
   enemyHolder: {fileID: 1985304312}
 --- !u!4 &621913852
 Transform:

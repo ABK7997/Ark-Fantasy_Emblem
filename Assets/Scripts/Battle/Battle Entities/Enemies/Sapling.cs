@@ -11,6 +11,8 @@ public class Sapling : Enemy {
 
     public override void Behavior()
     {
+        base.Behavior();
+
         int spell;
         Entity target;
 
@@ -42,7 +44,6 @@ public class Sapling : Enemy {
 
         SetSpecial(spell, Special.CLASS.SPELL);
         party.ExecuteAction(Party.COMMAND.MAGIC, this, target);
-        ResetTimer();
     }
 
 }

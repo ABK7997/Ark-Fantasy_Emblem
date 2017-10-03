@@ -81,7 +81,7 @@ MonoBehaviour:
   basePwr: 0
   cost: 0
   turnTimer: 5
-  baseAccuracy: 75
+  baseAccuracy: 30
   baseCrit: 0
   self_target: 1
   hitAll: 0

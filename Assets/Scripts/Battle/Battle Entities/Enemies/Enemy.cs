@@ -36,10 +36,8 @@ public class Enemy : Entity {
     /// </summary>
     public virtual void Behavior()
     {
-        Entity target = GetRandomPlayer();
-
-        party.ExecuteAction(Party.COMMAND.ATTACK, this, target);
         ResetTimer();
+        turn++;
     }
 
     /***BEHAVIORS and TARGETING***/

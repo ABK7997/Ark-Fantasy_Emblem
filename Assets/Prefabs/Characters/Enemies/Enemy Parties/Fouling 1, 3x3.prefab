@@ -146,9 +146,9 @@ MonoBehaviour:
   bi: {fileID: 114319998825566596}
   ow: {fileID: 0}
   party:
-  - {fileID: 114102246407880964, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
-  - {fileID: 114102246407880964, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
-  - {fileID: 114102246407880964, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
+  - {fileID: 114812032420646066, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
+  - {fileID: 114812032420646066, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
+  - {fileID: 114812032420646066, guid: 1cc8d65fd8db7ff4988fab15426813f6, type: 2}
 --- !u!212 &212011227207096046
 SpriteRenderer:
   m_ObjectHideFlags: 1
