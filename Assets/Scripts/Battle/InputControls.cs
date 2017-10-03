@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Class dedicated to how the player interfaces with the game through the keyboard and mouse
@@ -192,7 +193,8 @@ public class InputControls : MonoBehaviour {
             
             //Load overworld, battle finished 
             case "VICTORY":
-                bm.LoadOverworld();
+                bm.LoadOverworld(); //Normal exit
+                //SceneManager.LoadScene("");
                 break;
             
             //Party is defeated, load main menu

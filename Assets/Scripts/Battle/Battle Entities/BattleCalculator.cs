@@ -100,7 +100,7 @@ public class BattleCalculator {
                 baseDamage *= -1; //Number becomes negative so the opposite of damage will be given
 
                 //Heal spells CANNOT heal the caster
-                if (user.SameEntity(user, target)) baseDamage = 0;
+                if (user.SameEntity(user, target) && !activeSpecial.hitAll) baseDamage = 0;
 
                 break;
 
